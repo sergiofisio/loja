@@ -7,6 +7,7 @@ import Form from "./components/form";
 import { AnimatePresence } from "framer-motion";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Admin from "./page/admin";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 function App() {
   const [init, setInit] = useState(false);
@@ -22,7 +23,24 @@ function App() {
   function ProtectRoutes({ redirecionarPara }: { redirecionarPara: string }) {
     let isAutheticated = localStorage.getItem("token");
 
+    getInfoUser();
+
     return isAutheticated ? <Outlet /> : <Navigate to={redirecionarPara} />;
+  }
+
+  async function getInfoUser() {
+    try {
+      const {
+        data: { user },
+      } = await axios.get(`/admin/${await AsyncStorage.getItem("usuarioId")}`, {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
+      });
+      return setAdmin(user);
+    } catch (error: any) {
+      console.log(error);
+    }
   }
 
   async function startDb() {

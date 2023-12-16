@@ -25,8 +25,10 @@ export default function Header({
         console.log(error);
       }
     }
+    console.log(admin);
+
     getUserName();
-  }, []);
+  }, [userName]);
 
   return (
     <header
@@ -80,7 +82,7 @@ export default function Header({
               <div className="flex justify-center p-2 rounded-full w-14 h-14 border-2 border-black border-solid">
                 <img src={imgUser} alt="" />
               </div>
-              <h2>{userName.split(" ")[0]}</h2>
+              <h2>{userName && userName.split(" ")[0]}</h2>
             </div>
           </div>
         </>

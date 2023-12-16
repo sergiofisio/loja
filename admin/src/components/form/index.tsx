@@ -52,6 +52,8 @@ export default function Form({
         if (!loggedInUser.admin) {
           return toastFail("Você não tem permissão para acessar esta pagina.");
         }
+        console.log(loggedInUser.admin);
+
         setUser({ ...user, admin: loggedInUser.admin });
         localStorage.setItem("token", token);
         localStorage.setItem("usuarioId", loggedInUser.id);
@@ -227,7 +229,7 @@ export default function Form({
           <Button
             onClick={(e) => handleNext(e)}
             type="submit"
-            className="bg-green h-16 rounded-r-2xl rounded-bl-3xl"
+            className="bg-green h-16 rounded-r-2xl rounded-bl-3xl w-1/3"
             text={type === "login" ? "Entrar" : "Próximo"}
           />
           <h3 className="flex gap-3 text-white text-center font-main text-base font-normal">
