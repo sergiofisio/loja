@@ -1,0 +1,53 @@
+{
+  "name": "server-eccomerce",
+  "version": "1.0.0",
+  "description": "![](https://i.imgur.com/xG74tOh.png)",
+  "main": "src/index.js",
+  "engines": {
+    "node": ">=18.0.0",
+    "yarn": ">=1.22.5"
+  },
+  "scripts": {
+    "dev": "nodemon src/index.ts",
+    "begin": "yarn && yarn prisma && yarn build",
+    "start": "node dist/index.js",
+    "build": "tsc",
+    "prisma": "npm run migrate && npm run generate && npm run push",
+    "migrate": "npx prisma migrate deploy",
+    "generate": "npx prisma generate",
+    "pull": "npx prisma db pull",
+    "push": "npx prisma db push",
+    "seed": "node ./prisma/seed.js"
+  },
+  "dependencies": {
+    "@prisma/client": "^5.6.0",
+    "aws-sdk": "^2.1506.0",
+    "axios": "^1.4.0",
+    "bcrypt": "^5.1.0",
+    "cors": "^2.8.5",
+    "date-fns": "^2.30.0",
+    "dotenv": "^16.3.1",
+    "express": "^4.18.2",
+    "fs": "^0.0.1-security",
+    "jsonwebtoken": "^9.0.1",
+    "mailtrap": "^3.1.1",
+    "multer": "^1.4.5-lts.1",
+    "nodemailer": "^6.9.4",
+    "nodemon": "^3.0.1",
+    "serve-favicon": "^2.5.0",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@types/bcrypt": "^5.0.2",
+    "@types/cors": "^2.8.17",
+    "@types/express": "^4.17.21",
+    "@types/jsonwebtoken": "^9.0.5",
+    "@types/multer": "^1.4.11",
+    "@types/node": "^20.10.0",
+    "@types/serve-favicon": "^2.5.7",
+    "prisma": "^5.6.0",
+    "ts-node": "^10.9.1",
+    "typescript": "^5.3.2"
+  },
+  "license": "MIT"
+}
