@@ -96,6 +96,7 @@ export default function Input({
           maxLength={maxLength}
           value={value}
           min={min}
+          required={required}
         />
         {password && (
           <img
