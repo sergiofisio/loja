@@ -4,6 +4,6 @@ const url = "https://server-loja-gfrs.onrender.com";
 
 export default axios.create({
   baseURL: url,
-  timeout: 20000,
+  timeout: 60000,
   headers: { "Content-Type": "application/json" },
 });
