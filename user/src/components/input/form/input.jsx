@@ -34,7 +34,7 @@ export default function Input({
 
   const masks = {
     Cpf: "999.999.999-99",
-    Telefone: "(99) 99999-9999",
+    Telefone: "+55 (99) 99999-9999",
     numeração: "9999 9999 9999 9999",
     Cep: "99999-999",
   };

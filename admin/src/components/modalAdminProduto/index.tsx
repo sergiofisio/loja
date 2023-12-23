@@ -6,6 +6,18 @@ import Button from "../button";
 import axios from "./../../Service/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { toastSuccess } from "../../context/toast";
+import { NumberFormatValues, NumericFormat } from "react-number-format";
+
+type InfoProdutoType = {
+  name: string;
+  description: string;
+  weight: number;
+  price: number | string;
+  category: number;
+  image: string;
+  stock: number;
+  [key: string]: any;
+};
 
 export default function ModalAdminProduto({
   type,
@@ -19,15 +31,14 @@ export default function ModalAdminProduto({
   setShowModal: React.Dispatch<React.SetStateAction<string>>;
 }) {
   const [infoProduto, setInfoProduto] = useState({
-    name: produto.name || null,
-    description: produto.description || null,
-    weight: produto.weight || null,
-    price: produto.price || null,
-    promotionPrice: produto.promotionPrice || null,
-    category: produto.categoryId || null,
-    image: produto.image || null,
-    stock: produto.stock || null,
-  });
+    name: produto.name || "",
+    description: produto.description || "",
+    weight: produto.weight || "",
+    price: produto.price || "",
+    category: produto.categoryId || "",
+    image: produto.image || "",
+    stock: produto.stock || "",
+  } as InfoProdutoType);
   const [categories, setCategories] = useState([]);
   const [upload, setUpload] = useState<File | null>(null);
 
@@ -64,12 +75,13 @@ export default function ModalAdminProduto({
   async function handleOnSubmit(e: any) {
     e.preventDefault();
     e.stopPropagation();
-
-    console.log({ infoProduto });
+    for (const key in infoProduto) {
+      console.log(infoProduto[key]);
+    }
 
     await axios[type === "create" ? "post" : "patch"](
       `/${type === "create" ? "createProduct" : `uploadProduct/${produto.id}`}`,
-      infoProduto,
+      { ...infoProduto, price: Number(infoProduto.price) * 100 },
       {
         headers: {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
@@ -83,6 +95,15 @@ export default function ModalAdminProduto({
       "top-left"
     );
     setTimeout(() => {
+      setProduto({
+        name: "",
+        description: "",
+        weight: "",
+        price: "",
+        category: "",
+        image: "",
+        stock: "",
+      });
       setShowModal("");
     }, 3000);
   }
@@ -98,7 +119,15 @@ export default function ModalAdminProduto({
       >
         <img
           onClick={() => {
-            setProduto("");
+            setProduto({
+              name: "",
+              description: "",
+              weight: "",
+              price: "",
+              category: "",
+              image: "",
+              stock: "",
+            });
             setShowModal("");
           }}
           className="absolute top-6 right-6 cursor-pointer"
@@ -170,16 +199,27 @@ export default function ModalAdminProduto({
                 value={infoProduto.weight}
                 required={true}
               />
-              <Input
-                type="text"
-                label="Preço"
-                placeholder="Preço"
-                set={(e) => {
-                  setInfoProduto({ ...infoProduto, price: e.target.value });
-                }}
-                value={infoProduto.price}
-                required={true}
-              />
+              <div className="flex flex-col justify-center gap-1 font-main font-normal text-[#3bb77e] w-full text-base">
+                <label className="capitalize">Preço</label>
+                <NumericFormat
+                  className={`flex items-center w-full h-12 rounded-xl py-1 px-3 border-[#555555] border-solid border-2 text-black`}
+                  value={infoProduto.price}
+                  thousandSeparator="."
+                  decimalSeparator=","
+                  prefix="R$ "
+                  decimalScale={2}
+                  fixedDecimalScale
+                  allowNegative={false}
+                  onValueChange={(values: NumberFormatValues) =>
+                    setInfoProduto({
+                      ...infoProduto,
+                      price: values.value,
+                    })
+                  }
+                  placeholder="$0,00"
+                  defaultValue="0,00"
+                />
+              </div>
               <Input
                 type="number"
                 label="Estoque"
@@ -202,7 +242,7 @@ export default function ModalAdminProduto({
                   onChange={(e) => {
                     setInfoProduto({
                       ...infoProduto,
-                      category: e.target.value,
+                      category: Number(e.target.value),
                     });
                   }}
                 >

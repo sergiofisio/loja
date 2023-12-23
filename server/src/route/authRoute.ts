@@ -5,8 +5,10 @@ import deleteProduct from './../controllers/product/product.delete';
 import infoDb from './../controllers/infoDb';
 import userAdmin from './../controllers/user/user.admin';
 import userInfo from './../controllers/user/user.info';
-import registerAdress from './../controllers/user/user.adress';
+import createAdress from './../controllers/adress/adress.create';
 import updateProduct from './../controllers/product/product.upload';
+import updateUser from "./../controllers/user/user.update";
+import frete from "./../controllers/postOffice/frete";
 
 const authRoute = require("express").Router();
 const multer = require("../middleware/multer");
@@ -20,11 +22,13 @@ authRoute.get('/verifyToken', function (_: Request, res: Response) {
 })
 
 authRoute.get('/infoUser/:id', userInfo)
-authRoute.get('/infoDb', infoDb)
+authRoute.get('/infoDb/:admin', infoDb)
 authRoute.get('/admin/:id', userAdmin)
+authRoute.get('/frete/:cep', frete)
 authRoute.post("/upload", multer.single("file"), uploadImg);
 authRoute.post('/createProduct', createProduct)
-authRoute.post('/adress', registerAdress)
+authRoute.post('/adress/:id', createAdress)
+authRoute.patch('/updateUser/:id', updateUser)
 authRoute.patch('/uploadProduct/:id', updateProduct)
 authRoute.delete('/deleteProduct/:id', deleteProduct)
 

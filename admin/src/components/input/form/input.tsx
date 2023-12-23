@@ -24,7 +24,7 @@ export default function Input({
   type: string;
   placeholder: string;
   set: (e: any) => void;
-  value: string;
+  value: string | number;
   required?: boolean;
   className?: string;
   classnameLabel?: string;
@@ -48,12 +48,14 @@ export default function Input({
   // };
 
   const masks: {
+    Preço: string;
     Cpf: string;
     Telefone: string;
     numeração: string;
     Cep: string;
     [key: string]: string;
   } = {
+    Preço: "R$ 0.00",
     Cpf: "999.999.999-99",
     Telefone: "(99) 99999-9999",
     numeração: "9999 9999 9999 9999",

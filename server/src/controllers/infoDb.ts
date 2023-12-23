@@ -1,13 +1,16 @@
 import { findMany } from "../prismaFunctions/prisma";
 import { Request, Response } from "express";
 
-const infoDb = async (_: Request, res: Response) => {
+const infoDb = async (req: Request, res: Response) => {
+    const { admin } = req.params as { admin: string | null };
+
     try {
         const products = await findMany('product');
-        const users = await findMany('user', {
+        let users = await findMany('user', {
             adress: true,
             cart: true,
         });
+        if (admin !== 'true') { users = null }
         const testimonials = await findMany('testimonial');
         const partners = await findMany('partner', {
             cart: true,

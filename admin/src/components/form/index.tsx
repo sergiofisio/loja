@@ -52,7 +52,6 @@ export default function Form({
         if (!loggedInUser.admin) {
           return toastFail("Você não tem permissão para acessar esta pagina.");
         }
-        console.log(loggedInUser.admin);
 
         setUser({ ...user, admin: loggedInUser.admin });
         localStorage.setItem("token", token);

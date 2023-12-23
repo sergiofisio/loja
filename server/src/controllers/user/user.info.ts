@@ -4,9 +4,6 @@ import { Request, Response } from "express";
 async function userInfo(req: Request, res: Response): Promise<any> {
     const { id } = req.params;
 
-    console.log(id);
-
-
     try {
         const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString('base64');
         const options = {
@@ -27,6 +24,8 @@ async function userInfo(req: Request, res: Response): Promise<any> {
                 return error;
             });
 
+        delete userInfo.address;
+
         const options2 = {
             method: 'GET',
             url: `https://api.pagar.me/core/v5/customers/${id}/addresses`,
@@ -46,7 +45,24 @@ async function userInfo(req: Request, res: Response): Promise<any> {
                 return error;
             });
 
-        res.json({ user: userInfo, adresses })
+        const options3 = {
+            method: 'GET',
+            url: 'https://api.pagar.me/core/v5/orders',
+            params: { customer_id: id, page: '1', size: '999' },
+            headers: {
+                accept: 'application/json',
+                authorization: `Basic ${basicAuthorization}`
+            }
+        }
+        const orders = await axios
+            .request(options3)
+            .then(function (response) {
+                return (response.data);
+            })
+            .catch(function (error) {
+                return (error);
+            });
+        res.json({ user: userInfo, adresses: adresses.data, orders: orders });
     } catch (error: any) {
         console.log(error);
 

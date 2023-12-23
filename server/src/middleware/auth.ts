@@ -14,7 +14,9 @@ declare global {
 }
 
 const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
+
     const token = (req.headers["authorization"] as string).split(" ")[1];
+
 
     try {
 
@@ -23,12 +25,10 @@ const verifyToken = (req: Request, res: Response, next: NextFunction): void => {
         } else {
             jwt.verify(token, process.env.JWT_SECRET, async (err: VerifyErrors, decoded: TokenPayload): Promise<any> => {
                 if (err) {
-                    console.log(err);
 
                     return res.status(408).json({ error: "Token inválido" });
                 } else {
                     const user = await findUnique('user', { id: decoded.id });
-
 
                     if (!user) {
                         return res.status(408).json({ error: "Token inválido" });

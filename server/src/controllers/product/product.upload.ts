@@ -4,7 +4,7 @@ import { Request, Response } from "express";
 
 async function updateProduct(req: Request, res: Response) {
     const { id } = req.params
-    const { name, description, price, promotionPrice, weight, image, category } = req.body;
+    const { name, description, price, stock, weight, image, category } = req.body;
 
     try {
         const product = await prisma.product.update({
@@ -12,7 +12,7 @@ async function updateProduct(req: Request, res: Response) {
                 id: Number(id)
             },
             data: {
-                name, description, price: Number(price), promotionPrice: Number(price * 0.8), weight: Number(weight), image, categoryId: Number(category)
+                name, description, price: Number(price), stock: Number(stock), promotionPrice: Number(price * 0.8), weight: Number(weight), image, categoryId: Number(category)
             }
         })
 

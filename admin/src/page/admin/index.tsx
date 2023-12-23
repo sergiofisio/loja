@@ -11,6 +11,7 @@ import { formatValue } from "../../functions/functions";
 import edit from "../../assets/admin/edit.svg";
 import ModalAdminProduto from "../../components/modalAdminProduto";
 import { format } from "date-fns";
+import { GridLoader } from "react-spinners";
 
 export default function Admin() {
   const [selectSidebar, setSelectSidebar] = useState("dashboard");
@@ -35,7 +36,7 @@ export default function Admin() {
       const {
         data: { products, users, testimonials, partners },
       } = await axiosPrivate.get(
-        "/infoDb",
+        "/infoDb/true",
         localconfig.getAuth(localStorage.getItem("token"))
       );
 
@@ -92,9 +93,10 @@ export default function Admin() {
   useEffect(() => {
     getAllInfoDb();
   }, [showModal]);
+
   return (
-    <main className="relative flex w-full h-full px-6 py-12">
-      <div className="flex flex-col justify-center h-full gap-6">
+    <main className="relative flex w-full h-full px-6 py-4">
+      <div className="flex flex-col justify-center h-full gap-6 ">
         <div
           onClick={() => {
             setSelectSidebar("dashboard");
@@ -282,17 +284,47 @@ export default function Admin() {
           </>
         )}
         {selectSidebar === "product" && (
-          <div className="flex flex-col px-6 gap-4">
+          <div className="flex max-w-[calc(100vw-35rem)] h-full flex-col px-6 gap-4">
             <h2 className="font-main text-3xl text-[#253D4E] font-semibold">
               Produtos
             </h2>
-            <div
-              className="border-2 border-grey border-dashed rounded-3xl w-36 h-28 flex items-center justify-center cursor-pointer"
-              onClick={() => {
-                setShowModal("create");
-              }}
-            >
-              <h2 className="text-2xl text-center">Adicionar novo +</h2>
+            <div className="flex items-center gap-4">
+              <div className="flex gap-4 h-56 overflow-x-scroll scrollbar-thin scrollbar-thumb-green p-2">
+                {!infoDb.produtos.length ? (
+                  <div>
+                    <GridLoader color="#000" />
+                    <h2>Carregando...</h2>
+                  </div>
+                ) : (
+                  infoDb.produtos
+                    .sort((a: { id: number }, b: { id: number }) => a.id - b.id)
+                    .map((product: any) => {
+                      return (
+                        <div
+                          key={product.id}
+                          className="border-2 border-grey border-solid rounded-3xl flex flex-col items-center justify-center cursor-pointer p-4 min-w-[11rem] h-full"
+                        >
+                          <img
+                            className="h-24"
+                            src={product.image}
+                            alt={`imagem de ${product.name}`}
+                          />
+                          <h2 className="text-2xl text-center">
+                            {product.name}
+                          </h2>
+                        </div>
+                      );
+                    })
+                )}
+              </div>
+              <div
+                className="border-2 border-grey border-dashed rounded-3xl w-44 h-44 flex items-center justify-center cursor-pointer p-4"
+                onClick={() => {
+                  setShowModal("create");
+                }}
+              >
+                <h2 className="text-2xl text-center">Adicionar novo +</h2>
+              </div>
             </div>
             <div>
               <div className="bg-[#F3F3F3] h-12 border-2 border-gray-500 border-none rounded-3xl flex items-center gap-4 px-4">
@@ -312,6 +344,9 @@ export default function Admin() {
               <div className="flex w-full">
                 <table className="flex flex-col w-full">
                   <thead className="flex w-full justify-between items-center font-main text-4xl font-semibold py-3 border-b-4 border-green border-solid">
+                    <tr className="w-20 flex justify-center ">
+                      <th></th>
+                    </tr>
                     <tr className="w-3/4 flex justify-center ">
                       <th>Produto</th>
                     </tr>
@@ -329,37 +364,47 @@ export default function Admin() {
                     className="flex flex-col w-full justify-between items-center py-3 gap-2 max-h-96 overflow-y-scroll scrollbar-thin scrollbar-thumb-green"
                     key="1254687421348643543"
                   >
-                    {infoDb.produtos.length ? (
-                      infoDb.produtos.map((product: any) => {
-                        return (
-                          <tr
-                            className="w-full flex justify-center font-main text-xl font-normal "
-                            key={product.id}
-                          >
-                            <td className="w-3/4 flex justify-center ">
-                              {product.name}
-                            </td>
-                            <td className="w-1/4 flex justify-center ">
-                              {product.stock}
-                            </td>
-                            <td className="w-1/4 flex justify-center ">
-                              {formatValue(product.price)}
-                            </td>
-                            <td className="w-1/4 flex justify-center ">
-                              <img
-                                onClick={() => {
-                                  setProduto(product), setShowModal("edit");
-                                }}
-                                className="cursor-pointer"
-                                src={edit}
-                                alt=""
-                              />
-                            </td>
-                          </tr>
-                        );
-                      })
+                    {!infoDb.produtos.length ? (
+                      <div>
+                        <GridLoader color="#000" />
+                        <h2>Carregando...</h2>
+                      </div>
                     ) : (
-                      <tr></tr>
+                      infoDb.produtos
+                        .sort(
+                          (a: { id: number }, b: { id: number }) => a.id - b.id
+                        )
+                        .map((product: any) => {
+                          return (
+                            <tr
+                              className="w-full flex justify-center font-main text-xl font-normal "
+                              key={product.id}
+                            >
+                              <td className="w-20 flex justify-center items-center">
+                                {product.id}
+                              </td>
+                              <td className="w-3/4 flex justify-center ">
+                                {product.name}
+                              </td>
+                              <td className="w-1/4 flex justify-center ">
+                                {product.stock}
+                              </td>
+                              <td className="w-1/4 flex justify-center ">
+                                {formatValue(product.price / 100)}
+                              </td>
+                              <td className="w-1/4 flex justify-center ">
+                                <img
+                                  onClick={() => {
+                                    setProduto(product), setShowModal("edit");
+                                  }}
+                                  className="cursor-pointer"
+                                  src={edit}
+                                  alt=""
+                                />
+                              </td>
+                            </tr>
+                          );
+                        })
                     )}
                   </tbody>
                 </table>
@@ -375,7 +420,7 @@ export default function Admin() {
           </h2>
           <div className="flex flex-col gap-3 overflow-y-scroll max-h-64 scrollbar-thin scrollbar-thumb-green">
             {infoDb.usuarios.length &&
-              infoDb.usuarios.map((user: any, key: any) => {
+              infoDb.usuarios.map((user: any, key: number) => {
                 return (
                   <div className="flex w-full items-center gap-2 " key={key}>
                     <div className="border-green rounded-full border-2 p-1">

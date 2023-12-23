@@ -15,14 +15,7 @@ model user {
   password     String
   admin        Boolean  @default(false)
   lostPassword Boolean? @default(false)
-  adress       adress[]
   cart         cart[]
-}
-
-model adress {
-  id     String @id
-  userId String
-  user   user   @relation(fields: [userId], references: [id])
 }
 
 model cart {

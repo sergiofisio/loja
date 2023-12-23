@@ -4,5 +4,6 @@
     "admin": "cd admin && yarn dev",
     "server": "cd server && yarn dev",
     "user": "cd user && yarn dev"
-  }
+  },
+  "license": "MIT"
 }

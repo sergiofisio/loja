@@ -4,7 +4,9 @@ import { Request, Response } from "express";
 async function verify(req: Request, res: Response) {
     try {
         const data = req.body;
-
+        
+        console.log({ data });
+        
 
         const verifyInput = await findUnique('user', { [data.input]: data.value });
 

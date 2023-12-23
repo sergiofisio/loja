@@ -3,10 +3,7 @@ import { CustomError } from './../../class/class';
 import { createOrUpdate, findFirst, findUnique } from '../../prismaFunctions/prisma';
 
 async function createProduct(req: Request, res: Response) {
-    const { name, description, price, promotionPrice, weight, image, category } = req.body;
-
-    console.log({ name, description, price, promotionPrice, weight, image, category });
-
+    const { name, description, price, stock, promotionPrice, weight, image, category } = req.body;
 
     try {
 
@@ -18,7 +15,7 @@ async function createProduct(req: Request, res: Response) {
             throw new CustomError("Produto já cadastrado", 400)
         }
 
-        const { id } = await createOrUpdate('product', { name, description, price: Number(price), promotionPrice: Number(price * 0.8), weight: Number(weight), image, categoryId: Number(category) });
+        const { id } = await createOrUpdate('product', { name, description, price: Number(price), stock: Number(stock), promotionPrice: Number(price * 0.8), weight: Number(weight), image, categoryId: Number(category) });
 
         const product = await findUnique('product', { id: Number(id) });
 

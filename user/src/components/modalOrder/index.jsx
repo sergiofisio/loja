@@ -143,9 +143,9 @@ export default function ModalOrder({ setShowModalOrder, order }) {
                 <td className="text-center text-4xl font-bold font-main">
                   {`TOTAL: 
                 ${(order.amount / 100).toLocaleString("pt-BR", {
-                  style: "currency",
-                  currency: "BRL",
-                })}`}
+                    style: "currency",
+                    currency: "BRL",
+                  })}`}
                 </td>
               </div>
             </div>

@@ -27,6 +27,6 @@
     "experimentalDecorators": true,
     "emitDecoratorMetadata": true
   },
-  "include": ["./src/**/*.ts", "index.ts"],
+  "include": ["./src/**/*.ts", "index.ts", "src/controllers/order"],
   "exclude": ["./node_modules/*", "dist"]
 }

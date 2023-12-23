@@ -9,7 +9,7 @@ import Button from "../button";
 import Input from "../input/form/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function Form({ setAdmin, login, setLogin, setSingIn }) {
+export default function Form({ login, setLogin, setSingIn }) {
   const navigate = useNavigate();
   const [user, setUser] = useState({
     name: "",
@@ -54,7 +54,6 @@ export default function Form({ setAdmin, login, setLogin, setSingIn }) {
           email: user.email,
           password: user.password,
         });
-        setAdmin({ ...user, admin: loggedInUser.admin });
         localStorage.setItem("token", token);
         localStorage.setItem("usuarioId", loggedInUser.id);
         localStorage.setItem("usuarioNome", loggedInUser.name);
@@ -110,7 +109,8 @@ export default function Form({ setAdmin, login, setLogin, setSingIn }) {
       setFirstPlaceholder("Digite sua senha");
       setSecondInput("Confirmar Senha");
       setSecondPlaceholder("Confirme sua senha");
-      return setStep("step3");
+      setStep("step3");
+      return 
     }
     if (!user.password) {
       return toastFail("O campo Senha é obrigatório");
@@ -124,7 +124,7 @@ export default function Form({ setAdmin, login, setLogin, setSingIn }) {
           letra.toUpperCase()
         ),
         email: user.email,
-        document: user.document,
+        document: user.document.replace(/[.-]/g, ""),
         phone: user.phone.replace(/[()\s-]/g, ""),
         password: user.password,
       });

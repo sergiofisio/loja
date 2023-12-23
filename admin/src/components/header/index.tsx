@@ -25,7 +25,6 @@ export default function Header({
         console.log(error);
       }
     }
-    console.log(admin);
 
     getUserName();
   }, [userName]);

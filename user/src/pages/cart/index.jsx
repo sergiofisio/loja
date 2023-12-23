@@ -19,13 +19,14 @@ import truck from "../../assets/cart/truck.svg";
 import { toastFail, toastSuccess } from "../../context/toast";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Cart() {
   const navigate = useNavigate();
-  const [user, setUser] = useState("");
+  const [userInfo, setUserInfo] = useState("");
   const [sedex, setSedex] = useState("");
   const [pac, setPac] = useState("");
-  const [adress, setAdress] = useState("");
+  const [adressUser, setAdressUser] = useState("");
   const [changeProductCart, setchangeProductCart] = useState(false);
   const [value, setValue] = useState(0);
   const [step, setStep] = useState("step1");
@@ -78,53 +79,27 @@ export default function Cart() {
   async function getFrete() {
     try {
       const {
-        data: { nome, telefone, email, idPagarMe, idEnderecoPagar },
-      } = await axios.post(
-        "/infoUser",
-        {
-          id: localStorage.getItem("usuarioId"),
+        data: { user, adresses }
+      } = await axios.get(
+        `/infoUser/${await AsyncStorage.getItem("usuarioId")}`, {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
-        localconfig.getAuth(localStorage.getItem("token"))
+      }
       );
 
-      setUser({
-        nome,
-        telefone,
-        email,
-        idPagarMe,
-        idEnderecoPagar,
+      setUserInfo({ user })
+      setAdressUser(adresses[0])
+      console.log(adresses[0]);
+
+      const response = await axios.get(`/frete/${adresses[0].zip_code}`, {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
       });
+      console.log(response);
 
-      const {
-        data: { line_1, line_2, state, zip_code, city, country },
-      } = await axios.post(
-        "/getAdressPagar",
-        {
-          id: idPagarMe,
-          enderecoId: idEnderecoPagar,
-        },
-        localconfig.getAuth(localStorage.getItem("token"))
-      );
 
-      setAdress({
-        line_1,
-        line_2,
-        state,
-        zip_code,
-        city,
-        country,
-      });
-
-      const response = await axios.post(
-        "/frete",
-        {
-          cep: zip_code,
-          peso: calcWeight(),
-        },
-        localconfig.getAuth(localStorage.getItem("token"))
-      );
-      setSedex(response.data[0] || 0);
-      setPac(response.data[1] || 0);
     } catch (error) {
       console.log(error);
     }
@@ -188,7 +163,11 @@ export default function Cart() {
         {
           order_id: order.id,
         },
-        localconfig.getAuth(localStorage.getItem("token"))
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
       );
 
       if (!response.data.charges) {
@@ -233,7 +212,7 @@ export default function Cart() {
       setStep("step4");
     }
     if (step === "step4") {
-      localStorage.removeItem("cart");
+      await AsyncStorage.removeItem("cart");
       navigate("/home");
     }
   }
@@ -252,7 +231,11 @@ export default function Cart() {
           order,
           shipping,
         },
-        localconfig.getAuth(localStorage.getItem("token"))
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
       );
     } catch (error) {
       console.log(error);
@@ -287,10 +270,10 @@ export default function Cart() {
           step === "step1"
             ? img
             : step === "step2"
-            ? img2
-            : step === "step3"
-            ? img3
-            : img4
+              ? img2
+              : step === "step3"
+                ? img3
+                : img4
         }
         alt="img"
       />
@@ -328,7 +311,7 @@ export default function Cart() {
                         {product.nome}
                       </td>
                       <td className="flex justify-center items-center font-semibold w-1/2 border-grey border-opacity-40 border-r-2">
-                        {(product.preco * quantidade).toLocaleString("pt-br", {
+                        {((product.preco / 100) * quantidade).toLocaleString("pt-br", {
                           style: "currency",
                           currency: "BRL",
                         })}
@@ -394,12 +377,12 @@ export default function Cart() {
                   <h2 className="w-1/5 font-normal">
                     {sedex
                       ? `${sumValueFrete(value, sedex.Valor).toLocaleString(
-                          "pt-br",
-                          {
-                            style: "currency",
-                            currency: "BRL",
-                          }
-                        )}`
+                        "pt-br",
+                        {
+                          style: "currency",
+                          currency: "BRL",
+                        }
+                      )}`
                       : ""}
                   </h2>
                 </th>
@@ -422,12 +405,12 @@ export default function Cart() {
                   <h2 className="w-1/5 font-normal">
                     {pac
                       ? `${sumValueFrete(value, pac.Valor).toLocaleString(
-                          "pt-br",
-                          {
-                            style: "currency",
-                            currency: "BRL",
-                          }
-                        )}`
+                        "pt-br",
+                        {
+                          style: "currency",
+                          currency: "BRL",
+                        }
+                      )}`
                       : ""}
                   </h2>
                 </th>
@@ -444,44 +427,40 @@ export default function Cart() {
             alt=""
           />
           <img
-            className={` ${
-              step === "step1" ? "opacity-100 gradient-mask-r-0" : "opacity-100"
-            }`}
+            className={` ${step === "step1" ? "opacity-100 gradient-mask-r-0" : "opacity-100"
+              }`}
             src={link}
             alt=""
           />
           <img
-            className={`${
-              step === "step1"
-                ? "opacity-70"
-                : step === "step2"
+            className={`${step === "step1"
+              ? "opacity-70"
+              : step === "step2"
                 ? "opacity-100"
                 : "opacity-100 bg-green w-8 rounded-full"
-            }`}
+              }`}
             src={step !== "step1" && step !== "step2" ? check : uncheck}
             alt=""
           />
           <img
-            className={` ${
-              step === "step1"
-                ? "opacity-20"
-                : step === "step2"
+            className={` ${step === "step1"
+              ? "opacity-20"
+              : step === "step2"
                 ? "opacity-100 gradient-mask-r-0"
                 : "opacity-100"
-            }`}
+              }`}
             src={link}
             alt=""
           />
           <img
-            className={`${
-              step === "step1"
-                ? "opacity-40"
-                : step === "step2"
+            className={`${step === "step1"
+              ? "opacity-40"
+              : step === "step2"
                 ? "opacity-70"
                 : step === "step3"
-                ? "opacity-100"
-                : "opacity-100 bg-green w-8 rounded-full"
-            }`}
+                  ? "opacity-100"
+                  : "opacity-100 bg-green w-8 rounded-full"
+              }`}
             src={
               step !== "step1" && step !== "step2" && step !== "step3"
                 ? check
@@ -490,28 +469,26 @@ export default function Cart() {
             alt=""
           />
           <img
-            className={` ${
-              step === "step1"
-                ? "opacity-20"
-                : step === "step2"
+            className={` ${step === "step1"
+              ? "opacity-20"
+              : step === "step2"
                 ? "opacity-40"
                 : step === "step3"
-                ? "opacity-70 gradient-mask-r-0"
-                : "opacity-100 "
-            }`}
+                  ? "opacity-70 gradient-mask-r-0"
+                  : "opacity-100 "
+              }`}
             src={link}
             alt=""
           />
           <img
-            className={`${
-              step === "step1"
-                ? "opacity-20"
-                : step === "step2"
+            className={`${step === "step1"
+              ? "opacity-20"
+              : step === "step2"
                 ? "opacity-40"
                 : step === "step3"
-                ? "opacity-70"
-                : "opacity-100"
-            }`}
+                  ? "opacity-70"
+                  : "opacity-100"
+              }`}
             src={uncheck}
             alt=""
           />
@@ -522,10 +499,10 @@ export default function Cart() {
               {step === "step1"
                 ? "Endereço de entrega"
                 : step === "step2"
-                ? "Ir paga Pagamento"
-                : step === "step3"
-                ? "Resumo"
-                : ""}
+                  ? "Ir paga Pagamento"
+                  : step === "step3"
+                    ? "Resumo"
+                    : ""}
             </h2>
             {step === "step1" && (
               <div className="flex flex-col h-full gap-4">
@@ -533,7 +510,7 @@ export default function Cart() {
                   className={"w-1/3"}
                   label="Cep"
                   placeholder="cep"
-                  value={adress.zip_code}
+                  value={adressUser.zip_code}
                   disabled={true}
                 />
                 <div className="flex gap-6">
@@ -541,14 +518,14 @@ export default function Cart() {
                     className={"w-2/3"}
                     label="Cidade"
                     placeholder="Cidade"
-                    value={adress.city}
+                    value={adressUser.city}
                     disabled={true}
                   />
                   <Input
                     className={"w-1/3"}
                     label="Estado"
                     placeholder="Estado"
-                    value={adress.state}
+                    value={adressUser.state}
                     disabled={true}
                   />
                 </div>
@@ -557,14 +534,14 @@ export default function Cart() {
                     className={"w-2/3"}
                     label="Endereço"
                     placeholder="Endereço"
-                    value={adress.line_1}
+                    value={adressUser.line_1}
                     disabled={true}
                   />
                   <Input
                     className={"w-1/3"}
                     label="Complemento"
                     placeholder="Complemento"
-                    value={adress.line_2}
+                    value={adressUser.line_2}
                     disabled={true}
                   />
                 </div>
@@ -621,9 +598,8 @@ export default function Cart() {
                     <img className="w-10" src={pointer} alt="icon pointer" />
                     <div>
                       <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.city}, ${adress.state}`}</h2>
-                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${
-                        adress.line_1
-                      }${adress.line_2 ? `-${adress.line_2}` : ""}`}</h2>
+                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.line_1
+                        }${adress.line_2 ? `-${adress.line_2}` : ""}`}</h2>
                       <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.zip_code.slice(
                         0,
                         5
@@ -662,11 +638,9 @@ export default function Cart() {
               <Button
                 disabled={!paymentOk && step === "step2" ? true : false}
                 onClick={handleChangeStep}
-                className={`${
-                  !paymentOk && step === "step2" ? "bg-gray-400" : "bg-black"
-                } w-56 py-5 px-10 rounded-r-3xl rounded-bl-3xl text-2xl transition-all ease-in-out duration-500 ${
-                  !paymentOk && step === "step2" ? "cursor-not-allowed" : ""
-                }`}
+                className={`${!paymentOk && step === "step2" ? "bg-gray-400" : "bg-black"
+                  } w-56 py-5 px-10 rounded-r-3xl rounded-bl-3xl text-2xl transition-all ease-in-out duration-500 ${!paymentOk && step === "step2" ? "cursor-not-allowed" : ""
+                  }`}
                 type={step !== "step4" ? "button" : "submit"}
                 text={step !== "step4" ? "Próximo" : "Finalizar"}
               />

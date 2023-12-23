@@ -29,7 +29,7 @@ async function register(req: Request, res: Response) {
                 email: email,
                 name: name,
                 document_type: "CPF",
-                document: Number(document),
+                document: Number(document.replace(/[.-]/g, "")),
                 type: 'individual',
                 phones: { mobile_phone: { country_code: phone.slice(0, 2), area_code: phone.slice(2, 4), number: phone.slice(4) } },
             }
@@ -59,7 +59,7 @@ async function register(req: Request, res: Response) {
         }
 
         await prisma.user.create({
-            data: { id: userInfo.id, name, email, document, password },
+            data: { id: userInfo.id, name, email, document:document.replace(/[.-]/g, ""), password },
         });
 
         return res.status(201).json({ message: "Usuário criado com sucesso" });

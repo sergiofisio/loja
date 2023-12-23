@@ -8,6 +8,7 @@ import { AnimatePresence } from "framer-motion";
 import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Admin from "./page/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { toastFail } from "./context/toast";
 
 function App() {
   const [init, setInit] = useState(false);
@@ -40,6 +41,10 @@ function App() {
       return setAdmin(user);
     } catch (error: any) {
       console.log(error);
+      if (error.response.status === 408) {
+        await AsyncStorage.clear();
+        toastFail("Sessão expirada, faca login novamente");
+      }
     }
   }
 
@@ -77,7 +82,7 @@ function App() {
       ) : (
         <>
           <Header admin={admin} setAdmin={setAdmin} />
-          <div className="flex items-center justify-center h-full w-full">
+          <div className="flex items-center justify-center h-full w-full overflow-hidden">
             <AnimatePresence mode="wait">
               <Routes>
                 <Route element={<LogedUser redirecionarPara="/home" />}>

@@ -19,8 +19,6 @@ import Store from "./pages/store";
 import Cart from "./pages/cart";
 import ModalHeader from "./components/modalHeader";
 import Confirm from "./pages/confirm";
-import Admin from "./pages/admin";
-import { localconfig } from "./utils/localConfig";
 import ModalContato from "./components/modalContato";
 import { PulseLoader } from "react-spinners";
 

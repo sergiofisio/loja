@@ -6,6 +6,7 @@ import Seller from "../../components/products";
 import { toastFail } from "../../context/toast";
 import { formatValue, sortById } from "../../functions/functions";
 import ModalProdutos from "../../components/modalProduto";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Store({ setShowModal }) {
   const [products, setProducts] = useState([]);
@@ -28,11 +29,11 @@ export default function Store({ setShowModal }) {
     const produto = {
       product: {
         id: product.id,
-        categoria: product.id_categoria,
-        nome: product.nome,
-        peso: product.peso,
-        preco: product.preco,
-        url: product.url,
+        categoria: product.categoryId,
+        nome: product.name,
+        peso: product.weight,
+        preco: product.promotion ? product.promotionPrice : product.price,
+        url: product.image,
       },
       quantidade: 0,
     };
@@ -43,9 +44,13 @@ export default function Store({ setShowModal }) {
 
   async function getAllProducts() {
     try {
-      const allProducts = await axios.get("/products");
-      const productsById = sortById(allProducts);
-      setProducts(productsById);
+      const { data: { products } } = await axios.get("/infoHome/false", {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
+      });
+      console.log(products);
+      setProducts(sortById(products));
     } catch (error) {
       console.log(error);
     }
@@ -90,24 +95,22 @@ export default function Store({ setShowModal }) {
         <div className="flex flex-wrap items-center justify-center w-full h-full gap-20">
           {products.length
             ? products.map(product => {
-                return (
-                  <div
-                    onClick={e => {
-                      setModalProduto(product);
-                    }}
-                    key={product.id}
-                  >
-                    <Seller
-                      onClick={e => handleAddProduct(e, product)}
-                      img={product.url}
-                      name={product.nome}
-                      productor={product.fabricante}
-                      priceFull={formatValue(product.preco)}
-                      rating={product.nota}
-                    />
-                  </div>
-                );
-              })
+              return (
+                <div className="cursor-pointer h-full"
+                  onClick={e => {
+                    setModalProduto(product);
+                  }}
+                  key={product.id}
+                >
+                  <Seller
+                    onClick={e => handleAddProduct(e, product)}
+                    img={product.image}
+                    name={product.name}
+                    priceFull={formatValue(product.price / 100)}
+                  />
+                </div>
+              );
+            })
             : ""}
         </div>
       </div>

@@ -1,42 +1,31 @@
 import Input from "../input/form/input";
 import closeBtn from "../../assets/closeBtn.svg";
-import { removeSpecialChars } from "../../functions/functions";
 import Button from "../button";
 import { toastFail, toastSuccess } from "../../context/toast";
-import axiosPrivate from "../../Service/api";
+import axios from "../../Service/api";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ModalUser({
-  nome,
-  setNome,
-  email,
-  cpf,
-  telefone,
-  setTelefone,
-  senha,
-  setSenha,
-  confSenha,
-  setConfSenha,
-  setFoto,
+  user,
+  setUser,
   setShowModal,
 }) {
   async function handleSubmit(e) {
     e.preventDefault();
     e.stopPropagation();
-    const options = {
-      id: localStorage.getItem("usuarioId"),
-      nome,
-      email,
-      cpf,
-      telefone,
-    };
+
     try {
-      if (senha) {
-        if (senha !== confSenha) {
+      if (user.password) {
+        if (user.password !== user.confPassword) {
           return toastFail("Os campos Senha e Confirmar Senha deve sem iguais");
         }
-        options.senha = senha;
       }
-      const response = await axiosPrivate.patch("/update", options);
+      console.log(user);
+      const response = await axios.patch(`/updateUser/${user.id}`, user, {
+        headers: {
+          'Authorization': `Bearer ${await AsyncStorage.getItem("token")}`
+        }
+      });
 
       toastSuccess(response.data.mensagem, 3000, "top-center");
       setTimeout(() => {
@@ -67,17 +56,17 @@ export default function ModalUser({
             label="Nome"
             placeholder="Digite seu nome"
             type="text"
-            set={setNome}
-            value={nome}
+            set={(e) => setUser({ ...user, name: e.target.value })}
+            value={user.name}
           />
-          <Input label="E-mail" type="email" value={email} disabled={true} />
+          <Input label="E-mail" type="email" value={user.email} disabled={true} />
           <div className="flex gap-8">
-            <Input label="Cpf" type="string" value={cpf} disabled={true} />
+            <Input label="Cpf" type="string" value={user.document} disabled={true} />
             <Input
               label="Telefone"
               type="string"
-              set={setTelefone}
-              value={telefone}
+              set={(e) => setUser({ ...user, phone: e.target.value })}
+              value={user.phone}
             />
           </div>
           <Input
@@ -85,16 +74,16 @@ export default function ModalUser({
             label="Senha"
             placeholder="Digite a senha se quiser muda-la"
             type="password"
-            set={setSenha}
-            value={senha}
+            set={(e) => setUser({ ...user, password: e.target.value })}
+            value={user.password}
           />
           <Input
             password={true}
             label="Confirmar Senha"
             placeholder="Confirme sua senha"
             type="password"
-            set={setConfSenha}
-            value={confSenha}
+            set={(e) => setUser({ ...user, confPassword: e.target.value })}
+            value={user.confPassword}
           />
           <div className="flex items-center justify-center">
             <Button

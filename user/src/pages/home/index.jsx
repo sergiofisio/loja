@@ -17,13 +17,18 @@ import Sellers from "../../components/sellers";
 import Testimonials from "../../components/testimonials";
 import { sortById } from "../../functions/functions";
 import "./styles.css";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home({ login, setLogin, singIn, setSingIn }) {
   const navigate = useNavigate();
-  const [products, setProducts] = useState([]);
-  const [categories, setCategories] = useState([]);
-  const [testimonials, setTestimonials] = useState([]);
+  const [infoDb, setInfoDb] = useState({
+    depoimentos: [],
+    historicos: [],
+    parceiros: [],
+    produtos: [],
+  });
   const [selectCategory, setSelectCategory] = useState("Todas");
+  const [categories, setCategories] = useState(null);
   const [init, setInit] = useState(false);
 
   function handleBtnClick(e) {
@@ -35,13 +40,25 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
 
   async function getPorductsCategoriesTestimonials() {
     try {
-      const allProducts = await axios.get("/homeInfo/product");
-      const allCategories = await axios.get("/homeInfo/category");
-      const allTestimonials = await axios.get("/homeInfo/testimonial");
-      const sortCategories = sortById(allCategories.data.info);
-      setCategories(sortCategories);
-      setProducts(allProducts.data.info);
-      setTestimonials(allTestimonials.data.info);
+      const {
+        data: { products, users, testimonials, partners },
+      } = await axios.get("/infoHome/false", {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
+      });
+
+      const {
+        data: { categories },
+      } = await axios.get("/categories");
+      setCategories(categories);
+
+      setInfoDb({
+        depoimentos: testimonials,
+        historicos: [],
+        parceiros: partners,
+        produtos: products,
+      });
       setInit(true);
     } catch (error) {
       console.log(error);
@@ -92,7 +109,6 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
           ) : (
             <div className="flex items-center justify-center w-full h-full">
               <Form
-                setAdmin={setAdmin}
                 login={login}
                 setLogin={setLogin}
                 singIn={singIn}
@@ -121,7 +137,7 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
       </section>
       {init ? (
         <>
-          <Sellers products={products} />
+          <Sellers products={infoDb.produtos} />
           {/* <Categories
             setSelectCategory={setSelectCategory}
             selectCategory={selectCategory}
@@ -130,8 +146,8 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
           /> */}
           <div className="brokenRule" />
           <Benefits />
-          {testimonials.length && (
-            <Testimonials testimonials={testimonials} user={user} />
+          {infoDb.depoimentos.length && (
+            <Testimonials testimonials={infoDb.depoimentos} user={user} />
           )}
           {/* <Partner /> */}
           <Payment />
