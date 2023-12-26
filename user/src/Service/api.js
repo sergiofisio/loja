@@ -1,6 +1,6 @@
 import axios from "axios";
-const url = "http://localhost:4000";
-// const url = "https://eccomerce-n7o5.onrender.com";
+// const url = "http://localhost:4000";
+const url = "https://eccomerce-n7o5.onrender.com";
 
 export default axios.create({
   baseURL: url,
