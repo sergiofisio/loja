@@ -23,7 +23,7 @@ export default function Sellers({ products }) {
                       <Seller
                         img={info.image}
                         name={info.name}
-                        priceFull={formatValue(info.price)}
+                        priceFull={formatValue(info.price / 100)}
                       />
                     </div>
                   );
