@@ -1,33 +1,40 @@
 import axios from "axios";
 import { Request, Response } from "express";
-import { prisma } from './../../prismaFunctions/prisma';
+import { prisma } from "./../../prismaFunctions/prisma";
 
-export default async function createOrder(
-  req: Request, res: Response
-) {
-  const { userId } = req.params
+export default async function createOrder(req: Request, res: Response) {
+  const { userId } = req.params;
   const {
+    address_id,
+    line_1,
+    line_2,
+    state,
+    city,
+    zip_code,
     items,
     recipient_name,
     recipient_phone,
     email,
-    state,
-    city,
-    zip_code,
-    line_1,
-    line_2,
     frete,
     amount,
     description,
-    partnerId } = req.body
-  const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString('base64');
-
+    data,
+    compra,
+    cupom,
+    id_parceiro,
+    parceiro,
+  } = req.body;
+  const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString(
+    "base64"
+  );
 
   try {
     const products = [];
     for (const item in items) {
+      console.log(items[item]);
+
       products.push({
-        amount: items[item].product.preco * 100,
+        amount: items[item].product.preco,
         description: items[item].product.nome,
         quantity: items[item].quantidade,
         code: items[item].product.id,
@@ -48,12 +55,12 @@ export default async function createOrder(
         },
         shipping: {
           address: {
-            country: 'country',
-            state: 'state',
-            city: 'city',
-            zip_code: 'zip_code',
-            line_1: 'Número, Rua, Bairro',
-            line_2: 'complemento'
+            country: "BR",
+            state,
+            city,
+            zip_code,
+            line_1,
+            line_2,
           },
           amount: frete,
           description,
@@ -154,10 +161,10 @@ export default async function createOrder(
         idPagarme: order.id,
         products: JSON.stringify(products),
         date: new Date(),
-        partnerId
-      }
-    })
-    res.json({ order, cart })
+        partnerId: id_parceiro,
+      },
+    });
+    res.json({ order, cart });
   } catch (error: any) {
     console.log(error);
   }

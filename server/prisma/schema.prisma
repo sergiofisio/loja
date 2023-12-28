@@ -36,8 +36,8 @@ model product {
   id             Int            @id @default(autoincrement())
   name           String
   description    String
-  price          Float
-  promotionPrice Float
+  price          Int
+  promotionPrice Int
   weight         Int
   promotion      Boolean        @default(false)
   categoryId     Int
