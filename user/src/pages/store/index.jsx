@@ -20,7 +20,7 @@ export default function Store({ setShowModal }) {
     if (localStorage.getItem("cart")) {
       cartProducts = JSON.parse(localStorage.getItem("cart"));
       const isProductInCart = cartProducts.some(
-        cartProduct => cartProduct.product.id === product.id
+        (cartProduct) => cartProduct.product.id === product.id
       );
       if (isProductInCart) {
         return toastFail("Este produto ja esta no seu carrinho");
@@ -37,6 +37,7 @@ export default function Store({ setShowModal }) {
       },
       quantidade: 0,
     };
+    console.log(product);
     cartProducts.push(produto);
     localStorage.setItem("cart", JSON.stringify(cartProducts));
     setShowModal(true);
@@ -44,7 +45,9 @@ export default function Store({ setShowModal }) {
 
   async function getAllProducts() {
     try {
-      const { data: { products } } = await axios.get("/infoHome/false", {
+      const {
+        data: { products },
+      } = await axios.get("/infoHome/false", {
         headers: {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
@@ -94,23 +97,24 @@ export default function Store({ setShowModal }) {
         </div>
         <div className="flex flex-wrap items-center justify-center w-full h-full gap-20">
           {products.length
-            ? products.map(product => {
-              return (
-                <div className="cursor-pointer h-full"
-                  onClick={e => {
-                    setModalProduto(product);
-                  }}
-                  key={product.id}
-                >
-                  <Seller
-                    onClick={e => handleAddProduct(e, product)}
-                    img={product.image}
-                    name={product.name}
-                    priceFull={formatValue(product.price / 100)}
-                  />
-                </div>
-              );
-            })
+            ? products.map((product) => {
+                return (
+                  <div
+                    className="cursor-pointer h-full"
+                    onClick={(e) => {
+                      setModalProduto(product);
+                    }}
+                    key={product.id}
+                  >
+                    <Seller
+                      onClick={(e) => handleAddProduct(e, product)}
+                      img={product.image}
+                      name={product.name}
+                      priceFull={formatValue(product.price / 100)}
+                    />
+                  </div>
+                );
+              })
             : ""}
         </div>
       </div>

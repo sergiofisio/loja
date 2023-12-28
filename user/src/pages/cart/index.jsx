@@ -29,6 +29,7 @@ export default function Cart() {
   const [adressUser, setAdressUser] = useState("");
   const [changeProductCart, setchangeProductCart] = useState(false);
   const [value, setValue] = useState(0);
+  const [weigth, setWeigth] = useState(0);
   const [step, setStep] = useState("step1");
   const [selectedOption, setSelectedOption] = useState("Sedex");
   const [cupom, setCupom] = useState("");
@@ -37,6 +38,7 @@ export default function Cart() {
   const [paymentOk, setPaymentOk] = useState(false);
   const [order, setOrder] = useState("");
   const [checkout, setCheckout] = useState("");
+  const [urlCheckout, setUrlCheckout] = useState("");
 
   function calcWeight() {
     let weigth = 0;
@@ -45,17 +47,17 @@ export default function Cart() {
       weigth += Number(product.product.peso) * product.quantidade;
       sum += Number(product.product.preco) * product.quantidade;
     }
-    setValue(sum * 100);
+    setValue(sum / 100);
+    setWeigth(weigth);
     return String(weigth);
   }
 
   function sumValueFrete(inputString, frete) {
     const numericString = frete.replace(/[^\d,]/g, "");
     const numericValue = Math.round(
-      parseFloat(numericString.replace(",", ".") * 100)
+      parseFloat(numericString.replace(",", "."))
     );
-
-    return (numericValue + inputString) / 100;
+    return (numericValue / 100) * 1.2 + inputString;
   }
 
   function changeQtd(e, id, operation) {
@@ -63,9 +65,9 @@ export default function Cart() {
     let cart = JSON.parse(localStorage.getItem("cart"));
 
     if (operation === "delete") {
-      cart = cart.filter(item => item.product.id !== id);
+      cart = cart.filter((item) => item.product.id !== id);
     }
-    const itemIndex = cart.findIndex(item => item.product.id === id);
+    const itemIndex = cart.findIndex((item) => item.product.id === id);
     if (operation === "sum") {
       cart[itemIndex].quantidade += 1;
     }
@@ -79,27 +81,30 @@ export default function Cart() {
   async function getFrete() {
     try {
       const {
-        data: { user, adresses }
+        data: { user, adresses },
       } = await axios.get(
-        `/infoUser/${await AsyncStorage.getItem("usuarioId")}`, {
-        headers: {
-          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-        },
-      }
+        `/infoUser/${await AsyncStorage.getItem("usuarioId")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
       );
 
-      setUserInfo({ user })
-      setAdressUser(adresses[0])
-      console.log(adresses[0]);
+      setUserInfo({ user });
+      setAdressUser(adresses[0]);
 
-      const response = await axios.get(`/frete/${adresses[0].zip_code}`, {
+      const {
+        data: { frete },
+      } = await axios.get(`/frete/${adresses[0].zip_code}`, {
         headers: {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
       });
-      console.log(response);
-
-
+      for (const calculo of frete) {
+        if (calculo.name === "PAC") setPac(calculo);
+        if (calculo.name === "SEDEX") setSedex(calculo);
+      }
     } catch (error) {
       console.log(error);
     }
@@ -111,36 +116,33 @@ export default function Cart() {
 
     let frete = "";
     if (selectedOption === "Sedex") {
-      frete = sedex.Valor;
+      frete = sedex.price * 1.2;
     } else {
-      frete = pac.Valor;
+      frete = pac.price * 1.2;
     }
     const data = moment().format("DD/MM/YYYY, h:mm:ss");
 
-    const transformedFrete = parseInt(frete.replace(/[,\.]00$/, ""));
+    frete = Math.round(frete * 100);
 
     try {
       const order = await axios.post(
-        "/createOrderDb",
+        `/createOrder/${await AsyncStorage.getItem("usuarioId")}`,
         {
-          address_id: user.idEnderecoPagar,
-          line_1: adress.line_1,
-          line_2: adress.line_2,
-          state: adress.state,
-          city: adress.city,
-          zip_code: adress.zip_code,
+          address_id: adressUser.id,
+          line_1: adressUser.line_1,
+          line_2: adressUser.line_2,
+          state: adressUser.state,
+          city: adressUser.city,
+          zip_code: adressUser.zip_code,
           items: JSON.parse(localStorage.getItem("cart")),
-          recipient_name: user.nome,
-          recipient_phone: user.telefone,
-          email: user.email,
-          frete: transformedFrete * 100,
-          amount: sumValueFrete(value, frete) * 100,
-          description: `Pedido de ${user.nome}`,
-          customer_id: user.idPagarMe,
+          recipient_name: userInfo.user.name,
+          recipient_phone: userInfo.user.phones.mobile_phone,
+          email: userInfo.user.email,
+          frete,
+          amount: value * 100 + frete,
+          description: `Pedido de ${userInfo.user.name}`,
           data,
           compra: localStorage.getItem("cart"),
-          valorTotal: sumValueFrete(value, frete),
-          id_cliente: Number(localStorage.getItem("usuarioId")),
           cupom,
           installments: 10,
           id_parceiro,
@@ -149,6 +151,7 @@ export default function Cart() {
         localconfig.getAuth(localStorage.getItem("token"))
       );
 
+      setUrlCheckout(order.data.order.checkouts[0].payment_url);
       setCheckout(true);
       setOrder(order.data);
     } catch (error) {
@@ -244,7 +247,7 @@ export default function Cart() {
 
   async function auth(token) {
     try {
-      await axios.get("/verifyAuth", localconfig.getAuth(token));
+      await axios.get("/verifyToken", localconfig.getAuth(token));
     } catch (error) {
       if (error.response.status === 401 || error.response.status === 408) {
         toastFail("Sua sessão expirou!");
@@ -258,6 +261,7 @@ export default function Cart() {
 
   useEffect(() => {
     getFrete();
+    calcWeight();
 
     auth(localStorage.getItem("token"));
   }, [changeProductCart]);
@@ -311,21 +315,24 @@ export default function Cart() {
                         {product.nome}
                       </td>
                       <td className="flex justify-center items-center font-semibold w-1/2 border-grey border-opacity-40 border-r-2">
-                        {((product.preco / 100) * quantidade).toLocaleString("pt-br", {
-                          style: "currency",
-                          currency: "BRL",
-                        })}
+                        {((product.preco / 100) * quantidade).toLocaleString(
+                          "pt-br",
+                          {
+                            style: "currency",
+                            currency: "BRL",
+                          }
+                        )}
                       </td>
                       <td className="flex justify-center items-center w-1/3 gap-2 font-semibold">
                         <img
-                          onClick={e => changeQtd(e, product.id, "minus")}
+                          onClick={(e) => changeQtd(e, product.id, "minus")}
                           className="w-5 cursor-pointer"
                           src={minus}
                           alt="minus"
                         />
                         {quantidade}
                         <img
-                          onClick={e => changeQtd(e, product.id, "sum")}
+                          onClick={(e) => changeQtd(e, product.id, "sum")}
                           className="w-5 cursor-pointer"
                           src={plus}
                           alt="plus"
@@ -333,7 +340,7 @@ export default function Cart() {
                       </td>
                       <td className="flex justify-center items-center  w-1/5">
                         <img
-                          onClick={e => changeQtd(e, product.id, "delete")}
+                          onClick={(e) => changeQtd(e, product.id, "delete")}
                           className="cursor-pointer w-5"
                           src={trash}
                           alt="icon deletar"
@@ -362,57 +369,97 @@ export default function Cart() {
                   <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                     Sedex
                   </h2>
-                  <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                    {sedex ? `R$ ${sedex.Valor}` : ""}
-                  </h2>
-                  <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                    {(value / 100).toLocaleString("pt-br", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </h2>
-                  <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                    {sedex ? `${Number(sedex.PrazoEntrega) + 2} dia(s)` : ""}
-                  </h2>
-                  <h2 className="w-1/5 font-normal">
-                    {sedex
-                      ? `${sumValueFrete(value, sedex.Valor).toLocaleString(
-                        "pt-br",
-                        {
+                  {sedex.error ? (
+                    <>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        indisponível para este CEP
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
+                      <h2 className="w-1/5 font-normal"></h2>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {sedex
+                          ? `${(sedex.price * 1.2).toLocaleString("pt-br", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}`
+                          : ""}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {value.toLocaleString("pt-br", {
                           style: "currency",
                           currency: "BRL",
-                        }
-                      )}`
-                      : ""}
-                  </h2>
+                        })}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {sedex
+                          ? `${Number(sedex.custom_delivery_time) + 2} dia(s)`
+                          : ""}
+                      </h2>
+                      <h2 className="w-1/5 font-normal">
+                        {sedex
+                          ? `${sumValueFrete(value, sedex.price).toLocaleString(
+                              "pt-br",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}`
+                          : ""}
+                      </h2>
+                    </>
+                  )}
                 </th>
                 <th className="flex justify-end w-full">
                   <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                     PAC
                   </h2>
-                  <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                    {pac ? `R$ ${pac.Valor}` : ""}
-                  </h2>
-                  <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                    {(value / 100).toLocaleString("pt-br", {
-                      style: "currency",
-                      currency: "BRL",
-                    })}
-                  </h2>
-                  <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                    {pac ? `${Number(pac.PrazoEntrega) + 2} dia(s)` : ""}
-                  </h2>
-                  <h2 className="w-1/5 font-normal">
-                    {pac
-                      ? `${sumValueFrete(value, pac.Valor).toLocaleString(
-                        "pt-br",
-                        {
+                  {pac.error ? (
+                    <>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        indisponível para este CEP
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
+                      <h2 className="w-1/5 font-normal"></h2>
+                    </>
+                  ) : (
+                    <>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {pac
+                          ? `${(pac.price * 1.2).toLocaleString("pt-br", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}`
+                          : ""}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {value.toLocaleString("pt-br", {
                           style: "currency",
                           currency: "BRL",
-                        }
-                      )}`
-                      : ""}
-                  </h2>
+                        })}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {pac
+                          ? `${Number(pac.custom_delivery_time) + 2} dia(s)`
+                          : ""}
+                      </h2>
+                      <h2 className="w-1/5 font-normal">
+                        {pac
+                          ? `${sumValueFrete(value, pac.price).toLocaleString(
+                              "pt-br",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}`
+                          : ""}
+                      </h2>
+                    </>
+                  )}
                 </th>
               </tr>
             </tbody>
@@ -427,40 +474,44 @@ export default function Cart() {
             alt=""
           />
           <img
-            className={` ${step === "step1" ? "opacity-100 gradient-mask-r-0" : "opacity-100"
-              }`}
+            className={` ${
+              step === "step1" ? "opacity-100 gradient-mask-r-0" : "opacity-100"
+            }`}
             src={link}
             alt=""
           />
           <img
-            className={`${step === "step1"
-              ? "opacity-70"
-              : step === "step2"
-                ? "opacity-100"
-                : "opacity-100 bg-green w-8 rounded-full"
-              }`}
+            className={`${
+              step === "step1"
+                ? "opacity-70"
+                : step === "step2"
+                  ? "opacity-100"
+                  : "opacity-100 bg-green w-8 rounded-full"
+            }`}
             src={step !== "step1" && step !== "step2" ? check : uncheck}
             alt=""
           />
           <img
-            className={` ${step === "step1"
-              ? "opacity-20"
-              : step === "step2"
-                ? "opacity-100 gradient-mask-r-0"
-                : "opacity-100"
-              }`}
+            className={` ${
+              step === "step1"
+                ? "opacity-20"
+                : step === "step2"
+                  ? "opacity-100 gradient-mask-r-0"
+                  : "opacity-100"
+            }`}
             src={link}
             alt=""
           />
           <img
-            className={`${step === "step1"
-              ? "opacity-40"
-              : step === "step2"
-                ? "opacity-70"
-                : step === "step3"
-                  ? "opacity-100"
-                  : "opacity-100 bg-green w-8 rounded-full"
-              }`}
+            className={`${
+              step === "step1"
+                ? "opacity-40"
+                : step === "step2"
+                  ? "opacity-70"
+                  : step === "step3"
+                    ? "opacity-100"
+                    : "opacity-100 bg-green w-8 rounded-full"
+            }`}
             src={
               step !== "step1" && step !== "step2" && step !== "step3"
                 ? check
@@ -469,26 +520,28 @@ export default function Cart() {
             alt=""
           />
           <img
-            className={` ${step === "step1"
-              ? "opacity-20"
-              : step === "step2"
-                ? "opacity-40"
-                : step === "step3"
-                  ? "opacity-70 gradient-mask-r-0"
-                  : "opacity-100 "
-              }`}
+            className={` ${
+              step === "step1"
+                ? "opacity-20"
+                : step === "step2"
+                  ? "opacity-40"
+                  : step === "step3"
+                    ? "opacity-70 gradient-mask-r-0"
+                    : "opacity-100 "
+            }`}
             src={link}
             alt=""
           />
           <img
-            className={`${step === "step1"
-              ? "opacity-20"
-              : step === "step2"
-                ? "opacity-40"
-                : step === "step3"
-                  ? "opacity-70"
-                  : "opacity-100"
-              }`}
+            className={`${
+              step === "step1"
+                ? "opacity-20"
+                : step === "step2"
+                  ? "opacity-40"
+                  : step === "step3"
+                    ? "opacity-70"
+                    : "opacity-100"
+            }`}
             src={uncheck}
             alt=""
           />
@@ -553,7 +606,7 @@ export default function Cart() {
                       name="shippingOption"
                       value="Sedex"
                       checked={selectedOption === "Sedex"}
-                      onChange={e => {
+                      onChange={(e) => {
                         setSelectedOption(e.target.value);
                       }}
                     />
@@ -567,7 +620,7 @@ export default function Cart() {
                       name="shippingOption"
                       value="PAC"
                       checked={selectedOption === "PAC"}
-                      onChange={e => {
+                      onChange={(e) => {
                         setSelectedOption(e.target.value);
                       }}
                     />
@@ -598,8 +651,9 @@ export default function Cart() {
                     <img className="w-10" src={pointer} alt="icon pointer" />
                     <div>
                       <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.city}, ${adress.state}`}</h2>
-                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.line_1
-                        }${adress.line_2 ? `-${adress.line_2}` : ""}`}</h2>
+                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${
+                        adress.line_1
+                      }${adress.line_2 ? `-${adress.line_2}` : ""}`}</h2>
                       <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.zip_code.slice(
                         0,
                         5
@@ -638,9 +692,11 @@ export default function Cart() {
               <Button
                 disabled={!paymentOk && step === "step2" ? true : false}
                 onClick={handleChangeStep}
-                className={`${!paymentOk && step === "step2" ? "bg-gray-400" : "bg-black"
-                  } w-56 py-5 px-10 rounded-r-3xl rounded-bl-3xl text-2xl transition-all ease-in-out duration-500 ${!paymentOk && step === "step2" ? "cursor-not-allowed" : ""
-                  }`}
+                className={`${
+                  !paymentOk && step === "step2" ? "bg-gray-400" : "bg-black"
+                } w-56 py-5 px-10 rounded-r-3xl rounded-bl-3xl text-2xl transition-all ease-in-out duration-500 ${
+                  !paymentOk && step === "step2" ? "cursor-not-allowed" : ""
+                }`}
                 type={step !== "step4" ? "button" : "submit"}
                 text={step !== "step4" ? "Próximo" : "Finalizar"}
               />
@@ -664,7 +720,7 @@ export default function Cart() {
             </div>
             <iframe
               className="z-50 w-full h-[95%]"
-              src={order.checkouts[0].payment_url}
+              src={urlCheckout}
               title="Payment"
             ></iframe>
           </div>
