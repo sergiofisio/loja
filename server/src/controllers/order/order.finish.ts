@@ -1,7 +1,8 @@
+import { prisma } from "../../prismaFunctions/prisma";
 import axios from "axios";
 import { Request, Response } from "express";
 
-export async function verifyOrder(req: Request, res: Response) {
+export async function finishOrder(req: Request, res: Response) {
   const { order_id } = req.params;
 
   const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString(
@@ -21,12 +22,24 @@ export async function verifyOrder(req: Request, res: Response) {
     const order = await axios
       .request(options)
       .then(function (response) {
-        res.json(response.data);
+        return response.data;
       })
       .catch(function (error) {
-        res.status(400).json(error);
+        return error;
       });
-    console.log({ order });
+
+    const findOrder = await prisma.cart.findFirst({
+      where: {
+        idPagarme: order_id,
+      },
+    });
+    if (order.status === "paid") {
+      await prisma.cart.update({
+        where: { id: findOrder.id },
+        data: { finished: true },
+      });
+    }
+    res.send("ok");
   } catch (error: any) {
     console.log(error);
   }
