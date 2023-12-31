@@ -5,70 +5,74 @@ import storeUnselected from "../../assets/admin/store-unselected.svg";
 import { useEffect, useState } from "react";
 import axiosPrivate from "../../Service/api";
 import userImg from "../../assets/user/User.svg";
-import { localconfig } from "../../utils/localConfig";
 import Card from "../../components/card";
 import { formatValue } from "../../functions/functions";
 import edit from "../../assets/admin/edit.svg";
 import ModalAdminProduto from "../../components/modalAdminProduto";
-import { format } from "date-fns";
 import { GridLoader } from "react-spinners";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import ModalUser from "../../components/modalUser";
 
 export default function Admin() {
   const [selectSidebar, setSelectSidebar] = useState("dashboard");
   const [infoDb, setInfoDb]: any = useState({
     depoimentos: [],
-    historicos: [],
     parceiros: [],
     produtos: [],
     usuarios: [],
   });
   const [sort, setSort] = useState({
-    historico: [],
+    users: [],
     produtos: [],
   });
-  const [selected, setSelected] = useState("Todas");
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState("");
   const [produto, setProduto] = useState("");
+  // const [page, setPage] = useState(1);
+  const [sum, setSum] = useState(0);
+  const [numberSold, setNumberSold] = useState(0);
+  const [user, setUser] = useState({ user: "", orders: "" });
 
   async function getAllInfoDb() {
     try {
       const {
-        data: { products, users, testimonials, partners },
-      } = await axiosPrivate.get(
-        "/infoDb/true",
-        localconfig.getAuth(localStorage.getItem("token"))
-      );
+        data: { products, testimonials, partners },
+      } = await axiosPrivate.get("/infoDb/true", {
+        headers: {
+          authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
+      });
+
+      const { data } = await axiosPrivate.get("allUsersInfo", {
+        headers: {
+          authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
+      });
 
       setInfoDb({
         depoimentos: testimonials,
-        historicos: [],
         parceiros: partners,
         produtos: products,
-        usuarios: users.filter(
-          (user: any) => user.id !== localStorage.getItem("usuarioId")
+        usuarios: data.users.filter(
+          (user: any) => user.user.id !== localStorage.getItem("usuarioId")
         ),
       });
 
-      setSort({
-        historico: [],
-        produtos: products,
-      });
+      setSort({ ...sort, produtos: products });
     } catch (error) {
       console.log(error);
     }
   }
 
-  function sortHistoric(historic: any, searchTerm: any) {
-    console.log("teste", historic, searchTerm);
-    // if (searchTerm) {
-    //   const searchHistoric = historic.filter((item) =>
-    //     item.idPagamento.includes(searchTerm)
-    //   );
-    //   setSortHistorico(searchHistoric);
-    // } else {
-    //   setSortHistorico(historic);
-    // }
+  function sortHistoric(searchTerm: any) {
+    if (searchTerm) {
+      const searchHistoric = infoDb.usuarios.filter((item: any) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setSort({ ...sort, users: searchHistoric });
+    } else {
+      setSort({ ...sort, users: infoDb.usuarios });
+    }
   }
 
   function sortAllProducts(products: any, searchTerm: any) {
@@ -76,26 +80,41 @@ export default function Admin() {
       const searchHistoric = products.filter((item: any) =>
         item.nome.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      setSort({ ...sort, historico: searchHistoric });
+      setSort({ ...sort, produtos: searchHistoric });
     } else {
       setSort({ ...sort, produtos: products });
     }
   }
 
-  function sumOrders(orders: any) {
-    let sum = 0;
-    for (const order of orders) {
-      sum += Number(order.valorTotal);
-    }
-    return sum;
+  function sumAllOrders(orders: any) {
+    return formatValue(
+      orders
+        .filter((item: any) => item.status === "paid")
+        .reduce((acc: any, item: any) => acc + item.amount, 0) / 100
+    );
   }
 
   useEffect(() => {
-    getAllInfoDb();
+    if (infoDb.usuarios.length === 0) getAllInfoDb();
   }, [showModal]);
 
+  useEffect(() => {
+    let count = 0;
+    let sum = 0;
+    infoDb.usuarios.forEach((user: any) => {
+      user.orders.forEach((order: any) => {
+        if (order.status === "paid") {
+          sum += Number(order.amount / 100);
+          count++;
+        }
+      });
+    });
+    setSum(sum);
+    setNumberSold(count);
+  }, [infoDb]);
+
   return (
-    <main className="relative flex w-full h-full px-6 py-4">
+    <main className="flex w-full h-full px-6 py-4">
       <div className="flex flex-col justify-center h-full gap-6 ">
         <div
           onClick={() => {
@@ -160,12 +179,12 @@ export default function Admin() {
                 <Card
                   classname="flex flex-col justify-evenly w-52 h-28 bg-[#C5EAD9] rounded-2xl text-[#1C1C1C] font-main text-xl font-semibold p-5"
                   text="Vendas"
-                  info={infoDb.historicos.length ? infoDb.historicos.length : 0}
+                  info={numberSold}
                 />
                 <Card
                   classname="flex flex-col justify-evenly w-52 h-28 bg-[#3BB77E] rounded-2xl text-[#1C1C1C] font-main text-xl font-semibold p-5"
                   text="Receita"
-                  info={formatValue(sumOrders(infoDb.historicos))}
+                  info={formatValue(sum)}
                 />
               </div>
               <div className="bg-[#F3F3F3] h-12 border-2 border-gray-500 border-none rounded-3xl flex items-center gap-4 px-4">
@@ -175,7 +194,7 @@ export default function Admin() {
                   type="search"
                   onChange={(e) => {
                     setSearch(e.target.value);
-                    sortHistoric(infoDb.historicos, e.target.value);
+                    sortHistoric(e.target.value);
                   }}
                   value={search}
                   name="search"
@@ -184,92 +203,62 @@ export default function Admin() {
               </div>
               <div className="w-full h-full">
                 <table className="flex flex-col">
-                  <thead className="flex w-full justify-evenly border-b-2 border-greenScale-200 border-solid">
-                    <tr
-                      onClick={() => {
-                        setSelected("Todas");
-                      }}
-                      className={`w-full cursor-pointer border-b-4 border-green pb-2 ${
-                        selected === "Todas" ? "border-solid" : "border-none"
-                      }`}
-                    >
-                      <th>Todas</th>
-                    </tr>
-                    <tr
-                      onClick={() => {
-                        setSelected("andamento");
-                      }}
-                      className={`w-full cursor-pointer border-b-4 border-green pb-2 ${
-                        selected === "andamento"
-                          ? "border-solid"
-                          : "border-none"
-                      }`}
-                    >
-                      <th>Em andamento</th>
-                    </tr>
-                    <tr
-                      onClick={() => {
-                        setSelected("concluido");
-                      }}
-                      className={`w-full cursor-pointer border-b-4 border-green pb-2 ${
-                        selected === "concluido"
-                          ? "border-solid"
-                          : "border-none"
-                      }`}
-                    >
-                      <th>Concluido</th>
-                    </tr>
-                    <tr
-                      onClick={() => {
-                        setSelected("negado");
-                      }}
-                      className={`w-full cursor-pointer border-b-2 border-green ${
-                        selected === "negado" ? "border-solid" : "border-none"
-                      }`}
-                    >
-                      <th>Negado</th>
+                  <thead className="flex gap-1 text-black font-main text-base font-semibold border-b-2 border-greenScale-200 border-solid">
+                    <tr className="flex items-center justify-evenly w-full border-b-2 border-solid border-greenScale-200 py-2">
+                      <th className="w-1/5 border-r-2 border-dotted border-greenScale-600">
+                        ID
+                      </th>
+
+                      <th className="w-1/5 border-r-2 border-dotted border-greenScale-600">
+                        Nome
+                      </th>
+
+                      <th className="w-1/5 border-r-2 border-dotted border-greenScale-600">
+                        Pedidos finalizados
+                      </th>
+
+                      <th className="w-1/5 border-r-2 border-dotted border-greenScale-600">
+                        Estado
+                      </th>
+
+                      <th className="w-1/5">Valor total compras</th>
                     </tr>
                   </thead>
                   <tbody className="flex flex-col gap-1 text-black font-main text-base font-semibold overflow-y-scroll max-h-96 scrollbar-thin scrollbar-thumb-green">
-                    {sort.historico.length ? (
-                      sort.historico.map((vendas: any, key: any) => {
+                    {infoDb.usuarios.length ? (
+                      infoDb.usuarios.map(({ user, orders }: any, key: any) => {
                         return (
                           <tr
-                            className="flex items-center justify-evenly w-full border-b-2 border-solid border-greenScale-200 py-2"
+                            className="relative flex items-center justify-evenly w-full border-b-2 border-solid border-greenScale-200 py-2 hover cursor-pointer"
+                            onClick={() => {
+                              setShowModal("user");
+                              setUser({ user, orders });
+                            }}
                             key={key}
                           >
-                            <td className="w-full">
-                              {format(vendas.data, "dd/MM/yyyy")}
+                            <td className="absolute flex items-center justify-center top-0 text-white font-black w-full h-full text-base opacity-0 bg-gray-500 transition-all duration-300 ease-in-out hover:opacity-80">
+                              <h2>Clique para mais informações</h2>
                             </td>
-                            <td className="w-full">{vendas.idPagamento}</td>
-                            <td
-                              className={`w-2/4 text-center rounded-3xl ${
-                                vendas.status === "Paid"
-                                  ? "text-greenScale-600 bg-greenScale-200"
-                                  : vendas.status === "Pending"
-                                  ? "text-yellow-600 bg-yellow-200"
-                                  : "text-red-600 bg-red-200"
-                              }`}
-                            >
-                              {vendas.status === "Paid"
-                                ? "Pago"
-                                : vendas.status === "Pending"
-                                ? "Pendente"
-                                : "Falho"}
+                            <td className="w-1/5 text-center border-r-2 border-dotted border-greenScale-600">
+                              {user.id}
                             </td>
-                            <td className="w-2/4 text-center">
-                              {formatValue(vendas.valorTotal)}
+                            <td className="w-1/5 text-center border-r-2 border-dotted border-greenScale-600">
+                              {user.name}
+                            </td>
+                            <td className="w-1/5 text-center border-r-2 border-dotted border-greenScale-600">
+                              {
+                                orders.filter(
+                                  (item: any) => item.status === "paid"
+                                ).length
+                              }
                             </td>
                             <td
-                              className={`w-3/4 text-center rounded-3xl ${
-                                vendas.andamentoRastreio === "Entregue"
-                                  ? "text-greenScale-600 bg-greenScale-200"
-                                  : vendas.andamentoRastreio === "Em andamento"
-                                  ? "text-yellow-600 bg-yellow-200"
-                                  : "text-red-600 bg-red-200"
-                              }`}
+                              className={`w-1/5 text-center border-r-2 border-dotted border-greenScale-600`}
                             >
-                              {vendas.andamentoRastreio}
+                              {user.address.state}
+                            </td>
+                            <td className="w-1/5 text-center">
+                              {sumAllOrders(orders)}
                             </td>
                           </tr>
                         );
@@ -320,7 +309,7 @@ export default function Admin() {
               <div
                 className="border-2 border-grey border-dashed rounded-3xl w-44 h-44 flex items-center justify-center cursor-pointer p-4"
                 onClick={() => {
-                  setShowModal("create");
+                  setShowModal("newProduct");
                 }}
               >
                 <h2 className="text-2xl text-center">Adicionar novo +</h2>
@@ -424,10 +413,14 @@ export default function Admin() {
                 return (
                   <div className="flex w-full items-center gap-2 " key={key}>
                     <div className="border-green rounded-full border-2 p-1">
-                      <img className="w-5" src={userImg} alt="icon userImg" />
+                      <img
+                        className="min-w-5"
+                        src={userImg}
+                        alt="icon userImg"
+                      />
                     </div>
                     <h2 className="font-main text-sm text-[#1C1C1C]">
-                      {user.name}
+                      {user.user.name}
                     </h2>
                   </div>
                 );
@@ -475,11 +468,18 @@ export default function Admin() {
           </div>
         </div>
       </div>
-      {showModal && (
+      {(showModal === "newProduct" || showModal === "edit") && (
         <ModalAdminProduto
           type={showModal}
           produto={produto}
           setProduto={setProduto}
+          setShowModal={setShowModal}
+        />
+      )}
+      {showModal === "user" && (
+        <ModalUser
+          user={user.user}
+          orders={user.orders}
           setShowModal={setShowModal}
         />
       )}

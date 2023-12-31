@@ -153,25 +153,20 @@ export default function Cart() {
 
       setUrlCheckout(order.data.order.checkouts[0].payment_url);
       setCheckout(true);
-      setOrder(order.data);
+      setOrder(order.data.order);
     } catch (error) {
       console.log(error);
     }
   }
 
   async function verifyPayment() {
+    console.log(order.id);
     try {
-      const response = await axios.post(
-        "/verifyPayment",
-        {
-          order_id: order.id,
+      const response = await axios.get(`/verifyOrder/${order.id}`, {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
-        {
-          headers: {
-            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-          },
-        }
-      );
+      });
 
       if (!response.data.charges) {
         return toastFail(
@@ -216,6 +211,15 @@ export default function Cart() {
     }
     if (step === "step4") {
       await AsyncStorage.removeItem("cart");
+      await axios.patch(
+        `/finishOrder/${order.id}`,
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
+      );
       navigate("/home");
     }
   }
@@ -650,14 +654,16 @@ export default function Cart() {
                   <div className="flex w-full gap-5">
                     <img className="w-10" src={pointer} alt="icon pointer" />
                     <div>
-                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.city}, ${adress.state}`}</h2>
+                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adressUser.city}, ${adressUser.state}`}</h2>
                       <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${
-                        adress.line_1
-                      }${adress.line_2 ? `-${adress.line_2}` : ""}`}</h2>
-                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adress.zip_code.slice(
+                        adressUser.line_1
+                      }${
+                        adressUser.line_2 ? `-${adressUser.line_2}` : ""
+                      }`}</h2>
+                      <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${adressUser.zip_code.slice(
                         0,
                         5
-                      )}-${adress.zip_code.slice(6)}`}</h2>
+                      )}-${adressUser.zip_code.slice(6)}`}</h2>
                     </div>
                   </div>
                   <div className="flex w-2/4 gap-5">
@@ -666,8 +672,14 @@ export default function Cart() {
                       <h2 className="font-main text-base font-semibold t-[#253D4E]">{`${selectedOption}`}</h2>
                       <h2 className="font-main text-base font-semibold t-[#253D4E]">
                         {selectedOption === "Sedex"
-                          ? `R$ ${sedex.Valor}`
-                          : pac.Valor}
+                          ? `R$ ${(sedex.price * 1.2).toLocaleString("pt-br", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}`
+                          : (pac.price * 1.2).toLocaleString("pt-br", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}
                       </h2>
                     </div>
                   </div>
@@ -680,7 +692,7 @@ export default function Cart() {
             {step === "step4" && (
               <div>
                 <h2 className="font-main text-2xl font-semibold t-[#253D4E]">
-                  {`Parabens ${user.nome}!!!`}{" "}
+                  {`Parabens ${userInfo.user.name}!!!`}{" "}
                 </h2>
                 <h2>
                   Sua compra foi realizada com sucesso. Agora é so esperar que

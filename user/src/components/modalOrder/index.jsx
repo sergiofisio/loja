@@ -16,7 +16,7 @@ export default function ModalOrder({ setShowModalOrder, order }) {
   }
 
   function getProduct(id) {
-    const product = allProducts.find(product => product.id === Number(id));
+    const product = allProducts.find((product) => product.id === Number(id));
     return product;
   }
 
@@ -38,7 +38,7 @@ export default function ModalOrder({ setShowModalOrder, order }) {
   }, []);
 
   return (
-    <div className="flex flex-col justify-center items-center bg-bgModal absolute top-0 w-full h-full">
+    <div className="flex flex-col justify-center items-center bg-bgModal absolute top-0 w-full h-full z-30">
       <div
         className={`relative flex flex-col justify-evenly w-2/3 h-2/3 1536:h-[90%] 1366:h-[90%] bg-white rounded-3xl p-8 shadow-green shadow-2xl`}
       >
@@ -94,7 +94,7 @@ export default function ModalOrder({ setShowModalOrder, order }) {
           </div>
           <div className="flex flex-col justify-between w-full h-full">
             <div className="border-green border-2 rounded-xl h-2/3">
-              <table className="flex flex-col justify-between w-full h-full px-3 py-2 gap-2 ">
+              <table className="flex flex-col w-full h-full px-3 py-2 gap-2 ">
                 <thead className="flex border-b-2 border-greenScale-600 font-bold uppercase pr-2">
                   <tr className="w-2/3 text-center ">Item</tr>
                   <tr className="w-1/6 text-center border-x-2 border-greenScale-200">
@@ -143,9 +143,9 @@ export default function ModalOrder({ setShowModalOrder, order }) {
                 <td className="text-center text-4xl font-bold font-main">
                   {`TOTAL: 
                 ${(order.amount / 100).toLocaleString("pt-BR", {
-                    style: "currency",
-                    currency: "BRL",
-                  })}`}
+                  style: "currency",
+                  currency: "BRL",
+                })}`}
                 </td>
               </div>
             </div>
