@@ -4,8 +4,6 @@ import axios from "../../Service/api";
 import arrowRight from "../../assets/access/ArrowRight.svg";
 import img from "../../assets/access/img.svg";
 import pointer from "../../assets/access/pointer.svg";
-import user from "../../assets/user/User.svg";
-import { localconfig } from "../../utils/localConfig";
 import ModalAdressCard from "../../components/modalAdressCard";
 import { toastFail } from "../../context/toast";
 import ModalUser from "../../components/modalUser";
@@ -37,10 +35,7 @@ export default function Access({ setId, setAdress, setCard }) {
   const [showModalOrder, setShowModalOrder] = useState("");
   const [showModal, setShowModal] = useState("");
 
-  console.log(orders);
-
   async function handleModal(e, type) {
-    console.log({ type, user, adress });
     e.preventDefault();
     e.stopPropagation();
     setShowModal(type);
@@ -58,9 +53,7 @@ export default function Access({ setId, setAdress, setCard }) {
           },
         }
       );
-      console.log({ user, orders });
       if (adresses.length) {
-        console.log("teste else");
         setAdressUser({
           id: adresses[0].id,
           zip_code: adresses[0].zip_code,
@@ -88,7 +81,7 @@ export default function Access({ setId, setAdress, setCard }) {
     } catch (error) {
       console.log(error);
       if (error.response.status === 408) {
-        toastFail(error.response.data.mensagem);
+        toastFail(error.response.data.error);
         localStorage.clear();
         navigate("/");
       }
@@ -104,11 +97,8 @@ export default function Access({ setId, setAdress, setCard }) {
   }
 
   useEffect(() => {
-    if (!adress.zip_code) {
-      getUserInfo();
-    }
-    console.log(adress);
-  }, [adress]);
+    getUserInfo();
+  }, [showModal]);
 
   return (
     <main className="flex justify-center w-full max-h-[calc(100vh-6rem)] px-9">
@@ -148,10 +138,15 @@ export default function Access({ setId, setAdress, setCard }) {
                 >
                   <img src={pointer} alt="icon pointer" />
                   <h2 className="font-main text-white text-xl font-medium">
-                    {` ${adress.line_1} - ${adress.line_2}`}
+                    {` ${adress.line_1.split(",")[1]}, ${
+                      adress.line_1.split(",")[0]
+                    } - ${adress.line_1.split(",")[2]} ${
+                      adress.line_2 ? `- ${adress.line_2}` : ""
+                    }`}
                   </h2>
                   <h2 className="font-main text-white text-xl font-medium">
-                    {` ${adress.city}, ${adress.state} - ${adress.zip_code}`}
+                    {`${adress.city}, ${adress.state}`} <br />{" "}
+                    {`CEP: ${adress.zip_code}`}
                   </h2>
                 </div>
               </>

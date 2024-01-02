@@ -193,6 +193,15 @@ export default function Cart() {
     e.stopPropagation();
 
     if (step === "step1") {
+      const options = {
+        Sedex: { error: sedex.error, message: "Sedex indisponível" },
+        PAC: { error: pac.error, message: "PAC indisponível" },
+      };
+
+      if (options[selectedOption]?.error) {
+        return toastFail(options[selectedOption].message);
+      }
+
       for (const product of JSON.parse(localStorage.getItem("cart"))) {
         if (!product.quantidade) {
           return toastFail(
