@@ -14,6 +14,7 @@ import { verifyOrder } from "./../controllers/order/order.verify";
 import { finishOrder } from "./../controllers/order/order.finish";
 import { getAllOrders } from "./../controllers/order/order.get";
 import allUsersInfo from "../controllers/user/user.allUsers";
+import deleteAdresses from "../controllers/adress/adress.delete";
 
 const authRoute = require("express").Router();
 const multer = require("../middleware/multer");
@@ -41,5 +42,6 @@ authRoute.patch("/updateUser/:id", updateUser);
 authRoute.patch("/uploadProduct/:id", updateProduct);
 authRoute.patch("/finishOrder/:order_id", finishOrder);
 authRoute.delete("/deleteProduct/:id", deleteProduct);
+authRoute.delete("/deleteAdress/:id", deleteAdresses);
 
 module.exports = authRoute;
