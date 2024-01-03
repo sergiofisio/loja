@@ -9,14 +9,13 @@ import logo from "../../assets/logo/logo.svg";
 import user from "../../assets/user/User.svg";
 import Benefits from "../../components/benefits";
 import Button from "../../components/button";
-import Categories from "../../components/categories";
+// import Categories from "../../components/categories";
 import Form from "../../components/form";
-import Partner from "../../components/partner";
+// import Partner from "../../components/partner";
 import Payment from "../../components/payment";
 import Sellers from "../../components/sellers";
 import Testimonials from "../../components/testimonials";
-import { sortById } from "../../functions/functions";
-import "./styles.css";
+// import { sortById } from "../../functions/functions";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Home({ login, setLogin, singIn, setSingIn }) {
@@ -144,7 +143,7 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
             categories={categories}
             products={products}
           /> */}
-          <div className="brokenRule" />
+          <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
           <Benefits />
           {infoDb.depoimentos.length && (
             <Testimonials testimonials={infoDb.depoimentos} user={user} />

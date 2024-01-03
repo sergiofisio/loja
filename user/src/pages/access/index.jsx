@@ -7,9 +7,10 @@ import pointer from "../../assets/access/pointer.svg";
 import ModalAdressCard from "../../components/modalAdressCard";
 import { toastFail } from "../../context/toast";
 import ModalUser from "../../components/modalUser";
-import moment from "moment";
 import ModalOrder from "../../components/modalOrder";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { format } from "date-fns";
+import { formatValue } from "../../functions/functions";
 
 export default function Access({ setId, setAdress, setCard }) {
   const navigate = useNavigate();
@@ -77,7 +78,7 @@ export default function Access({ setId, setAdress, setCard }) {
           5
         )}-${user.phones.mobile_phone.number.slice(5)}`,
       });
-      setOrders(orders.data);
+      setOrders(orders);
     } catch (error) {
       console.log(error);
       if (error.response.status === 408) {
@@ -86,6 +87,14 @@ export default function Access({ setId, setAdress, setCard }) {
         navigate("/");
       }
     }
+  }
+
+  function sumOrders(orders) {
+    let total = 0;
+    orders.forEach((order) => {
+      total += order.amount;
+    });
+    return total;
   }
 
   function handleStore(e) {
@@ -186,24 +195,24 @@ export default function Access({ setId, setAdress, setCard }) {
               <table className="flex flex-col w-full">
                 <thead className="flex justify-between items-center w-full text-green font-main text-xl font-medium border-b-2 border-green py-4">
                   <tr className="flex justify-between items-center w-full">
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-full">
-                      Código pedido
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3">
+                      <h2>Código pedido</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-2/4">
-                      Data
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                      <h2>Data</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-2/4">
-                      Valor
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                      <h2>Valor</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-2/4">
-                      Pagamento
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                      <h2>Pagamento</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-2/4">
-                      Status
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                      <h2>Status</h2>
                     </th>
                   </tr>
                 </thead>
-                <tbody className="flex flex-col w-full h-1/3 overflow-y-scroll">
+                <tbody className="flex flex-col justify-between items-center w-full text-black font-main text-base font-medium border-b-2 border-green h-2/3 overflow-y-scroll">
                   {orders.length ? (
                     orders.map((order, key) => {
                       return (
@@ -217,24 +226,30 @@ export default function Access({ setId, setAdress, setCard }) {
                           <td className="absolute flex items-center justify-center top-0 text-white font-black w-full h-full text-base opacity-0 bg-gray-500 transition-all duration-300 ease-in-out hover:opacity-80">
                             <h2>Clique para acessar o pedido</h2>
                           </td>
-                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-full">
-                            <h2>{order.id}</h2>
+                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3">
+                            <h2>{order.idPagarme}</h2>
                           </td>
-                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-2/4">
+                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
                             <h2>
-                              {moment(order.created_at).format("DD/MM/YYYY")}
+                              {format(new Date(order.date), "dd/MM/yyyy")}
                             </h2>
                           </td>
-                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-2/4">
+                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
                             <h2>
-                              {(order.amount / 100).toLocaleString("pt-BR", {
-                                style: "currency",
-                                currency: "BRL",
-                              })}
+                              {formatValue(
+                                sumOrders(JSON.parse(order.products)) / 100
+                              )}
+                            </h2>
+                          </td>
+                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                            <h2>
+                              {order.transactionType === "pix"
+                                ? "Pix"
+                                : "Cartão de Crédito"}
                             </h2>
                           </td>
                           <td
-                            className={`flex justify-center text-center w-2/4`}
+                            className={`flex justify-center text-center w-1/6`}
                           >
                             <h2
                               className={`rounded-3xl ${
@@ -243,7 +258,7 @@ export default function Access({ setId, setAdress, setCard }) {
                                   : order.status === "pending"
                                     ? "bg-yellow-200 text-yellow-600"
                                     : "bg-greenScale-200 text-greenScale-600"
-                              } w-1/2`}
+                              } w-1/2 px-5`}
                             >
                               {order.status === "failed"
                                 ? "Falhada"

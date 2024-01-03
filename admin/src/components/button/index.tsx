@@ -5,12 +5,14 @@ export default function Button({
   type,
   className,
   text,
+  disabled,
   ...inputProps
 }: {
   onClick: (e: React.MouseEvent<HTMLButtonElement>) => void;
   type: "button" | "submit" | "reset";
   className: string;
   text: string;
+  disabled?: boolean;
   inputProps?: React.ButtonHTMLAttributes<HTMLButtonElement>;
 }) {
   return (
@@ -18,6 +20,7 @@ export default function Button({
       onClick={onClick}
       type={type}
       className={`${className} flex items-center justify-center text-white font-special font-medium cursor-pointer gap-4`}
+      disabled={disabled}
       {...inputProps}
     >
       {(text === "Adicionar" ||

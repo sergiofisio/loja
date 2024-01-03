@@ -12,6 +12,7 @@ import ModalAdminProduto from "../../components/modalAdminProduto";
 import { GridLoader } from "react-spinners";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalUser from "../../components/modalUser";
+import { Accumulator, Order, Product, User } from "../../interfaces/interface";
 
 export default function Admin() {
   const [selectSidebar, setSelectSidebar] = useState("dashboard");
@@ -75,7 +76,7 @@ export default function Admin() {
     }
   }
 
-  function sortAllProducts(products: any, searchTerm: any) {
+  function sortAllProducts(products: any, searchTerm: string) {
     if (searchTerm) {
       const searchHistoric = products.filter((item: any) =>
         item.nome.toLowerCase().includes(searchTerm.toLowerCase())
@@ -86,12 +87,18 @@ export default function Admin() {
     }
   }
 
-  function sumAllOrders(orders: any) {
-    return formatValue(
-      orders
-        .filter((item: any) => item.status === "paid")
-        .reduce((acc: any, item: any) => acc + item.amount, 0) / 100
-    );
+  function sumAllOrders(orders: Order[]) {
+    const sum = orders
+      .filter((order) => order.finished)
+      .reduce((total, order) => {
+        const orderTotal = JSON.parse(order.products).reduce(
+          (orderSum: number, product: Product) =>
+            orderSum + Number(product.amount),
+          0
+        );
+        return total + orderTotal;
+      }, 0);
+    return formatValue(sum / 100);
   }
 
   useEffect(() => {
@@ -99,16 +106,36 @@ export default function Admin() {
   }, [showModal]);
 
   useEffect(() => {
-    let count = 0;
-    let sum = 0;
-    infoDb.usuarios.forEach((user: any) => {
-      user.orders.forEach((order: any) => {
-        if (order.status === "paid") {
-          sum += Number(order.amount / 100);
-          count++;
-        }
-      });
-    });
+    if (!infoDb) return;
+
+    const { sum, count } = infoDb.usuarios.reduce(
+      (acc: Accumulator, user: User) => {
+        const orderData = user.orders.reduce(
+          (orderAcc: Accumulator, order) => {
+            if (order.finished) {
+              const orderSum =
+                JSON.parse(order.products).reduce(
+                  (orderSum: number, product: Product) =>
+                    orderSum + Number(product.amount),
+                  0
+                ) / 100;
+              return {
+                sum: orderAcc.sum + orderSum,
+                count: orderAcc.count + 1,
+              };
+            }
+            return orderAcc;
+          },
+          { sum: 0, count: 0 }
+        );
+        return {
+          sum: acc.sum + orderData.sum,
+          count: acc.count + orderData.count,
+        };
+      },
+      { sum: 0, count: 0 }
+    );
+
     setSum(sum);
     setNumberSold(count);
   }, [infoDb]);
@@ -247,9 +274,8 @@ export default function Admin() {
                             </td>
                             <td className="w-1/5 text-center border-r-2 border-dotted border-greenScale-600">
                               {
-                                orders.filter(
-                                  (item: any) => item.status === "paid"
-                                ).length
+                                orders.filter((item: any) => item.finished)
+                                  .length
                               }
                             </td>
                             <td
@@ -478,6 +504,7 @@ export default function Admin() {
       )}
       {showModal === "user" && (
         <ModalUser
+          products={infoDb.produtos}
           user={user.user}
           orders={user.orders}
           setShowModal={setShowModal}

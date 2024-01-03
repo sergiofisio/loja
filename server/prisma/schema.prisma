@@ -30,6 +30,9 @@ model cart {
   partnerId       Int?
   partner         partner? @relation(fields: [partnerId], references: [id])
   user            user     @relation(fields: [userId], references: [id])
+  shippingType    String   @default("PAC")
+  trackingCode    String?
+  ticketUrl       String?   
 }
 
 model product {

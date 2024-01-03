@@ -5,60 +5,66 @@ import InfoModalUser from "./info";
 import { format } from "date-fns";
 import left from "../../assets/left.svg";
 import Card from "../card";
+import ModalOrder from "../modalOrder";
 
 export default function ModalUser({
+  products,
   user,
   orders,
   setShowModal,
 }: {
+  products: any;
   user: any;
   orders: any;
   setShowModal: any;
 }) {
-  console.log(user);
-
   const [page, setPage] = useState(1);
   const [begin, setBegin] = useState(0);
-  const [sort, setSort] = useState(orders);
-  const [sumPaid, setSumPaid] = useState(0);
-  const [sumPending, setSumPending] = useState(0);
-  const [sumFail, setSumFail] = useState(0);
+  const [sort, setSort] = useState(
+    [...orders].sort((a, b) => b.finished - a.finished) || []
+  );
+  const [sumPaid, setSumPaid] = useState("");
+  const [sumFail, setSumFail] = useState("");
+  const [showOrderInfo, setShowOrderInfo] = useState("");
 
   function sortHistoric(searchTerm: any) {
     console.log({ searchTerm });
 
     if (searchTerm) {
       const searchHistoric = orders.filter((item: any) =>
-        item.id.toLowerCase().includes(searchTerm.toLowerCase())
+        item.idPagarme.toLowerCase().includes(searchTerm.toLowerCase())
       );
-      console.log({ searchHistoric });
       setSort(searchHistoric);
     } else {
       setSort(orders);
     }
   }
 
+  function sumValue(ordersItem: any) {
+    const sum = JSON.parse(ordersItem).reduce((total: number, order: any) => {
+      return total + Number(order.amount / 100);
+    }, 0);
+    return formatValue(sum);
+  }
+
   useEffect(() => {
-    let count = 0;
-    let sumPaid = 0;
-    let sumFail = 0;
-    let sumPending = 0;
-    orders.forEach((order: any) => {
-      console.log(order.status);
-      if (order.status === "paid") {
-        sumPaid += Number(order.amount / 100);
-        count++;
-      } else if (order.status === "canceled") {
-        sumFail += Number(order.amount / 100);
-        count++;
-      } else if (order.status === "pending") {
-        sumPending += Number(order.amount / 100);
-        count++;
-      }
-    });
-    setSumPaid(sumPaid);
-    setSumFail(sumFail);
-    setSumPending(sumPending);
+    const sumOrders = (orders: any[], finished: boolean) =>
+      orders
+        .filter((order: any) => order.finished === finished)
+        .reduce((total: number, order: any) => {
+          const orderTotal = JSON.parse(order.products).reduce(
+            (orderSum: number, product: any) =>
+              orderSum + Number(product.amount),
+            0
+          );
+          return total + orderTotal;
+        }, 0);
+
+    const sumPaid = sumOrders(orders, true);
+    const sumFail = sumOrders(orders, false);
+
+    setSumPaid(formatValue(sumPaid / 100));
+    setSumFail(formatValue(sumFail / 100));
   }, []);
 
   return (
@@ -97,10 +103,15 @@ export default function ModalUser({
               <h2>Endereço</h2>
               <div className="flex flex-col items-start gap-3 justify-center w-80 bg-green border-green border-solid rounded-b-xl rounded-r-xl border-4 cursor-pointer p-4 h-full">
                 <h2 className="font-main text-white text-xl font-medium">
-                  {` ${user.address.line_1} - ${user.address.line_2}`}
+                  {` ${user.address.line_1.split(",")[1]},  ${
+                    user.address.line_1.split(",")[0]
+                  } - ${user.address.line_1.split(",")[2]} ${
+                    user.address.line_2 ? `- ${user.address.line_2}` : ""
+                  }`}
                 </h2>
                 <h2 className="font-main text-white text-xl font-medium">
-                  {` ${user.address.city}, ${user.address.state} - ${user.address.zip_code}`}
+                  {` ${user.address.city}, ${user.address.state}`} <br />{" "}
+                  {`CEP: ${user.address.zip_code}`}
                 </h2>
               </div>
             </div>
@@ -135,28 +146,25 @@ export default function ModalUser({
                   <div
                     className="flex items-center border-b-2 border-dashed border-b-green h-7"
                     key={key}
+                    onClick={() => {
+                      setShowOrderInfo(order);
+                    }}
                   >
-                    <h2 className="w-1/4 text-center">{order.id}</h2>
+                    <h2 className="w-1/4 text-center">{order.idPagarme}</h2>
                     <h2 className="w-1/4 text-center">
-                      {format(new Date(order.created_at), "dd/MM/yyyy")}
+                      {format(new Date(order.date), "dd/MM/yyyy")}
                     </h2>
                     <h2 className="w-1/4 text-center">
-                      {formatValue(order.amount / 100)}
+                      {sumValue(order.products)}
                     </h2>
                     <h2
                       className={`w-1/4 text-center rounded-3xl ${
-                        order.status === "paid"
+                        order.finished
                           ? "text-greenScale-600 bg-greenScale-200"
-                          : order.status === "pending"
-                          ? "text-yellow-600 bg-yellow-200"
                           : "text-red-600 bg-red-200"
                       }`}
                     >
-                      {order.status === "paid"
-                        ? "Pago"
-                        : order.status === "pending"
-                        ? "Pedente"
-                        : "Falho"}
+                      {order.finished ? "Pago" : "Falho"}
                     </h2>
                   </div>
                 );
@@ -191,22 +199,25 @@ export default function ModalUser({
               <Card
                 classname="flex flex-col justify-evenly w-full h-28 bg-greenScale-200 rounded-2xl text-greenScale-600 font-main text-xl font-semibold p-5"
                 text="Pedidos pagos"
-                info={formatValue(sumPaid)}
-              />
-              <Card
-                classname="flex flex-col justify-evenly w-full h-28 bg-yellow-200 rounded-2xl text-yellow-500 font-main text-xl font-semibold p-5"
-                text="Pedidos pendentes"
-                info={formatValue(sumPending)}
+                info={sumPaid}
               />
               <Card
                 classname="flex flex-col justify-evenly w-full h-28 bg-red-200 rounded-2xl text-red-500 font-main text-xl font-semibold p-5"
                 text="Pedidos Falhos"
-                info={formatValue(sumFail)}
+                info={sumFail}
               />
             </div>
           </div>
         </div>
       </div>
+      {showOrderInfo && (
+        <ModalOrder
+          user={user}
+          products={products}
+          setShowOrderInfo={setShowOrderInfo}
+          order={showOrderInfo}
+        />
+      )}
     </div>
   );
 }

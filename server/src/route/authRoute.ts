@@ -15,6 +15,7 @@ import { finishOrder } from "./../controllers/order/order.finish";
 import { getAllOrders } from "./../controllers/order/order.get";
 import allUsersInfo from "../controllers/user/user.allUsers";
 import deleteAdresses from "../controllers/adress/adress.delete";
+import ticket from "../controllers/postOffice/ticket";
 
 const authRoute = require("express").Router();
 const multer = require("../middleware/multer");
@@ -38,6 +39,7 @@ authRoute.post("/upload", multer.single("file"), uploadImg);
 authRoute.post("/createProduct", createProduct);
 authRoute.post("/adress/:id", createAdress);
 authRoute.post("/createOrder/:userId", createOrder);
+authRoute.post("/ticket", ticket);
 authRoute.patch("/updateUser/:id", updateUser);
 authRoute.patch("/uploadProduct/:id", updateProduct);
 authRoute.patch("/finishOrder/:order_id", finishOrder);

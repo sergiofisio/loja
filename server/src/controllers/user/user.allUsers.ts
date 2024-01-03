@@ -22,99 +22,54 @@ async function allUsersInfo(_: Request, res: Response) {
         orders: [],
       };
 
-      const options = {
-        method: "GET",
-        url: `https://api.pagar.me/core/v5/customers/${user.id}`,
-        headers: {
-          accept: "application/json",
-          authorization: `Basic ${basicAuthorization}`,
-        },
-      };
-
       const infoUser = await axios
-        .request(options)
-        .then(function (response) {
-          return response.data;
-        })
-        .catch(function (error) {
-          return error;
-        });
-
-      const options2 = {
-        method: "GET",
-        url: `https://api.pagar.me/core/v5/customers/${user.id}/addresses`,
-        params: { page: "1", size: "999" },
-        headers: {
-          accept: "application/json",
-          authorization: `Basic ${basicAuthorization}`,
-        },
-      };
-
-      const adresses = await axios
-        .request(options2)
-        .then(function (response) {
-          return response.data;
-        })
-        .catch(function (error) {
-          return error;
-        });
-
-      const getTotal = {
-        method: "GET",
-        url: `${process.env.BASE_URL}/orders`,
-        params: { customer_id: user.id, page, size: "30" },
-        headers: {
-          accept: "application/json",
-          authorization: `Basic ${basicAuthorization}`,
-        },
-      };
-
-      await axios
-        .request(getTotal)
-        .then(function (response: any) {
-          total = response.data.paging.total;
-        })
-        .catch(function (error) {
-          throw new Error(error.response.data.errors);
-        });
-
-      page = Math.ceil(total / 30);
-
-      for (let i = 1; i <= page; i++) {
-        const options = {
+        .request({
           method: "GET",
-          url: `${process.env.BASE_URL}/orders`,
-          params: { page: String(i), size: "30" },
+          url: `https://api.pagar.me/core/v5/customers/${user.id}`,
           headers: {
             accept: "application/json",
             authorization: `Basic ${basicAuthorization}`,
           },
-        };
+        })
+        .then(function (response) {
+          return response.data;
+        })
+        .catch(function (error) {
+          return error;
+        });
 
-        await axios
-          .request(options)
-          .then(function (response: any) {
-            const ordersFiltered = response.data.data.filter(
-              (order: any) => order.customer.id === user.id
-            );
-            for (let order of ordersFiltered) {
-              orders.push(order);
-            }
-          })
-          .catch(function (error) {
-            throw new Error(error.response);
-          });
-      }
+      const adresses = await axios
+        .request({
+          method: "GET",
+          url: `https://api.pagar.me/core/v5/customers/${user.id}/addresses`,
+          params: { page: "1", size: "999" },
+          headers: {
+            accept: "application/json",
+            authorization: `Basic ${basicAuthorization}`,
+          },
+        })
+        .then(function (response) {
+          return response.data;
+        })
+        .catch(function (error) {
+          return error;
+        });
+
+      const { cart } = await prisma.user.findUnique({
+        where: { id: user.id },
+        include: { cart: true },
+      });
+
       userInfo.user = infoUser;
       userInfo.adresses = adresses;
-      userInfo.orders = orders;
+      userInfo.orders = cart;
 
       allUsersInfo.push(userInfo);
     }
 
     res.json({ users: allUsersInfo });
   } catch (error: any) {
-    console.log(error);
+    console.log({ error });
 
     res.status(500).json({ error });
   }

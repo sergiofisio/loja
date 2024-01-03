@@ -1,9 +1,9 @@
 import axios from "axios";
-// const url = "http://localhost:4000";
-const url = "https://server-loja-gfrs.onrender.com";
+
+console.log(import.meta.env.VITE_URL_DEPLOY);
 
 export default axios.create({
-  baseURL: url,
+  baseURL: import.meta.env.VITE_URL_DEPLOY,
   timeout: 100000,
   headers: { "Content-Type": "application/json" },
 });
