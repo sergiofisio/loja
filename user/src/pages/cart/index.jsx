@@ -20,7 +20,7 @@ import { toastFail, toastSuccess } from "../../context/toast";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import {DotLoader} from 'react-spinners'
+import { DotLoader } from "react-spinners";
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -574,48 +574,55 @@ export default function Cart() {
             </h2>
             {step === "step1" && (
               <div className="flex flex-col h-full gap-4">
-                {!adressUser?<><DotLoader color="#000"/></>:<><Input
-                  className={"w-1/3"}
-                  label="Cep"
-                  placeholder="cep"
-                  value={adressUser.zip_code}
-                  disabled={true}
-                />
-                <div className="flex gap-6">
-                  <Input
-                    className={"w-2/3"}
-                    label="Endereço"
-                    placeholder="Endereço"
-                    value={`${adressUser.line_1.split(",")[1]}, ${
-                      adressUser.line_1.split(",")[0]
-                    } - ${adressUser.line_1.split(",")[2]}`}
-                    disabled={true}
-                  />
-                  <Input
-                    className={"w-1/3"}
-                    label="Complemento"
-                    placeholder="Complemento"
-                    value={adressUser.line_2}
-                    disabled={true}
-                  />
-                </div>
-                <div className="flex gap-6">
-                  <Input
-                    className={"w-2/3"}
-                    label="Cidade"
-                    placeholder="Cidade"
-                    value={adressUser.city}
-                    disabled={true}
-                  />
-                  <Input
-                    className={"w-1/3"}
-                    label="Estado"
-                    placeholder="Estado"
-                    value={adressUser.state}
-                    disabled={true}
-                  /></>}
-                </div>
-
+                {!adressUser ? (
+                  <>
+                    <DotLoader color="#000" />
+                  </>
+                ) : (
+                  <>
+                    <Input
+                      className={"w-1/3"}
+                      label="Cep"
+                      placeholder="cep"
+                      value={adressUser.zip_code}
+                      disabled={true}
+                    />
+                    <div className="flex gap-6">
+                      <Input
+                        className={"w-2/3"}
+                        label="Endereço"
+                        placeholder="Endereço"
+                        value={`${adressUser.line_1.split(",")[1]}, ${
+                          adressUser.line_1.split(",")[0]
+                        } - ${adressUser.line_1.split(",")[2]}`}
+                        disabled={true}
+                      />
+                      <Input
+                        className={"w-1/3"}
+                        label="Complemento"
+                        placeholder="Complemento"
+                        value={adressUser.line_2}
+                        disabled={true}
+                      />
+                    </div>
+                    <div className="flex gap-6">
+                      <Input
+                        className={"w-2/3"}
+                        label="Cidade"
+                        placeholder="Cidade"
+                        value={adressUser.city}
+                        disabled={true}
+                      />
+                      <Input
+                        className={"w-1/3"}
+                        label="Estado"
+                        placeholder="Estado"
+                        value={adressUser.state}
+                        disabled={true}
+                      />
+                    </div>
+                  </>
+                )}
                 <div className="flex flex-col">
                   <label className="cursor-pointer">
                     <input
