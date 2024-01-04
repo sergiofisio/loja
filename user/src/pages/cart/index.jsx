@@ -600,7 +600,9 @@ export default function Cart() {
                     className={"w-2/3"}
                     label="Endereço"
                     placeholder="Endereço"
-                    value={adressUser.line_1}
+                    value={`${adressUser.line_1.split(",")[1]}, ${
+                      adressUser.line_1.split(",")[0]
+                    } - ${adressUser.line_1.split(",")[2]}}`}
                     disabled={true}
                   />
                   <Input
