@@ -14,7 +14,7 @@ model user {
   document     String   @unique
   password     String
   admin        Boolean  @default(false)
-  lostPassword Boolean? @default(false)
+  lostPassword String?
   cart         cart[]
 }
 
