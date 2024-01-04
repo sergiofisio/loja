@@ -9,17 +9,16 @@ async function userInfo(req: Request, res: Response): Promise<any> {
     const basicAuthorization = Buffer.from(
       `${process.env.SECRET_KEY}:`
     ).toString("base64");
-    const options = {
-      method: "GET",
-      url: `https://api.pagar.me/core/v5/customers/${id}`,
-      headers: {
-        accept: "application/json",
-        authorization: `Basic ${basicAuthorization}`,
-      },
-    };
 
     const userInfo = await axios
-      .request(options)
+      .request({
+        method: "GET",
+        url: `https://api.pagar.me/core/v5/customers/${id}`,
+        headers: {
+          accept: "application/json",
+          authorization: `Basic ${basicAuthorization}`,
+        },
+      })
       .then(function (response) {
         return response.data;
       })
@@ -29,18 +28,16 @@ async function userInfo(req: Request, res: Response): Promise<any> {
 
     delete userInfo.address;
 
-    const options2 = {
-      method: "GET",
-      url: `https://api.pagar.me/core/v5/customers/${id}/addresses`,
-      params: { page: "1", size: "999" },
-      headers: {
-        accept: "application/json",
-        authorization: `Basic ${basicAuthorization}`,
-      },
-    };
-
     const adresses = await axios
-      .request(options2)
+      .request({
+        method: "GET",
+        url: `https://api.pagar.me/core/v5/customers/${id}/addresses`,
+        params: { page: "1", size: "999" },
+        headers: {
+          accept: "application/json",
+          authorization: `Basic ${basicAuthorization}`,
+        },
+      })
       .then(function (response) {
         return response.data;
       })

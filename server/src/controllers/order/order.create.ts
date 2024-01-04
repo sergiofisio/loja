@@ -28,8 +28,6 @@ export default async function createOrder(req: Request, res: Response) {
     "base64"
   );
 
-  console.log({ amount });
-
   try {
     const products = [];
     for (const item in items) {
@@ -40,132 +38,127 @@ export default async function createOrder(req: Request, res: Response) {
         code: items[item].product.id,
       });
     }
-    console.log(products);
-
-    const options = {
-      method: "POST",
-      url: `${process.env.BASE_URL}/orders`,
-      headers: {
-        accept: "application/json",
-        "content-type": "application/json",
-        authorization: `Basic ${basicAuthorization}`,
-      },
-      data: {
-        items: products,
-        customer: {
-          name: recipient_name,
-          email,
-        },
-        shipping: {
-          address: {
-            country: "BR",
-            state,
-            city,
-            zip_code,
-            line_1,
-            line_2,
-          },
-          amount: frete,
-          description,
-          recipient_name,
-          recipient_phone: `(${
-            recipient_phone.area_code
-          }) ${recipient_phone.number.slice(
-            0,
-            5
-          )}-${recipient_phone.number.slice(5)}`,
-        },
-        payments: [
-          {
-            payment_method: "checkout",
-            amount,
-            expires_in: 30,
-            default_payment_method: "pix",
-            checkout: {
-              skip_checkout_success_page: true,
-              customer_editable: false,
-              billing_address_editable: false,
-              accepted_payment_methods: ["credit_card", "pix"],
-              credit_card: {
-                capture: true,
-                statement_descriptor: "Green Life",
-                installments: [
-                  {
-                    number: 1,
-                    total: amount,
-                  },
-                  {
-                    number: 2,
-                    total: amount,
-                  },
-                  {
-                    number: 3,
-                    total: amount,
-                  },
-                  {
-                    number: 4,
-                    total: amount,
-                  },
-                  {
-                    number: 5,
-                    total: amount,
-                  },
-                  {
-                    number: 6,
-                    total: Math.round(amount * 1.123),
-                  },
-                  {
-                    number: 7,
-                    total: Math.round(amount * 1.135),
-                  },
-                  {
-                    number: 8,
-                    total: Math.round(amount * 1.148),
-                  },
-                  {
-                    number: 9,
-                    total: Math.round(amount * 1.161),
-                  },
-                  {
-                    number: 10,
-                    total: Math.round(amount * 1.173),
-                  },
-                ],
-              },
-
-              pix: {
-                expires_in: 120,
-              },
-            },
-            billing_address: {
-              line_1,
-              line_2,
-              zip_code,
-              city,
-              state,
-              country: "BR",
-            },
-          },
-        ],
-        code: description,
-        customer_id: userId,
-      },
-    };
 
     const order = await axios
-      .request(options)
+      .request({
+        method: "POST",
+        url: `${process.env.BASE_URL}/orders`,
+        headers: {
+          accept: "application/json",
+          "content-type": "application/json",
+          authorization: `Basic ${basicAuthorization}`,
+        },
+        data: {
+          items: products,
+          customer: {
+            name: recipient_name,
+            email,
+          },
+          shipping: {
+            address: {
+              country: "BR",
+              state,
+              city,
+              zip_code,
+              line_1,
+              line_2,
+            },
+            amount: frete,
+            description,
+            recipient_name,
+            recipient_phone: `(${
+              recipient_phone.area_code
+            }) ${recipient_phone.number.slice(
+              0,
+              5
+            )}-${recipient_phone.number.slice(5)}`,
+          },
+          payments: [
+            {
+              payment_method: "checkout",
+              amount,
+              expires_in: 30,
+              default_payment_method: "pix",
+              checkout: {
+                skip_checkout_success_page: true,
+                customer_editable: false,
+                billing_address_editable: false,
+                accepted_payment_methods: ["credit_card", "pix"],
+                credit_card: {
+                  capture: true,
+                  statement_descriptor: "Green Life",
+                  installments: [
+                    {
+                      number: 1,
+                      total: amount,
+                    },
+                    {
+                      number: 2,
+                      total: amount,
+                    },
+                    {
+                      number: 3,
+                      total: amount,
+                    },
+                    {
+                      number: 4,
+                      total: amount,
+                    },
+                    {
+                      number: 5,
+                      total: amount,
+                    },
+                    {
+                      number: 6,
+                      total: Math.round(amount * 1.123),
+                    },
+                    {
+                      number: 7,
+                      total: Math.round(amount * 1.135),
+                    },
+                    {
+                      number: 8,
+                      total: Math.round(amount * 1.148),
+                    },
+                    {
+                      number: 9,
+                      total: Math.round(amount * 1.161),
+                    },
+                    {
+                      number: 10,
+                      total: Math.round(amount * 1.173),
+                    },
+                  ],
+                },
+
+                pix: {
+                  expires_in: 120,
+                },
+              },
+              billing_address: {
+                line_1,
+                line_2,
+                zip_code,
+                city,
+                state,
+                country: "BR",
+              },
+            },
+          ],
+          code: description,
+          customer_id: userId,
+        },
+      })
       .then(function (response) {
         console.log({ response: response.data });
 
         return response.data;
       })
       .catch(function (error) {
-        console.log({ error: error.response.data });
-
-        return error;
+        throw new Error(error.response.data);
       });
 
-    const cart = await prisma.cart.create({
+    await prisma.cart.create({
       data: {
         userId,
         idPagarme: order.id,
@@ -177,5 +170,6 @@ export default async function createOrder(req: Request, res: Response) {
     res.json({ order });
   } catch (error: any) {
     console.log(error);
+    res.status(400).json({ error });
   }
 }
