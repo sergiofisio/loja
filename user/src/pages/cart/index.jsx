@@ -20,6 +20,7 @@ import { toastFail, toastSuccess } from "../../context/toast";
 import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import {DotLoader} from 'react-spinners'
 
 export default function Cart() {
   const navigate = useNavigate();
@@ -573,7 +574,7 @@ export default function Cart() {
             </h2>
             {step === "step1" && (
               <div className="flex flex-col h-full gap-4">
-                <Input
+                {!adressUser?<><DotLoader color="#000"/></>:<><Input
                   className={"w-1/3"}
                   label="Cep"
                   placeholder="cep"
@@ -612,7 +613,7 @@ export default function Cart() {
                     placeholder="Estado"
                     value={adressUser.state}
                     disabled={true}
-                  />
+                  /></>}
                 </div>
 
                 <div className="flex flex-col">
