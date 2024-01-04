@@ -160,7 +160,6 @@ export default function Cart() {
   }
 
   async function verifyPayment() {
-    console.log(order.id);
     try {
       const response = await axios.get(`/verifyOrder/${order.id}`, {
         headers: {
