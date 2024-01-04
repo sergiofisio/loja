@@ -1,11 +1,14 @@
 #!/bin/bash
-
 echo "Enter the directory:"
 read directory
 echo "Enter the commit message:"
 read commit_message
-echo "Enter the branch name:"
-read branch_name
+
+branch_name=""
+while [ -z "$branch_name" ]; do
+  echo "Enter the branch name (this field is mandatory):"
+  read branch_name
+done
 
 cd "$directory" && git add . && git commit -m "$commit_message" && git push origin "$branch_name"
 
