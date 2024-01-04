@@ -101,6 +101,7 @@ export default function Cart() {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
       });
+      console.log(frete);
       for (const calculo of frete) {
         if (calculo.name === "PAC") setPac(calculo);
         if (calculo.name === "SEDEX") setSedex(calculo);
