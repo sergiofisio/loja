@@ -41,7 +41,7 @@ export default function Cart() {
   const [checkout, setCheckout] = useState("");
   const [urlCheckout, setUrlCheckout] = useState("");
 
-  console.log({ adressUser });
+  console.log(userInfo);
 
   function calcWeight() {
     let weigth = 0;
@@ -170,14 +170,14 @@ export default function Cart() {
         },
       });
 
-      if (!response.data.charges) {
+      if (!response.data.order.charges) {
         return toastFail(
           "Seu pagamento não foi finalizado. Clique novamente para terminar!",
           3000
         );
       }
 
-      if (response.data.charges[0].status === "failed") {
+      if (response.data.order.charges[0].status === "failed") {
         return toastFail(
           "Seu pagamento foi negado. Reveja os dados. Clique para pagar e tente novamente",
           3000
@@ -224,14 +224,22 @@ export default function Cart() {
       await AsyncStorage.removeItem("cart");
       await axios.patch(
         `/finishOrder/${order.id}`,
-        {},
+        { email: userInfo.user.email },
         {
           headers: {
             Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
           },
         }
       );
-      navigate("/home");
+      toastSuccess(
+        "Sua compra foi concluída, você receberá um resumo da sua compra por email!",
+        3000,
+        "top-center"
+      );
+      setTimeout(() => {
+        AsyncStorage.removeItem("cart");
+        navigate("/home");
+      }, 3000);
     }
   }
 
@@ -621,37 +629,38 @@ export default function Cart() {
                         disabled={true}
                       />
                     </div>
+
+                    <div className="flex flex-col">
+                      <label className="cursor-pointer">
+                        <input
+                          className="cursor-pointer"
+                          type="radio"
+                          name="shippingOption"
+                          value="Sedex"
+                          checked={selectedOption === "Sedex"}
+                          onChange={(e) => {
+                            setSelectedOption(e.target.value);
+                          }}
+                        />
+                        Envio por Sedex
+                      </label>
+
+                      <label className="cursor-pointer">
+                        <input
+                          className="cursor-pointer"
+                          type="radio"
+                          name="shippingOption"
+                          value="PAC"
+                          checked={selectedOption === "PAC"}
+                          onChange={(e) => {
+                            setSelectedOption(e.target.value);
+                          }}
+                        />
+                        Envio por PAC
+                      </label>
+                    </div>
                   </>
                 )}
-                <div className="flex flex-col">
-                  <label className="cursor-pointer">
-                    <input
-                      className="cursor-pointer"
-                      type="radio"
-                      name="shippingOption"
-                      value="Sedex"
-                      checked={selectedOption === "Sedex"}
-                      onChange={(e) => {
-                        setSelectedOption(e.target.value);
-                      }}
-                    />
-                    Envio por Sedex
-                  </label>
-
-                  <label className="cursor-pointer">
-                    <input
-                      className="cursor-pointer"
-                      type="radio"
-                      name="shippingOption"
-                      value="PAC"
-                      checked={selectedOption === "PAC"}
-                      onChange={(e) => {
-                        setSelectedOption(e.target.value);
-                      }}
-                    />
-                    Envio por PAC
-                  </label>
-                </div>
               </div>
             )}
             {step === "step2" && (

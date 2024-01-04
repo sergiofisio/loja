@@ -153,7 +153,7 @@ export default async function createOrder(req: Request, res: Response) {
         return response.data;
       })
       .catch(function (error) {
-        throw new Error(error.response.data);
+        console.log(error.response.data);
       });
 
     await prisma.cart.create({
