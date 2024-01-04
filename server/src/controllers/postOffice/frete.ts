@@ -6,23 +6,21 @@ export default async function frete(req: Request, res: Response) {
   cep = cep.replace("-", "");
 
   try {
-    const options = {
-      method: "POST",
-      url: `${process.env.MELHOR_URL}/shipment/calculate`,
-      headers: {
-        Accept: "application/json",
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.MELHOR_TOKEN}`,
-        "User-Agent": "Green Life greenlifebiointegral@gmail.com)",
-      },
-      data: {
-        from: { postal_code: "09710212" },
-        to: { postal_code: cep },
-      },
-    };
-
     const frete = await axios
-      .request(options)
+      .request({
+        method: "POST",
+        url: `${process.env.MELHOR_URL}/shipment/calculate`,
+        headers: {
+          Accept: "application/json",
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${process.env.MELHOR_TOKEN}`,
+          "User-Agent": "Green Life greenlifebiointegral@gmail.com)",
+        },
+        data: {
+          from: { postal_code: "09710212" },
+          to: { postal_code: cep },
+        },
+      })
       .then(function (response) {
         return response.data;
       })
