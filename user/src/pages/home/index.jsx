@@ -106,13 +106,19 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
               </div>
             </div>
           ) : (
-            <div className="flex items-center justify-center w-full h-full">
+            <div className="flex flex-col items-center justify-center w-full h-full">
               <Form
                 login={login}
                 setLogin={setLogin}
                 singIn={singIn}
                 setSingIn={setSingIn}
               />
+              <h2 className="w-full text-center font-special">
+                Esqueceu sua senha?
+                <p className="cursor-pointer hover:drop-shadow-md">
+                  Clique aqui
+                </p>
+              </h2>
             </div>
           )}
         </div>

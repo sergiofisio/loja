@@ -59,7 +59,7 @@ export default function Form({ login, setLogin, setSingIn }) {
         localStorage.setItem("usuarioNome", loggedInUser.name);
         toastSuccess(
           `Bem vindo, ${await AsyncStorage.getItem("usuarioNome")}`,
-          "",
+          3000,
           "top-left"
         );
         setTimeout(() => {
@@ -110,7 +110,7 @@ export default function Form({ login, setLogin, setSingIn }) {
       setSecondInput("Confirmar Senha");
       setSecondPlaceholder("Confirme sua senha");
       setStep("step3");
-      return 
+      return;
     }
     if (!user.password) {
       return toastFail("O campo Senha é obrigatório");
