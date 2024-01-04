@@ -5,6 +5,8 @@ export default async function frete(req: Request, res: Response) {
   let { cep } = req.params;
   cep = cep.replace("-", "");
 
+  console.log({ cep });
+
   try {
     const frete = await axios
       .request({
@@ -27,6 +29,8 @@ export default async function frete(req: Request, res: Response) {
       .catch(function (error) {
         return error;
       });
+
+    console.log({ frete });
 
     res.json({ frete });
   } catch (error: any) {
