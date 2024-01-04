@@ -217,7 +217,7 @@ export default function Cart() {
       setStep("step3");
     }
     if (step === "step3") {
-      sendOrderInfo();
+      // sendOrderInfo();
       setStep("step4");
     }
     if (step === "step4") {
@@ -243,30 +243,30 @@ export default function Cart() {
     }
   }
 
-  async function sendOrderInfo() {
-    let shipping = "";
-    if (selectedOption === "sedex") {
-      shipping = sedex;
-    } else {
-      shipping = pac;
-    }
-    try {
-      await axios.post(
-        "/sendEmail",
-        {
-          order,
-          shipping,
-        },
-        {
-          headers: {
-            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-          },
-        }
-      );
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  // async function sendOrderInfo() {
+  //   let shipping = "";
+  //   if (selectedOption === "sedex") {
+  //     shipping = sedex;
+  //   } else {
+  //     shipping = pac;
+  //   }
+  //   try {
+  //     await axios.post(
+  //       "/sendEmail",
+  //       {
+  //         order,
+  //         shipping,
+  //       },
+  //       {
+  //         headers: {
+  //           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+  //         },
+  //       }
+  //     );
+  //   } catch (error) {
+  //     console.log(error);
+  //   }
+  // }
 
   async function auth(token) {
     try {
