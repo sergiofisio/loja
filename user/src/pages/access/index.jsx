@@ -11,6 +11,7 @@ import ModalOrder from "../../components/modalOrder";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { format } from "date-fns";
 import { formatValue } from "../../functions/functions";
+import { DotLoader } from "react-spinners";
 
 export default function Access({ setId, setAdress, setCard }) {
   const navigate = useNavigate();
@@ -212,79 +213,86 @@ export default function Access({ setId, setAdress, setCard }) {
                     </th>
                   </tr>
                 </thead>
-                <tbody className="flex flex-col justify-between items-center w-full text-black font-main text-base font-medium border-b-2 border-green h-2/3 overflow-y-scroll">
-                  {orders.length ? (
-                    orders.map((order, key) => {
-                      return (
-                        <tr
-                          className="relative flex justify-center border-grey border-opacity-40 border-b-2 py-2 w-full cursor-pointer"
-                          key={key}
-                          onClick={(e) => {
-                            setShowModalOrder(order);
-                          }}
-                        >
-                          <td className="absolute flex items-center justify-center top-0 text-white font-black w-full h-full text-base opacity-0 bg-gray-500 transition-all duration-300 ease-in-out hover:opacity-80">
-                            <h2>Clique para acessar o pedido</h2>
-                          </td>
-                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3">
-                            <h2>{order.idPagarme}</h2>
-                          </td>
-                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
-                            <h2>
-                              {format(new Date(order.date), "dd/MM/yyyy")}
-                            </h2>
-                          </td>
-                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
-                            <h2>
-                              {formatValue(
-                                sumOrders(JSON.parse(order.products)) / 100
-                              )}
-                            </h2>
-                          </td>
-                          <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
-                            <h2>
-                              {order.transactionType === "pix"
-                                ? "Pix"
-                                : order.transactionType === "Não finalizado"
-                                  ? "Não finalizado"
-                                  : "Cartão de Crédito"}
-                            </h2>
-                          </td>
-                          <td
-                            className={`flex justify-center text-center w-1/6`}
+                {!orders.length ? (
+                  <div className="flex flex-col justify-center items-center w-full">
+                    <DotLoader color="#3bb77e" />
+                    <h2>Carregando...</h2>
+                  </div>
+                ) : (
+                  <tbody className="flex flex-col justify-between items-center w-full text-black font-main text-base font-medium border-b-2 border-green h-2/3 overflow-y-scroll">
+                    {orders.length ? (
+                      orders.map((order, key) => {
+                        return (
+                          <tr
+                            className="relative flex justify-center border-grey border-opacity-40 border-b-2 py-2 w-full cursor-pointer"
+                            key={key}
+                            onClick={(e) => {
+                              setShowModalOrder(order);
+                            }}
                           >
-                            <h2
-                              className={`rounded-3xl ${
-                                order.status === "failed"
-                                  ? "bg-red-200 text-red-600"
-                                  : order.status === "pending"
-                                    ? "bg-yellow-200 text-yellow-600"
-                                    : "bg-greenScale-200 text-greenScale-600"
-                              } w-1/2 px-5`}
+                            <td className="absolute flex items-center justify-center top-0 text-white font-black w-full h-full text-base opacity-0 bg-gray-500 transition-all duration-300 ease-in-out hover:opacity-80">
+                              <h2>Clique para acessar o pedido</h2>
+                            </td>
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3">
+                              <h2>{order.idPagarme}</h2>
+                            </td>
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                              <h2>
+                                {format(new Date(order.date), "dd/MM/yyyy")}
+                              </h2>
+                            </td>
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                              <h2>
+                                {formatValue(
+                                  sumOrders(JSON.parse(order.products)) / 100
+                                )}
+                              </h2>
+                            </td>
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                              <h2>
+                                {order.transactionType === "pix"
+                                  ? "Pix"
+                                  : order.transactionType === "Não finalizado"
+                                    ? "Não finalizado"
+                                    : "Cartão de Crédito"}
+                              </h2>
+                            </td>
+                            <td
+                              className={`flex justify-center text-center w-1/6`}
                             >
-                              {order.status === "failed"
-                                ? "Falhada"
-                                : order.status === "pending"
-                                  ? "Pendente"
-                                  : "Sucesso"}
-                            </h2>
-                          </td>
-                        </tr>
-                      );
-                    })
-                  ) : (
-                    <tr>
-                      <td
-                        colSpan="6"
-                        className="flex items-center justify-center h-full w-full"
-                      >
-                        <h2 className="text-[#253D4E] font-main font-semibold text-2xl">
-                          Você ainda não tem compras cadastradas.
-                        </h2>
-                      </td>
-                    </tr>
-                  )}
-                </tbody>
+                              <h2
+                                className={`rounded-3xl ${
+                                  order.status === "failed"
+                                    ? "bg-red-200 text-red-600"
+                                    : order.status === "pending"
+                                      ? "bg-yellow-200 text-yellow-600"
+                                      : "bg-greenScale-200 text-greenScale-600"
+                                } w-1/2 px-5`}
+                              >
+                                {order.status === "failed"
+                                  ? "Falhada"
+                                  : order.status === "pending"
+                                    ? "Pendente"
+                                    : "Sucesso"}
+                              </h2>
+                            </td>
+                          </tr>
+                        );
+                      })
+                    ) : (
+                      <tr>
+                        <td
+                          colSpan="6"
+                          className="flex items-center justify-center h-full w-full"
+                        >
+                          <h2 className="text-[#253D4E] font-main font-semibold text-2xl">
+                            Você ainda não tem compras cadastradas.
+                          </h2>
+                        </td>
+                      </tr>
+                    )}
+                  </tbody>
+                )}
               </table>
             </div>
           </div>

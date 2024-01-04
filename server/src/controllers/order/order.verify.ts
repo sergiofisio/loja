@@ -28,13 +28,25 @@ export async function verifyOrder(req: Request, res: Response) {
         throw new Error(error);
       });
 
+    const findOrder = await prisma.cart.findFirst({
+      where: {
+        idPagarme: order_id,
+      },
+    });
+
     if (!order.closed) {
-      const findOrder = await prisma.cart.findFirst({
-        where: {
-          idPagarme: order_id,
-        },
-      });
       await prisma.cart.delete({ where: { id: findOrder.id } });
+    }
+    for (const product of JSON.parse(findOrder.products)) {
+      const { stock } = await prisma.product.findUnique({
+        where: { id: Number(product.code) },
+      });
+      if (order.status === "paid") {
+        await prisma.product.update({
+          where: { id: Number(product.code) },
+          data: { stock: Number(stock - product.quantity) },
+        });
+      }
     }
     res.json({ order });
   } catch (error: any) {

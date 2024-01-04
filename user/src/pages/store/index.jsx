@@ -10,8 +10,10 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function Store({ setShowModal }) {
   const [products, setProducts] = useState([]);
+  const [productsFilter, setProductsFilter] = useState([]);
   const [modalProduto, setModalProduto] = useState("");
   const [selectInput, setSelectInput] = useState("Todos");
+  const [searchTerm, setSearchTerm] = useState("");
 
   function handleAddProduct(e, product) {
     e.preventDefault();
@@ -37,10 +39,20 @@ export default function Store({ setShowModal }) {
       },
       quantidade: 0,
     };
-    console.log(product);
     cartProducts.push(produto);
     localStorage.setItem("cart", JSON.stringify(cartProducts));
     setShowModal(true);
+  }
+
+  function searchProduct(searchTerm) {
+    if (searchTerm) {
+      const searchProduct = products.filter((item) =>
+        item.name.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+      setProductsFilter(searchProduct);
+    } else {
+      setProductsFilter(products);
+    }
   }
 
   async function getAllProducts() {
@@ -52,8 +64,8 @@ export default function Store({ setShowModal }) {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
       });
-      console.log(products);
-      setProducts(sortById(products));
+      setProducts(products);
+      setProductsFilter(sortById(products));
     } catch (error) {
       console.log(error);
     }
@@ -80,8 +92,13 @@ export default function Store({ setShowModal }) {
             <input
               className="bg-transparent border-none w-9/12 h-full outline-none font-main text-sm font-medium"
               type="search"
-              name=""
-              id=""
+              name="search"
+              id="search"
+              value={searchTerm}
+              onChange={(e) => {
+                setSearchTerm(e.target.value);
+                searchProduct(e.target.value);
+              }}
             />
             <img
               src={search}
@@ -96,8 +113,8 @@ export default function Store({ setShowModal }) {
           </div>
         </div>
         <div className="flex flex-wrap items-center justify-center w-full h-full gap-20">
-          {products.length
-            ? products.map((product) => {
+          {productsFilter.length
+            ? productsFilter.map((product) => {
                 return (
                   <div
                     className="cursor-pointer h-full"
@@ -111,6 +128,7 @@ export default function Store({ setShowModal }) {
                       img={product.image}
                       name={product.name}
                       priceFull={formatValue(product.price / 100)}
+                      stock={product.stock}
                     />
                   </div>
                 );

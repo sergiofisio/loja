@@ -67,8 +67,6 @@ async function userInfo(req: Request, res: Response): Promise<any> {
           return error;
         });
 
-      console.log({ status, charges, shipping });
-
       order.adress = shipping.address;
       order.transactionType = !charges
         ? "Não finalizado"
