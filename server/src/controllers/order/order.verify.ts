@@ -1,5 +1,6 @@
 import axios from "axios";
 import { Request, Response } from "express";
+import { prisma } from "../../prismaFunctions/prisma";
 
 export async function verifyOrder(req: Request, res: Response) {
   const { order_id } = req.params;
@@ -21,13 +22,24 @@ export async function verifyOrder(req: Request, res: Response) {
     const order = await axios
       .request(options)
       .then(function (response) {
-        res.json(response.data);
+        return response.data;
       })
       .catch(function (error) {
-        res.status(400).json(error);
+        throw new Error(error);
       });
-    console.log({ order });
+
+    if (!order.closed) {
+      const findOrder = await prisma.cart.findFirst({
+        where: {
+          idPagarme: order_id,
+        },
+      });
+      await prisma.cart.delete({ where: { id: findOrder.id } });
+    }
+    res.json({ order });
   } catch (error: any) {
     console.log(error);
+
+    res.status(400).json({ error: error.message });
   }
 }

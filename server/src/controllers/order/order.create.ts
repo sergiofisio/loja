@@ -150,8 +150,6 @@ export default async function createOrder(req: Request, res: Response) {
         },
       })
       .then(function (response) {
-        console.log({ response: response.data });
-
         return response.data;
       })
       .catch(function (error) {
@@ -167,9 +165,9 @@ export default async function createOrder(req: Request, res: Response) {
         partnerId: id_parceiro,
       },
     });
-    res.json({ order });
+    return res.json({ order });
   } catch (error: any) {
     console.log(error);
-    res.status(400).json({ error });
+    return res.status(400).json({ error });
   }
 }

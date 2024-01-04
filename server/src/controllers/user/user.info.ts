@@ -66,8 +66,13 @@ async function userInfo(req: Request, res: Response): Promise<any> {
         .catch(function (error) {
           return error;
         });
+
+      console.log({ status, charges, shipping });
+
       order.adress = shipping.address;
-      order.transactionType = charges[0].payment_method;
+      order.transactionType = !charges
+        ? "Não finalizado"
+        : charges[0].payment_method;
       order.status = status;
     }
 

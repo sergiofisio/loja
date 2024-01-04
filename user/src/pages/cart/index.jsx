@@ -40,6 +40,8 @@ export default function Cart() {
   const [checkout, setCheckout] = useState("");
   const [urlCheckout, setUrlCheckout] = useState("");
 
+  console.log({ adressUser });
+
   function calcWeight() {
     let weigth = 0;
     let sum = 0;
@@ -101,7 +103,6 @@ export default function Cart() {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
       });
-      console.log({ frete });
       for (const calculo of frete) {
         if (calculo.name === "PAC") setPac(calculo);
         if (calculo.name === "SEDEX") setSedex(calculo);
@@ -370,7 +371,7 @@ export default function Cart() {
               <tr className="flex justify-center border-b-2 border-greenScale-200">
                 <th className="">TOTAL</th>
               </tr>
-              <tr className="flex justify-between items-center w-full border-grey border-opacity-40 border-b-2">
+              <tr className="flex justify-between items-center w-full border-grey  border-b-2">
                 <th className="w-1/5 border-gray-200 border-r-2">Envio</th>
                 <th className="w-1/5  border-gray-200 border-r-2">Frete</th>
                 <th className="w-1/5  border-gray-200 border-r-2">Produtos</th>
@@ -378,7 +379,7 @@ export default function Cart() {
                 <th className="w-1/5">Total</th>
               </tr>
               <tr className="flex flex-col items-end  font-main text-base">
-                <th className="flex justify-end w-full">
+                <th className="flex justify-end w-full border-gray-400 border-b-2 border-dashed">
                   <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                     Sedex
                   </h2>
@@ -582,6 +583,24 @@ export default function Cart() {
                 <div className="flex gap-6">
                   <Input
                     className={"w-2/3"}
+                    label="Endereço"
+                    placeholder="Endereço"
+                    value={`${adressUser.line_1.split(",")[1]}, ${
+                      adressUser.line_1.split(",")[0]
+                    } - ${adressUser.line_1.split(",")[2]}`}
+                    disabled={true}
+                  />
+                  <Input
+                    className={"w-1/3"}
+                    label="Complemento"
+                    placeholder="Complemento"
+                    value={adressUser.line_2}
+                    disabled={true}
+                  />
+                </div>
+                <div className="flex gap-6">
+                  <Input
+                    className={"w-2/3"}
                     label="Cidade"
                     placeholder="Cidade"
                     value={adressUser.city}
@@ -595,22 +614,7 @@ export default function Cart() {
                     disabled={true}
                   />
                 </div>
-                <div className="flex gap-6">
-                  <Input
-                    className={"w-2/3"}
-                    label="Endereço"
-                    placeholder="Endereço"
-                    value={adressUser.line_1}
-                    disabled={true}
-                  />
-                  <Input
-                    className={"w-1/3"}
-                    label="Complemento"
-                    placeholder="Complemento"
-                    value={adressUser.line_2}
-                    disabled={true}
-                  />
-                </div>
+
                 <div className="flex flex-col">
                   <label className="cursor-pointer">
                     <input

@@ -245,7 +245,9 @@ export default function Access({ setId, setAdress, setCard }) {
                             <h2>
                               {order.transactionType === "pix"
                                 ? "Pix"
-                                : "Cartão de Crédito"}
+                                : order.transactionType === "Não finalizado"
+                                  ? "Não finalizado"
+                                  : "Cartão de Crédito"}
                             </h2>
                           </td>
                           <td
