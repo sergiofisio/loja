@@ -755,7 +755,6 @@ export default function Cart() {
               className="z-50 w-full h-[95%]"
               src={urlCheckout}
               title="Payment"
-              sandbox="allow-scripts allow-same-origin"
             ></iframe>
           </div>
         </div>
