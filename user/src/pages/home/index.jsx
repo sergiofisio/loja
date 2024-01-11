@@ -14,6 +14,7 @@ const Payment = lazy(() => import("../../components/payment"));
 const Sellers = lazy(() => import("../../components/sellers"));
 const Testimonials = lazy(() => import("../../components/testimonials"));
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { PulseLoader } from "react-spinners";
 
 export default function Home({ login, setLogin, singIn, setSingIn }) {
   const navigate = useNavigate();
