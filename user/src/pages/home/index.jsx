@@ -1,4 +1,4 @@
-import { useEffect, useState, lazy, Suspense } from "react";
+import { useEffect, useState, Suspense } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../Service/api";
 import leaftArrow from "../../assets/home/leaf-arrow.svg";
@@ -7,12 +7,12 @@ import leaft from "../../assets/home/leaf.svg";
 import remedy from "../../assets/home/remedy.svg";
 import logo from "../../assets/logo/logo.svg";
 import user from "../../assets/user/User.svg";
-const Benefits = lazy(() => import("../../components/benefits"));
-const Button = lazy(() => import("../../components/button"));
-const Form = lazy(() => import("../../components/form"));
-const Payment = lazy(() => import("../../components/payment"));
-const Sellers = lazy(() => import("../../components/sellers"));
-const Testimonials = lazy(() => import("../../components/testimonials"));
+import Benefits from "../../components/benefits";
+import Button from "../../components/button";
+import Form from "../../components/form";
+import Payment from "../../components/payment";
+import Sellers from "../../components/sellers";
+import Testimonials from "../../components/testimonials";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { PulseLoader } from "react-spinners";
 
