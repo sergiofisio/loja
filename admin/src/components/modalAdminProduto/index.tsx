@@ -16,7 +16,7 @@ type InfoProdutoType = {
   category: number;
   image: string;
   stock: number;
-  [key: string]: any;
+  [key: string]: string | number;
 };
 
 export default function ModalAdminProduto({
@@ -34,7 +34,7 @@ export default function ModalAdminProduto({
     name: produto.name || "",
     description: produto.description || "",
     weight: produto.weight || "",
-    price: produto.price || "",
+    price: produto.price / 100 || "",
     category: produto.categoryId || "",
     image: produto.image || "",
     stock: produto.stock || "",

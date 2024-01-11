@@ -44,6 +44,7 @@ function App() {
       if (error.response.status === 408) {
         await AsyncStorage.clear();
         toastFail("Sessão expirada, faca login novamente");
+        return <Navigate to="/" />;
       }
     }
   }

@@ -33,6 +33,7 @@ export default function Access({ setId, setAdress, setCard }) {
     orders: [],
   });
   const [orders, setOrders] = useState([]);
+  const [loading, setLoading] = useState(true);
 
   const [showModalOrder, setShowModalOrder] = useState("");
   const [showModal, setShowModal] = useState("");
@@ -80,6 +81,7 @@ export default function Access({ setId, setAdress, setCard }) {
         )}-${user.phones.mobile_phone.number.slice(5)}`,
       });
       setOrders(orders);
+      setLoading(false);
     } catch (error) {
       console.log(error);
       if (error.response.status === 408) {
@@ -213,7 +215,7 @@ export default function Access({ setId, setAdress, setCard }) {
                     </th>
                   </tr>
                 </thead>
-                {!orders.length ? (
+                {loading ? (
                   <div className="flex flex-col justify-center items-center w-full">
                     <DotLoader color="#3bb77e" />
                     <h2>Carregando...</h2>

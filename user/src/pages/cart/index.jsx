@@ -42,6 +42,7 @@ export default function Cart() {
   const [urlCheckout, setUrlCheckout] = useState("");
   const [allProducts, setAllProducts] = useState([]);
   const [init, setInit] = useState(false);
+  const [code, setCode] = useState("");
 
   function calcWeight() {
     let weigth = 0;
@@ -55,12 +56,8 @@ export default function Cart() {
     return String(weigth);
   }
 
-  function sumValueFrete(inputString, frete) {
-    const numericString = frete.replace(/[^\d,]/g, "");
-    const numericValue = Math.round(
-      parseFloat(numericString.replace(",", "."))
-    );
-    return (numericValue / 100) * 1.2 + inputString;
+  function sumValueFrete(value, frete) {
+    return frete * 1.2 + value;
   }
 
   function changeQtd(e, id, operation) {
@@ -101,15 +98,46 @@ export default function Cart() {
       setAdressUser(adresses[0]);
 
       const {
-        data: { frete },
-      } = await axios.get(`/frete/${adresses[0].zip_code}`, {
-        headers: {
-          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        data: { fretes },
+      } = await axios.post(
+        `/frete/${adresses[0].zip_code}`,
+        {
+          amount:
+            JSON.parse(localStorage.getItem("cart")).reduce(
+              (total, item) => total + item.product.preco * item.quantidade,
+              0
+            ) / 100,
+          weight: Number(calcWeight()) / 1000,
+          document: user.document,
+          name: user.name,
+          email: user.email,
+          phone: `${user.phones.mobile_phone.area_code}${user.phones.mobile_phone.number}`,
+          street: adresses[0].line_1.split(",")[1],
+          number: adresses[0].line_1.split(",")[0],
+          district: adresses[0].line_1.split(",")[2],
+          city: adresses[0].city,
+          state: adresses[0].state,
         },
-      });
-      for (const calculo of frete) {
-        if (calculo.name === "PAC") setPac(calculo);
-        if (calculo.name === "SEDEX") setSedex(calculo);
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
+      );
+
+      for (const frete of fretes) {
+        if (frete.service === "pac") {
+          setPac({
+            date: Number(frete.deliveryEstimate.slice(2, 3)),
+            price: frete.totalPrice,
+          });
+        }
+        if (frete.service === "sedex") {
+          setSedex({
+            date: Number(frete.deliveryEstimate.slice(2, 3)),
+            price: frete.totalPrice,
+          });
+        }
       }
     } catch (error) {
       console.log(error);
@@ -129,8 +157,6 @@ export default function Cart() {
     const data = moment().format("DD/MM/YYYY, h:mm:ss");
 
     frete = Math.round(frete * 100);
-
-    console.log(value, frete, Math.round(value * 100 + frete));
 
     try {
       const order = await axios.post(
@@ -155,6 +181,8 @@ export default function Cart() {
           installments: 10,
           id_parceiro,
           parceiro,
+          shippingType: selectedOption,
+          code,
         },
         localconfig.getAuth(localStorage.getItem("token"))
       );
@@ -168,6 +196,7 @@ export default function Cart() {
   }
 
   async function verifyPayment() {
+    console.log("teste");
     try {
       const response = await axios.get(`/verifyOrder/${order.id}`, {
         headers: {
@@ -283,12 +312,19 @@ export default function Cart() {
   }
 
   useEffect(() => {
-    getFrete();
-    calcWeight();
+    async function verifyCart() {
+      if (!(await AsyncStorage.getItem("cart"))) {
+        navigate("/home");
+        return;
+      }
+      getFrete();
+      calcWeight();
 
-    products();
-    auth();
-    setInit(true);
+      products();
+      auth();
+      setInit(true);
+    }
+    verifyCart();
   }, [changeProductCart]);
 
   return (
@@ -404,99 +440,74 @@ export default function Cart() {
                       <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                         Sedex
                       </h2>
-                      {sedex.error ? (
-                        <>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            indisponível para este CEP
-                          </h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
-                          <h2 className="w-1/5 font-normal"></h2>
-                        </>
-                      ) : (
-                        <>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            {sedex
-                              ? `${(sedex.price * 1.2).toLocaleString("pt-br", {
-                                  style: "currency",
-                                  currency: "BRL",
-                                })}`
-                              : ""}
-                          </h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            {value.toLocaleString("pt-br", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}
-                          </h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            {sedex
-                              ? `${
-                                  Number(sedex.custom_delivery_time) + 2
-                                } dia(s)`
-                              : ""}
-                          </h2>
-                          <h2 className="w-1/5 font-normal">
-                            {sedex
-                              ? `${sumValueFrete(
-                                  value,
-                                  sedex.price
-                                ).toLocaleString("pt-br", {
-                                  style: "currency",
-                                  currency: "BRL",
-                                })}`
-                              : ""}
-                          </h2>
-                        </>
-                      )}
+
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {sedex
+                          ? `${(Number(sedex.price) * 1.2).toLocaleString(
+                              "pt-br",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}`
+                          : ""}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {value.toLocaleString("pt-br", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {sedex ? `${Number(sedex.date) + 2} dia(s)` : ""}
+                      </h2>
+                      <h2 className="w-1/5 font-normal">
+                        {sedex
+                          ? `${sumValueFrete(value, sedex.price).toLocaleString(
+                              "pt-br",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}`
+                          : ""}
+                      </h2>
                     </th>
                     <th className="flex justify-end w-full">
                       <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                         PAC
                       </h2>
-                      {pac.error ? (
-                        <>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            indisponível para este CEP
-                          </h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal"></h2>
-                          <h2 className="w-1/5 font-normal"></h2>
-                        </>
-                      ) : (
-                        <>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            {pac
-                              ? `${(pac.price * 1.2).toLocaleString("pt-br", {
-                                  style: "currency",
-                                  currency: "BRL",
-                                })}`
-                              : ""}
-                          </h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            {value.toLocaleString("pt-br", {
-                              style: "currency",
-                              currency: "BRL",
-                            })}
-                          </h2>
-                          <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                            {pac
-                              ? `${Number(pac.custom_delivery_time) + 2} dia(s)`
-                              : ""}
-                          </h2>
-                          <h2 className="w-1/5 font-normal">
-                            {pac
-                              ? `${sumValueFrete(
-                                  value,
-                                  pac.price
-                                ).toLocaleString("pt-br", {
-                                  style: "currency",
-                                  currency: "BRL",
-                                })}`
-                              : ""}
-                          </h2>
-                        </>
-                      )}
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {pac
+                          ? `${(Number(pac.price) * 1.2).toLocaleString(
+                              "pt-br",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}`
+                          : ""}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {value.toLocaleString("pt-br", {
+                          style: "currency",
+                          currency: "BRL",
+                        })}
+                      </h2>
+                      <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
+                        {pac ? `${Number(pac.date) + 2} dia(s)` : ""}
+                      </h2>
+                      <h2 className="w-1/5 font-normal">
+                        {pac
+                          ? `${sumValueFrete(value, pac.price).toLocaleString(
+                              "pt-br",
+                              {
+                                style: "currency",
+                                currency: "BRL",
+                              }
+                            )}`
+                          : ""}
+                      </h2>
                     </th>
                   </tr>
                 </tbody>
@@ -691,6 +702,7 @@ export default function Cart() {
                         Clique no botão abaixo para realiza o pagamento
                       </h2>
                       <Button
+                        disabled={paymentOk && step === "step2" ? true : false}
                         onClick={createOrder}
                         type="button"
                         text="Pagar"

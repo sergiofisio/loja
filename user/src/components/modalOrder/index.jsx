@@ -1,13 +1,12 @@
 import { useEffect, useState } from "react";
 import closeBtn from "../../assets/closeBtn.svg";
 import axiosPrivate from "../../Service/api";
-import { localconfig } from "../../utils/localConfig";
 import { formatValue } from "../../functions/functions";
 
 export default function ModalOrder({ setShowModalOrder, order }) {
   const [allProducts, setAllProducts] = useState([]);
 
-  console.log(order);
+  console.log({ order });
   async function getAllProducts() {
     try {
       const {
@@ -20,9 +19,7 @@ export default function ModalOrder({ setShowModalOrder, order }) {
   }
 
   function getProduct(id) {
-    console.log(id);
     const product = allProducts.find((product) => product.id === id);
-    console.log(product);
     return product;
   }
 
@@ -104,48 +101,63 @@ export default function ModalOrder({ setShowModalOrder, order }) {
                 <tbody className="w-full flex flex-col  py-2 overflow-y-scroll max-h-[16rem] scrollbar-thin scrollbar-thumb-green">
                   {JSON.parse(order.products).map((item, key) => {
                     return (
-                      console.log(item),
-                      (
-                        <td key={key}>
-                          <td className="flex w-full border-green-200 border-b-2">
-                            <td className=" w-2/3 flex items-center">
-                              {allProducts.length && (
-                                <img
-                                  className="max-h-20"
-                                  src={getProduct(item.code).image}
-                                  alt="img produto"
-                                />
-                              )}
-                              <h2 className=" w-full text-center">
-                                {item.description}
-                              </h2>
-                            </td>
-                            <td className="w-1/6 border-x-2 border-greenScale-200 flex justify-center items-center">
-                              <h2 className="text-center ">{item.quantity}</h2>
-                            </td>
-                            <td className="w-1/6 flex justify-center items-center">
-                              <h2 className=" text-center">
-                                {(
-                                  (item.quantity * item.amount) /
-                                  100
-                                ).toLocaleString("pt-BR", {
-                                  style: "currency",
-                                  currency: "BRL",
-                                })}
-                              </h2>
-                            </td>
-                          </td>
+                      <tr
+                        key={key}
+                        className="flex w-full border-green-200 border-b-2"
+                      >
+                        <td className=" w-2/3 flex items-center">
+                          {allProducts.length && (
+                            <img
+                              className="max-h-20"
+                              src={getProduct(item.code).image}
+                              alt="img produto"
+                            />
+                          )}
+                          <h2 className=" w-full text-center">
+                            {item.description}
+                          </h2>
                         </td>
-                      )
+                        <td className="w-1/6 border-x-2 border-greenScale-200 flex justify-center items-center">
+                          <h2 className="text-center ">{item.quantity}</h2>
+                        </td>
+                        <td className="w-1/6 flex justify-center items-center">
+                          <h2 className=" text-center">
+                            {(
+                              (item.quantity * item.amount) /
+                              100
+                            ).toLocaleString("pt-BR", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}
+                          </h2>
+                        </td>
+                      </tr>
                     );
                   })}
                 </tbody>
               </table>
-              <div className="flex justify-center items-center h-3/6">
-                <td className="text-center text-4xl font-bold font-main">
+              <div className="flex flex-col justify-center items-center h-3/6 gap-4">
+                <div className="flex justify-center items-center gap-5 text-lg">
+                  <h3 className="flex gap-2 font-bold">
+                    Total Produtos:{" "}
+                    <p className="font-normal">
+                      {`${formatValue(
+                        sumValues(JSON.parse(order.products)) / 100
+                      )}
+                        `}
+                    </p>
+                  </h3>
+                  <h3 className="flex gap-2 font-bold">
+                    Frete:{" "}
+                    <p className="font-normal">{`${formatValue(
+                      order.shippingPrice / 100
+                    )}`}</p>
+                  </h3>
+                </div>
+                <h2 className="text-center text-4xl font-bold font-main">
                   {`TOTAL: 
-                ${formatValue(sumValues(JSON.parse(order.products)) / 100)}`}
-                </td>
+                ${formatValue(order.amount / 100)}`}
+                </h2>
               </div>
             </div>
           </div>

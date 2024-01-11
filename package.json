@@ -3,7 +3,8 @@
     "push": "./push.sh",
     "admin": "cd admin && yarn dev",
     "server": "cd server && yarn dev",
-    "user": "cd user && yarn dev"
+    "user": "cd user && yarn dev",
+    "prisma": "cd server && yarn prisma"
   },
   "license": "MIT"
 }

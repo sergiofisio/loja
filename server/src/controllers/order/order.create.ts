@@ -5,6 +5,7 @@ import { prisma } from "./../../prismaFunctions/prisma";
 export default async function createOrder(req: Request, res: Response) {
   const { userId } = req.params;
   let {
+    code,
     address_id,
     line_1,
     line_2,
@@ -23,10 +24,12 @@ export default async function createOrder(req: Request, res: Response) {
     cupom,
     id_parceiro,
     parceiro,
+    shippingType,
   } = req.body;
   const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString(
     "base64"
   );
+  console.log({ amount });
 
   try {
     const products = [];
@@ -163,6 +166,10 @@ export default async function createOrder(req: Request, res: Response) {
         products: JSON.stringify(products),
         date: new Date(),
         partnerId: id_parceiro,
+        shippingType,
+        shippingPrice: frete,
+        code,
+        amount,
       },
     });
     return res.json({ order });

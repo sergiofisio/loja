@@ -55,6 +55,7 @@ export default function Input({
     Cep: string;
     [key: string]: string;
   } = {
+    Valor: "R$ 0.00",
     Preço: "R$ 0.00",
     Cpf: "999.999.999-99",
     Telefone: "(99) 99999-9999",

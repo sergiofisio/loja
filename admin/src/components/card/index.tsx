@@ -9,8 +9,8 @@ export default function Card({
 }) {
   return (
     <div className={classname}>
-      <h2>{text}</h2>
-      <h2>{info}</h2>
+      <h2 className="font-main text-xl text-center">{text}</h2>
+      <h2 className="font-main text-3xl text-center">{info}</h2>
     </div>
   );
 }

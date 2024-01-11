@@ -3,34 +3,107 @@ import { Request, Response } from "express";
 
 export default async function frete(req: Request, res: Response) {
   let { cep } = req.params;
-  cep = cep.replace("-", "");
+  let {
+    amount,
+    weight,
+    document,
+    name,
+    email,
+    phone,
+    street,
+    number,
+    district,
+    city,
+    state,
+  } = req.body;
+
+  console.log({
+    amount,
+    weight,
+    document,
+    name,
+    email,
+    phone,
+    street,
+    number,
+    district,
+    city,
+    state,
+  });
 
   try {
-    const frete = await axios
-      .request({
-        method: "POST",
-        url: `${process.env.MELHOR_URL}/shipment/calculate`,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.MELHOR_TOKEN}`,
-          "User-Agent": "Green Life greenlifebiointegral@gmail.com)",
+    const data = JSON.stringify({
+      origin: {
+        name: "Green Life",
+        company: "Green Life",
+        email: "contato@greenlifesaude.com.br",
+        phone: "11965932620",
+        street: "Rua Municipal",
+        number: "507",
+        district: "Centro",
+        city: "São Bernardo do Campo",
+        state: "SP",
+        country: "BR",
+        postalCode: "09710-212",
+      },
+      destination: {
+        name,
+        email,
+        phone,
+        street,
+        number,
+        district,
+        city,
+        state,
+        country: "BR",
+        postalCode: cep,
+      },
+      packages: [
+        {
+          content: `Produtos de ${name}`,
+          amount: 1,
+          type: "box",
+          weight,
+          insurance: amount,
+          declaredValue: amount,
+          weightUnit: "KG",
+          lengthUnit: "CM",
+          dimensions: {
+            length: 11,
+            width: 16,
+            height: 10,
+          },
         },
-        data: {
-          from: { postal_code: "09710212" },
-          to: { postal_code: cep },
-        },
-      })
+      ],
+      shipment: {
+        carrier: "correios",
+        type: 1,
+      },
+      settings: {
+        currency: "BRL",
+      },
+    });
+
+    const config = {
+      method: "post",
+      maxBodyLength: Infinity,
+      url: `${process.env.ENVIA_URL}/ship/rate/`,
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${process.env.ENVIA_TOKEN}`,
+      },
+      data: data,
+    };
+    await axios(config)
       .then(function (response) {
-        return response.data;
+        return res.json({ fretes: response.data.data });
       })
       .catch(function (error) {
-        return error;
+        console.log(error);
       });
-
-    res.json({ frete });
   } catch (error: any) {
     console.log(error);
+
     res.status(500).json({ error: "Erro interno" });
   }
 }

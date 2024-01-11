@@ -3,6 +3,7 @@ import Seller from "../products";
 import { PulseLoader } from "react-spinners";
 
 export default function Sellers({ products }) {
+  console.log(products);
   return (
     <section className="flex flex-col gap-20 px-32 h-full">
       {!products ? (
@@ -24,6 +25,7 @@ export default function Sellers({ products }) {
                         img={info.image}
                         name={info.name}
                         priceFull={formatValue(info.price / 100)}
+                        stock={info.stock}
                       />
                     </div>
                   );

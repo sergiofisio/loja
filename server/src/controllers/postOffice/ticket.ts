@@ -9,154 +9,102 @@ import { prisma } from "../user/user.register";
 //         ]
 
 export default async function ticket(req: Request, res: Response) {
-  const {
-    id,
+  let {
     name,
     phone,
     email,
     document,
-    address,
+    amount,
+    street,
     number,
-    complement,
     district,
     city,
-    country,
     zip_code,
     state,
-    insurance_value,
-    products,
     weight,
     service,
   } = req.body;
 
-  console.log(id);
+  zip_code = zip_code.replace("-", "");
+  document = document.replace(".", "").replace(".", "").replace("-", "");
 
-  try {
-    const productsInfo = [];
-
-    for (const product of products) {
-      productsInfo.push({
-        name: product.description,
-        quantity: product.quantity,
-        unitary_value: product.amount / 100,
-      });
-    }
-
-    const gerateTicket = await axios
-      .request({
-        method: "POST",
-        url: `${process.env.MELHOR_URL}/cart`,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.MELHOR_TOKEN}`,
-          "User-Agent": "Green Life (contato@greenlifesaude.com.br)",
+  const data = JSON.stringify({
+    origin: {
+      name: "Green Life",
+      company: "Green Life",
+      email: "contato@greenlifesaude.com.br",
+      phone: "11965932620",
+      street: "Rua Municipal",
+      number: "507",
+      district: "Centro",
+      city: "São Bernardo do Campo",
+      state: "SP",
+      country: "BR",
+      postalCode: "09710-212",
+    },
+    destination: {
+      name,
+      email,
+      phone,
+      street,
+      number,
+      district,
+      city,
+      state,
+      country: "BR",
+      postalCode: zip_code,
+    },
+    packages: [
+      {
+        content: `Produtos de ${name}`,
+        amount: 1,
+        type: "box",
+        weight,
+        insurance: amount,
+        declaredValue: amount,
+        weightUnit: "KG",
+        lengthUnit: "CM",
+        dimensions: {
+          length: 11,
+          width: 16,
+          height: 10,
         },
-        data: {
-          from: {
-            name: "Green Life",
-            phone: "+55 11 96593-2620",
-            email: "contato@greenlifegreenlifesaude.com.br",
-            company_document: "52.257.511/0001-97",
-            state_register: "799.775.920.110",
-            address: "Rua Municipal",
-            complement: "apto 102",
-            number: "507",
-            district: "Centro",
-            city: "São Bernardo do Campo",
-            country_id: "BR",
-            postal_code: "09710212",
-            state_abbr: "SP",
-          },
-          to: {
-            name,
-            phone: `${phone.slice(0, 2)} ${phone.slice(2, 4)} ${phone.slice(
-              4,
-              9
-            )}-${phone.slice(9)}`,
-            email,
-            document,
-            address,
-            number,
-            complement,
-            district,
-            city,
-            country_id: country,
-            postal_code: zip_code,
-            state_abbr: state,
-          },
-          options: {
-            receipt: false,
-            own_hand: false,
-            reverse: false,
-            non_commercial: true,
-            insurance_value,
-          },
-          service: service === "PAC" ? 1 : 2,
-          products: productsInfo,
-          volumes: [{ height: 11, width: 11, length: 16, weight }],
-        },
-      })
-      .then(function (response) {
-        return response.data;
-      })
-      .catch(function (error) {
-        console.log(error);
+      },
+    ],
+    shipment: {
+      carrier: "correios",
+      service,
+      type: 1,
+    },
+    settings: {
+      printFormat: "PDF",
+      printSize: "STOCK_4X6",
+    },
+  });
 
-        throw new Error(error);
-      });
+  const config = {
+    method: "post",
+    maxBodyLength: Infinity,
+    url: `https://api.envia.com/ship/generate/`,
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.ENVIA_TOKEN}`,
+    },
+    data: data,
+  };
+  await axios(config)
+    .then(function (response) {
+      console.log(response.data);
 
-    await axios
-      .request({
-        method: "POST",
-        url: `${process.env.MELHOR_URL}/shipment/checkout`,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.MELHOR_TOKEN}`,
-          "User-Agent": "Green Life (contato@greenlifesaude.com.br)",
-        },
-        data: { orders: [gerateTicket.id] },
-      })
-      .then(function (response) {
-        return response.data;
-      })
-      .catch(function (error) {
-        console.log(error);
-
-        throw new Error(error);
-      });
-
-    const url = await axios
-      .request({
-        method: "POST",
-        url: `${process.env.MELHOR_URL}/shipment/preview`,
-        headers: {
-          Accept: "application/json",
-          "Content-Type": "application/json",
-          Authorization: `Bearer ${process.env.MELHOR_TOKEN}`,
-          "User-Agent": "Green Life (contato@greenlifesaude.com.br)",
-        },
-        data: { orders: [gerateTicket.id] },
-      })
-      .then(function (response) {
-        return response.data.url;
-      })
-      .catch(function (error) {
-        console.error(error);
-        throw new Error(error);
-      });
-
-    console.log(url);
-
-    await prisma.cart.update({
-      where: { id },
-      data: { ticketUrl: url },
+      // return res.json({ fretes: response.data.data });
+    })
+    .catch(function (error) {
+      console.log(error);
     });
 
-    res.json({ url });
-  } catch (error) {
-    console.log(error);
+  try {
+  } catch (error: any) {
+    console.log(error.response.data);
 
     res.json({ error: "erro interno" });
   }

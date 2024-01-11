@@ -101,7 +101,7 @@ export default function ModalUser({
             </div>
             <div>
               <h2>Endereço</h2>
-              <div className="flex flex-col items-start gap-3 justify-center w-80 bg-green border-green border-solid rounded-b-xl rounded-r-xl border-4 cursor-pointer p-4 h-full">
+              <div className="flex flex-col items-start gap-3 justify-center w-80 bg-green border-green border-solid rounded-b-xl rounded-r-xl border-4 p-4 h-full">
                 <h2 className="font-main text-white text-xl font-medium">
                   {` ${user.address.line_1.split(",")[1]},  ${
                     user.address.line_1.split(",")[0]
@@ -144,7 +144,7 @@ export default function ModalUser({
               {sort.slice(begin, begin + 10).map((order: any, key: any) => {
                 return (
                   <div
-                    className="flex items-center border-b-2 border-dashed border-b-green h-7"
+                    className="flex items-center border-b-2 border-dashed border-b-green h-7 cursor-pointer"
                     key={key}
                     onClick={() => {
                       setShowOrderInfo(order);

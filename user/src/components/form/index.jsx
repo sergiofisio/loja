@@ -2,7 +2,6 @@ import { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../Service/api";
 import leaf from "../../assets/home/leaf-mini.svg";
-import success from "../../assets/success-icon.svg";
 import { toastFail, toastSuccess } from "../../context/toast";
 import { validadeInputs } from "../../functions/errorTreatment";
 import Button from "../button";
@@ -111,6 +110,7 @@ export default function Form({ login, setLogin, setSingIn }) {
   }
 
   async function handleRegistration() {
+    console.log(user.password, user.confPassword);
     if (!user.password) {
       return toastFail("O campo Senha é obrigatório");
     }

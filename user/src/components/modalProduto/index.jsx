@@ -7,7 +7,6 @@ export default function ModalProdutos({
   setModalProduto,
   handleAddProduct,
 }) {
-  console.log({ produto });
   return (
     <div className="flex flex-col justify-center items-center bg-bgModal fixed top-0 w-full h-full z-50">
       <div
@@ -34,7 +33,14 @@ export default function ModalProdutos({
               alt=""
             />
             <h2 className="flex justify-center items-center gap-2 text-black font-main font-bold text-2xl uppercase w-full h-full">
-              Preço: <span className="text-green">{formatValue(produto.promotion ? produto.promotionPrice / 100 : produto.price / 100)}</span>
+              Preço:{" "}
+              <span className="text-green">
+                {formatValue(
+                  produto.promotion
+                    ? produto.promotionPrice / 100
+                    : produto.price / 100
+                )}
+              </span>
             </h2>
           </div>
         </div>
@@ -44,13 +50,17 @@ export default function ModalProdutos({
             <h2 className="font-bold">{produto.name}</h2>
             <div className="overflow-y-scroll h-full ">
               {produto.description.split("\n").map((paragraph, key) => {
-                return <p className="text-base" key={key}>{paragraph}</p>
+                return (
+                  <p className="text-base" key={key}>
+                    {paragraph}
+                  </p>
+                );
               })}
             </div>
           </div>
 
           <Button
-            onClick={e => handleAddProduct(e, produto)}
+            onClick={(e) => handleAddProduct(e, produto)}
             type="button"
             className={"bg-green min-h-[5rem] rounded-r-2xl rounded-bl-3xl"}
             text="Adicionar"

@@ -6,17 +6,9 @@ CREATE TABLE "user" (
     "document" TEXT NOT NULL,
     "password" TEXT NOT NULL,
     "admin" BOOLEAN NOT NULL DEFAULT false,
-    "lostPassword" BOOLEAN DEFAULT false,
+    "lostPassword" TEXT,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
-);
-
--- CreateTable
-CREATE TABLE "adress" (
-    "id" TEXT NOT NULL,
-    "userId" TEXT NOT NULL,
-
-    CONSTRAINT "adress_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateTable
@@ -30,6 +22,12 @@ CREATE TABLE "cart" (
     "cartRecoreEmail" INTEGER NOT NULL DEFAULT 0,
     "cartRecover" BOOLEAN NOT NULL DEFAULT false,
     "partnerId" INTEGER,
+    "shippingType" TEXT NOT NULL DEFAULT 'PAC',
+    "code" TEXT,
+    "shippingPrice" INTEGER NOT NULL,
+    "amount" INTEGER NOT NULL,
+    "trackingCode" TEXT,
+    "ticketUrl" TEXT,
 
     CONSTRAINT "cart_pkey" PRIMARY KEY ("id")
 );
@@ -39,8 +37,8 @@ CREATE TABLE "product" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "description" TEXT NOT NULL,
-    "price" DOUBLE PRECISION NOT NULL,
-    "promotionPrice" DOUBLE PRECISION NOT NULL,
+    "price" INTEGER NOT NULL,
+    "promotionPrice" INTEGER NOT NULL,
     "weight" INTEGER NOT NULL,
     "promotion" BOOLEAN NOT NULL DEFAULT false,
     "categoryId" INTEGER NOT NULL,
@@ -85,9 +83,6 @@ CREATE UNIQUE INDEX "user_email_key" ON "user"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "user_document_key" ON "user"("document");
-
--- AddForeignKey
-ALTER TABLE "adress" ADD CONSTRAINT "adress_userId_fkey" FOREIGN KEY ("userId") REFERENCES "user"("id") ON DELETE RESTRICT ON UPDATE CASCADE;
 
 -- AddForeignKey
 ALTER TABLE "cart" ADD CONSTRAINT "cart_partnerId_fkey" FOREIGN KEY ("partnerId") REFERENCES "partner"("id") ON DELETE SET NULL ON UPDATE CASCADE;
