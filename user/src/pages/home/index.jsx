@@ -1,4 +1,4 @@
-import { useEffect, useState, Suspense } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "../../Service/api";
 import leaftArrow from "../../assets/home/leaf-arrow.svg";
@@ -94,23 +94,21 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
                 </h2>
               </div>
               <div className="flex items-center gap-7">
-                <Suspense
-                  fallback={
-                    <div className="flex flex-col justify-center items-center w-full h-full">
-                      <div>
-                        <PulseLoader color="#000" />
-                        <h2>Carregando...</h2>
-                      </div>
+                {!init ? (
+                  <div className="flex flex-col justify-center items-center w-full h-full">
+                    <div>
+                      <PulseLoader color="#000" />
+                      <h2>Carregando...</h2>
                     </div>
-                  }
-                >
+                  </div>
+                ) : (
                   <Button
                     onClick={handleBtnClick}
                     type="submit"
                     className="bg-black h-20 text-3xl rounded-r-2xl rounded-bl-3xl"
                     text="Entrar"
                   />
-                </Suspense>
+                )}
                 <h2>10% OFF para novos usuários</h2>
               </div>
             </div>
@@ -149,30 +147,24 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
           />
         </div>
       </section>
-      <Suspense
-        fallback={
-          <div className="flex flex-col justify-center items-center w-full h-full">
-            <div>
-              <PulseLoader color="#000" />
-              <h2>Carregando...</h2>
-            </div>
+      {init ? (
+        <>
+          <Sellers products={infoDb.produtos} />
+          <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
+          <Benefits />
+          {infoDb.depoimentos.length && (
+            <Testimonials testimonials={infoDb.depoimentos} user={user} />
+          )}
+          <Payment />
+        </>
+      ) : (
+        <div className="flex flex-col justify-center items-center w-full h-full">
+          <div>
+            <PulseLoader color="#000" />
+            <h2>Carregando...</h2>
           </div>
-        }
-      >
-        {init ? (
-          <>
-            <Sellers products={infoDb.produtos} />
-            <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
-            <Benefits />
-            {infoDb.depoimentos.length && (
-              <Testimonials testimonials={infoDb.depoimentos} user={user} />
-            )}
-            <Payment />
-          </>
-        ) : (
-          ""
-        )}
-      </Suspense>
+        </div>
+      )}
     </div>
   );
 }
