@@ -77,95 +77,87 @@ function App() {
 
   return (
     <div className="relative flex flex-col items-center w-full">
-      {!initialization ? (
-        <div>
-          <PulseLoader color="#000" />
-        </div>
-      ) : (
-        <>
-          <Header
-            productsCart={productsCart}
-            setShowModal={setShowModal}
-            setLogin={setLogin}
-            login={login}
-          />
-          <AnimatePresence mode="wait">
-            <Routes>
-              <Route element={<LogedUser redirecionarPara={"/home"} />}>
-                <Route path="/confirm/*" element={<Confirm />} />
-                <Route
-                  path="/"
-                  element={
-                    <Home
-                      setLogin={setLogin}
-                      login={login}
-                      setSingIn={setSingIn}
-                      singIn={singIn}
-                    />
-                  }
+      <Header
+        productsCart={productsCart}
+        setShowModal={setShowModal}
+        setLogin={setLogin}
+        login={login}
+      />
+      <AnimatePresence mode="wait">
+        <Routes>
+          <Route element={<LogedUser redirecionarPara={"/home"} />}>
+            <Route path="/confirm/*" element={<Confirm />} />
+            <Route
+              path="/"
+              element={
+                <Home
+                  setLogin={setLogin}
+                  login={login}
+                  setSingIn={setSingIn}
+                  singIn={singIn}
                 />
-                <Route
-                  path="/login"
-                  element={
-                    <Home
-                      setLogin={setLogin}
-                      login={login}
-                      setSingIn={setSingIn}
-                      singIn={singIn}
-                    />
-                  }
+              }
+            />
+            <Route
+              path="/login"
+              element={
+                <Home
+                  setLogin={setLogin}
+                  login={login}
+                  setSingIn={setSingIn}
+                  singIn={singIn}
                 />
-                <Route
-                  path="/register"
-                  element={
-                    <Home
-                      setLogin={setLogin}
-                      login={login}
-                      setSingIn={setSingIn}
-                      singIn={singIn}
-                    />
-                  }
+              }
+            />
+            <Route
+              path="/register"
+              element={
+                <Home
+                  setLogin={setLogin}
+                  login={login}
+                  setSingIn={setSingIn}
+                  singIn={singIn}
                 />
-              </Route>
+              }
+            />
+          </Route>
 
-              <Route element={<ProtectRoutes redirecionarPara={"/"} />}>
-                <Route
-                  path={"/store"}
-                  element={<Store setShowModal={setShowModal} />}
+          <Route element={<ProtectRoutes redirecionarPara={"/"} />}>
+            <Route
+              path={"/store"}
+              element={<Store setShowModal={setShowModal} />}
+            />
+            <Route
+              path={"/home"}
+              element={
+                <Access
+                  id={id}
+                  setId={setId}
+                  adress={adress}
+                  setAdress={setAdress}
+                  card={card}
+                  setCard={setCard}
                 />
-                <Route
-                  path={"/home"}
-                  element={
-                    <Access
-                      id={id}
-                      setId={setId}
-                      adress={adress}
-                      setAdress={setAdress}
-                      card={card}
-                      setCard={setCard}
-                    />
-                  }
+              }
+            />
+            <Route
+              path="/cart"
+              element={
+                <Cart
+                  id={id}
+                  setId={setId}
+                  adress={adress}
+                  card={card}
+                  setProductsCart={setProductsCart}
+                  productsCart={productsCart}
                 />
-                <Route
-                  path="/cart"
-                  element={
-                    <Cart
-                      id={id}
-                      setId={setId}
-                      adress={adress}
-                      card={card}
-                      setProductsCart={setProductsCart}
-                      productsCart={productsCart}
-                    />
-                  }
-                />
-              </Route>
-              <Route path="*" element={<NotFound />} />
-            </Routes>
-          </AnimatePresence>
-          <Footer setShowModalContato={setShowModalContato} />
-        </>
-      )}
+              }
+            />
+          </Route>
+          <Route path="*" element={<NotFound />} />
+        </Routes>
+      </AnimatePresence>
+      <Footer setShowModalContato={setShowModalContato} />
       {showModalContato && (
         <ModalContato setShowModalContato={setShowModalContato} />
       )}
