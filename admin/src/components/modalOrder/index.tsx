@@ -1,13 +1,9 @@
 import closeBtn from "../../assets/closeBtn.svg";
 import { formatValue } from "../../functions/functions";
-import Button from "../button";
-import AsyncStorage from "@react-native-async-storage/async-storage";
-import axios from "../../Service/api";
-import { toastFail } from "../../context/toast";
-import { useEffect, useState } from "react";
+// import { useEffect } from "react";
 
 export default function ModalOrder({
-  user,
+  // user,
   products,
   setShowOrderInfo,
   order,
@@ -17,24 +13,24 @@ export default function ModalOrder({
   setShowOrderInfo: any;
   order: any;
 }) {
-  const [url, setUrl] = useState(order.ticketUrl || "");
+  // const [url, setUrl] = useState(order.ticketUrl || "");
 
   function getProduct(id: string) {
     const product = products.find((product: any) => product.id === id);
     return product;
   }
 
-  function sumWeight(products: any) {
-    let total = 0;
-    JSON.parse(products).forEach((item: any) => {
-      console.log({ item });
+  // function sumWeight(products: any) {
+  //   let total = 0;
+  //   JSON.parse(products).forEach((item: any) => {
+  //     console.log({ item });
 
-      total += item.quantity * getProduct(item.code).weight;
-    });
-    console.log(total);
+  //     total += item.quantity * getProduct(item.code).weight;
+  //   });
+  //   console.log(total);
 
-    return total;
-  }
+  //   return total;
+  // }
 
   function sum(products: any) {
     let total = 0;
@@ -76,9 +72,9 @@ export default function ModalOrder({
   //   setUrl(response.data.url);
   // }
 
-  useEffect(() => {
-    if (url) return;
-  }, [url]);
+  // useEffect(() => {
+  //   if (url) return;
+  // }, [url]);
 
   return (
     <div className="flex flex-col justify-center items-center bg-bgModal absolute top-0 w-full h-full">
@@ -154,9 +150,7 @@ export default function ModalOrder({
                 </h2>
                 <div className="flex justify-center items-center w-full gap-4">
                   <a
-                    className={`w-48 h-10 bg-green rounded-3xl flex items-center justify-center text-white font-special font-medium cursor-pointer gap-4 ${
-                      url && "!cursor-not-allowed !bg-gray-500"
-                    }`}
+                    className={`w-48 h-10 bg-green rounded-3xl flex items-center justify-center text-white font-special font-medium cursor-pointer gap-4`}
                     href="https://shipping.envia.com/generate"
                     target="_blank"
                   >
@@ -173,7 +167,7 @@ export default function ModalOrder({
                     }`}
                     disabled={url ? true : false}
                   /> */}
-                  {url && (
+                  {/* {url && (
                     <a
                       className={`w-48 h-10 bg-green rounded-3xl flex items-center justify-center text-white uppercase ${
                         !url && "!cursor-not-allowed !bg-gray-500"
@@ -183,7 +177,7 @@ export default function ModalOrder({
                     >
                       Abrir Etiqueta
                     </a>
-                  )}
+                  )} */}
                 </div>
               </div>
             </div>
