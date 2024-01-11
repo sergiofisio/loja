@@ -13,7 +13,7 @@ import { GridLoader } from "react-spinners";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalUser from "../../components/modalUser";
 import { Accumulator, Order, Product, User } from "../../interfaces/interface";
-import Button from "../../components/button";
+// import Button from "../../components/button";
 import ModalMelhorEnvio from "../../components/modalMelhorEnvio";
 
 export default function Admin() {
@@ -35,29 +35,29 @@ export default function Admin() {
   const [sum, setSum] = useState(0);
   const [numberSold, setNumberSold] = useState(0);
   const [user, setUser] = useState({ user: "", orders: "" });
-  const [saldo, setSaldo] = useState(0);
+  // const [saldo, setSaldo] = useState(0);
 
-  useEffect(() => {
-    async function getSaldo() {
-      try {
-        const { data } = await axiosPrivate.get("/balance", {
-          headers: {
-            authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-          },
-        });
+  // useEffect(() => {
+  //   async function getSaldo() {
+  //     try {
+  //       const { data } = await axiosPrivate.get("/balance", {
+  //         headers: {
+  //           authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+  //         },
+  //       });
 
-        console.log(data);
+  //       console.log(data);
 
-        // console.log(balance);
+  //       // console.log(balance);
 
-        // setSaldo(balance.balance);
-      } catch (error) {
-        console.log(error);
-      }
-    }
-    // console.log({ saldo });
-    if (!saldo) getSaldo();
-  }, [saldo]);
+  //       // setSaldo(balance.balance);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   }
+  //   // console.log({ saldo });
+  //   if (!saldo) getSaldo();
+  // }, [saldo]);
 
   async function getAllInfoDb() {
     try {
@@ -219,7 +219,7 @@ export default function Admin() {
         <h2 className="text-center font-main text-sm text-[#253D4E] font-medium">{`${
           infoDb.produtos.length ? infoDb.produtos.length : ""
         } produtos cadastrados`}</h2>
-        <div className="flex flex-col items-center gap-4">
+        {/* <div className="flex flex-col items-center gap-4">
           <h2 className="flex flex-col justify-center items-center w-64 rounded-3xl border-green border-2 bg-green text-white">
             Saldo MELHOR ENVIO:{" "}
             <p className="font-main text-3xl font-bold">{formatValue(saldo)}</p>
@@ -231,7 +231,7 @@ export default function Admin() {
             text="Adicionar Saldo"
             onClick={() => setShowModal("saldo")}
           />
-        </div>
+        </div> */}
       </div>
       <div className="w-full">
         {selectSidebar === "dashboard" && (
