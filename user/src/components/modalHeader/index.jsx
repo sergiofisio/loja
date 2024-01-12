@@ -6,8 +6,9 @@ import { useEffect, useState } from "react";
 import { toastFail } from "../../context/toast";
 
 export default function ModalHeader({ setShowModal, showModal }) {
+  const [cart, setCart] = useState(null);
   const navigate = useNavigate();
-  const [cart, setCart] = useState([]);
+
   function handleDeleteProduct(e, id) {
     e.preventDefault();
     e.stopPropagation();
@@ -15,11 +16,13 @@ export default function ModalHeader({ setShowModal, showModal }) {
       (product) => product.product.id !== id
     );
     localStorage.setItem("cart", JSON.stringify(newCart));
+    setCart(newCart.length);
+    if (!newCart.length) {
+      setShowModal(false);
+      localStorage.removeItem("cart");
+    }
   }
 
-  useEffect(() => {
-    setCart(JSON.parse(localStorage.getItem("cart")));
-  }, [cart]);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -37,8 +40,8 @@ export default function ModalHeader({ setShowModal, showModal }) {
           <h2 className="flex justify-center items-center w-full">NOME</h2>
         </div>
         <div className="flex flex-col overflow-y-scroll h-[77%] scrollbar-thin scrollbar-thumb-green">
-          {cart.length ? (
-            cart.map(({ product }, key) => {
+          {localStorage.getItem("cart") ? (
+            JSON.parse(localStorage.getItem("cart")).map(({ product }, key) => {
               return (
                 <div
                   key={key}
