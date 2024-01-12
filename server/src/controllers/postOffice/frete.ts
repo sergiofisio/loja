@@ -17,20 +17,6 @@ export default async function frete(req: Request, res: Response) {
     state,
   } = req.body;
 
-  console.log({
-    amount,
-    weight,
-    document,
-    name,
-    email,
-    phone,
-    street,
-    number,
-    district,
-    city,
-    state,
-  });
-
   try {
     const data = JSON.stringify({
       origin: {

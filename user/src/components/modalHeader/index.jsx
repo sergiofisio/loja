@@ -1,9 +1,25 @@
 import { useNavigate } from "react-router-dom";
+import trash from "../../assets/cart/trash.svg";
 import Button from "../button";
 import { motion } from "framer-motion";
+import { useEffect, useState } from "react";
+import { toastFail } from "../../context/toast";
 
 export default function ModalHeader({ setShowModal, showModal }) {
   const navigate = useNavigate();
+  const [cart, setCart] = useState([]);
+  function handleDeleteProduct(e, id) {
+    e.preventDefault();
+    e.stopPropagation();
+    const newCart = JSON.parse(localStorage.getItem("cart")).filter(
+      (product) => product.product.id !== id
+    );
+    localStorage.setItem("cart", JSON.stringify(newCart));
+  }
+
+  useEffect(() => {
+    setCart(JSON.parse(localStorage.getItem("cart")));
+  }, [cart]);
   return (
     <motion.div
       initial={{ opacity: 0 }}
@@ -21,8 +37,8 @@ export default function ModalHeader({ setShowModal, showModal }) {
           <h2 className="flex justify-center items-center w-full">NOME</h2>
         </div>
         <div className="flex flex-col overflow-y-scroll h-[77%] scrollbar-thin scrollbar-thumb-green">
-          {localStorage.getItem("cart") ? (
-            JSON.parse(localStorage.getItem("cart")).map(({ product }, key) => {
+          {cart.length ? (
+            cart.map(({ product }, key) => {
               return (
                 <div
                   key={key}
@@ -36,6 +52,12 @@ export default function ModalHeader({ setShowModal, showModal }) {
                   <h2 className="flex justify-center items-center w-full">
                     {product.nome}
                   </h2>
+                  <img
+                    src={trash}
+                    alt="icon trash"
+                    className="w-8 h-8 cursor-pointer"
+                    onClick={(e) => handleDeleteProduct(e, product.id)}
+                  />
                 </div>
               );
             })
@@ -54,7 +76,11 @@ export default function ModalHeader({ setShowModal, showModal }) {
                 text="Continuar comprando"
               />
               <Button
-                onClick={e => {
+                onClick={(e) => {
+                  e.preventDefault();
+                  e.stopPropagation();
+                  if (!cart.length)
+                    return toastFail("Seu carrinho esta vazio", 3000);
                   setShowModal(false);
                   navigate("/cart");
                 }}

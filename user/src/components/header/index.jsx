@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import arrowDown from "../../assets/arrow_down.svg";
 import cart from "../../assets/cart/cart.svg";
@@ -36,6 +36,8 @@ export default function Header({
       setShowModal(true);
     }
   }
+
+  useEffect(() => {}, [JSON.parse(localStorage.getItem("cart")).length]);
 
   return (
     <header className="relative flex w-full h-24 py-6 px-8">
@@ -77,31 +79,38 @@ export default function Header({
         ""
       )}
       <div className="flex justify-end w-full gap-10">
-        {localStorage.getItem("cart") ? (
-          <div className="flex items-center h-full gap-3">
-            <div className="relative flex w-full">
-              <img className="w-4/5 h-4/5" src={cart} alt="icon fav" />
-              <h2 className="absolute right-0 top-1 flex items-center justify-center bg-green text-white rounded-full w-5 h-5 font-main">
-                {!localStorage.getItem("cart")
-                  ? 0
-                  : JSON.parse(localStorage.getItem("cart")).length}
+        <div
+          className="flex items-center cursor-pointer"
+          onClick={(e) => handleShowModal(e)}
+        >
+          {JSON.parse(localStorage.getItem("cart")).length ? (
+            <>
+              <h2 className=" text-base font-medium">
+                Finalize suas compras clicando aqui
               </h2>
-            </div>
-            <div className="relative flex items-center">
-              <div
-                onClick={(e) => handleShowModal(e)}
-                className="flex cursor-pointer items-center"
-              >
-                <h2 className="text-[#253d4e] font-main text-base font-medium">
-                  Meu carrinho
-                </h2>
-                <img src={arrowDown} alt="iconArrow" />
+              <div className="flex items-center h-full gap-3">
+                <div className="relative flex w-full">
+                  <img className="w-4/5 h-4/5" src={cart} alt="icon fav" />
+                  <h2 className="absolute right-0 top-1 flex items-center justify-center bg-green text-white rounded-full w-5 h-5 font-main">
+                    {!localStorage.getItem("cart")
+                      ? 0
+                      : JSON.parse(localStorage.getItem("cart")).length}
+                  </h2>
+                </div>
+                <div className="relative flex items-center">
+                  <div className="flex items-center">
+                    <h2 className="text-[#253d4e] font-main text-base font-medium">
+                      Meu carrinho
+                    </h2>
+                    <img src={arrowDown} alt="iconArrow" />
+                  </div>
+                </div>
               </div>
-            </div>
-          </div>
-        ) : (
-          ""
-        )}
+            </>
+          ) : (
+            ""
+          )}
+        </div>
         <div
           className="flex items-center justify-end gap-6 cursor-pointer"
           onClick={(e) => {

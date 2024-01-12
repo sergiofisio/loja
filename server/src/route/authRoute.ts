@@ -18,6 +18,7 @@ import deleteAdresses from "../controllers/adress/adress.delete";
 import ticket from "../controllers/postOffice/ticket";
 import Balance from "../controllers/melhorEvio/balance";
 import PutCredit from "../controllers/melhorEvio/putCredit";
+import cupom from "../controllers/partner/cupom";
 
 const authRoute = require("express").Router();
 const multer = require("../middleware/multer");
@@ -37,6 +38,7 @@ authRoute.get("/admin/:id", userAdmin);
 authRoute.get("/verifyOrder/:order_id", verifyOrder);
 authRoute.get("/getOrders/:customer_id", getAllOrders);
 authRoute.get("/balance", Balance);
+authRoute.get("/cupom/:code", cupom);
 authRoute.post("/frete/:cep", frete);
 authRoute.post("/upload", multer.single("file"), uploadImg);
 authRoute.post("/createProduct", createProduct);

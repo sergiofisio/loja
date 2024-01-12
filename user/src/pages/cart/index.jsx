@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { localconfig } from "../../utils/localConfig";
+import arrowRight from "../../assets/access/ArrowRight.svg";
 import axios from "../../Service/api";
 import trash from "../../assets/cart/trash.svg";
 import cart from "../../assets/cart/cart-green.svg";
@@ -35,7 +36,6 @@ export default function Cart() {
   const [selectedOption, setSelectedOption] = useState("Sedex");
   const [cupom, setCupom] = useState("");
   const [id_parceiro, setId_parceiro] = useState(null);
-  const [parceiro, setParceiro] = useState("");
   const [paymentOk, setPaymentOk] = useState(false);
   const [order, setOrder] = useState("");
   const [checkout, setCheckout] = useState("");
@@ -43,6 +43,7 @@ export default function Cart() {
   const [allProducts, setAllProducts] = useState([]);
   const [init, setInit] = useState(false);
   const [code, setCode] = useState("");
+  const [discount, setDiscount] = useState(false);
 
   function calcWeight() {
     let weigth = 0;
@@ -180,7 +181,6 @@ export default function Cart() {
           cupom,
           installments: 10,
           id_parceiro,
-          parceiro,
           shippingType: selectedOption,
           code,
         },
@@ -196,7 +196,6 @@ export default function Cart() {
   }
 
   async function verifyPayment() {
-    console.log("teste");
     try {
       const response = await axios.get(`/verifyOrder/${order.id}`, {
         headers: {
@@ -224,9 +223,14 @@ export default function Cart() {
     }
   }
 
-  async function handleChangeStep(e) {
+  async function handleChangeStep(e, type) {
     e.preventDefault();
     e.stopPropagation();
+
+    if (type === "prev" && step === "step2") {
+      setStep("step1");
+      return;
+    }
 
     if (step === "step1") {
       const options = {
@@ -307,7 +311,30 @@ export default function Cart() {
       });
       setAllProducts(products);
     } catch (error) {
-      console.log(error);
+      toastFail(error.response.data.error, 3000);
+    }
+  }
+
+  async function handleCupom(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    try {
+      if (!cupom)
+        throw new Error("Se tiver um cupom de desconto, preencha o campo");
+      if (discount) throw new Error("Você so pode usar um cupom de desconto");
+      const { data } = await axios.get(`/cupom/${cupom.toLowerCase()}`, {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
+      });
+      if (data.cupom) {
+        setDiscount(true);
+        console.log(Math.round(value * 0.9));
+        return setValue(Math.round(value * 0.9));
+      }
+    } catch (error) {
+      if (error.response) return toastFail(error.response.data.error, 3000);
+      else toastFail(error.message, 3000);
     }
   }
 
@@ -348,6 +375,21 @@ export default function Cart() {
           />
           <div className="flex flex-col w-1/3 min-h-full gap-2 m-4">
             <div className="flex justify-between px-4">
+              <div
+                onClick={() => {
+                  navigate("/store");
+                }}
+                className="flex items-center gap-4 cursor-pointer"
+              >
+                <img
+                  className="w-8 h-8"
+                  src={arrowRight}
+                  alt="icon Arrow rigth"
+                />
+                <h1 className="font-main text-lg font-semibold">
+                  Ir para a loja
+                </h1>
+              </div>
               <h1 className="font-main text-5xl text-green font-semibold">
                 Carrinho
               </h1>
@@ -512,6 +554,20 @@ export default function Cart() {
                   </tr>
                 </tbody>
               </table>
+              <div className="flex items-end justify-center gap-4">
+                <Input
+                  className="w-1/2 !font-bold "
+                  label="Cupom"
+                  set={(e) => setCupom(e.target.value)}
+                  value={cupom}
+                />
+                <Button
+                  className="!w-20 h-12 rounded-3xl bg-green"
+                  type="button"
+                  text="Aplicar"
+                  onClick={handleCupom}
+                />
+              </div>
             </div>
           </div>
           <div className="flex flex-col items-start w-2/3 min-h-full p-8 gap-12">
@@ -770,10 +826,18 @@ export default function Cart() {
                     </h2>
                   </div>
                 )}
-                <div className="flex justify-center">
+                <div className="flex justify-center gap-3">
+                  {step === "step2" && (
+                    <Button
+                      onClick={(e) => handleChangeStep(e, "prev")}
+                      className={`bg-black w-56 py-5 px-10 rounded-r-3xl rounded-bl-3xl text-2xl transition-all ease-in-out duration-500`}
+                      type={"button"}
+                      text="voltar"
+                    />
+                  )}
                   <Button
                     disabled={!paymentOk && step === "step2" ? true : false}
-                    onClick={handleChangeStep}
+                    onClick={(e) => handleChangeStep(e, "next")}
                     className={`${
                       !paymentOk && step === "step2"
                         ? "bg-gray-400"

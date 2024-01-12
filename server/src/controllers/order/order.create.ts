@@ -23,13 +23,11 @@ export default async function createOrder(req: Request, res: Response) {
     compra,
     cupom,
     id_parceiro,
-    parceiro,
     shippingType,
   } = req.body;
   const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString(
     "base64"
   );
-  console.log({ amount });
 
   try {
     const products = [];
