@@ -17,6 +17,7 @@ export default function Header({
   const navigate = useNavigate();
   const [selectInput, setSelectInput] = useState("Todos");
   const [showModalHeader, setShowModalHeader] = useState(false);
+  const [cart, setCart] = useState(null)
 
   function handleClickLogo(e) {
     e.preventDefault();
@@ -37,7 +38,9 @@ export default function Header({
     }
   }
 
-  useEffect(() => {}, [JSON.parse(localStorage.getItem("cart")).length]);
+  useEffect(() => {
+     if(!cart) setCart(productsCart.length)
+  }, [cart]);
 
   return (
     <header className="relative flex w-full h-24 py-6 px-8">
@@ -83,7 +86,7 @@ export default function Header({
           className="flex items-center cursor-pointer"
           onClick={(e) => handleShowModal(e)}
         >
-          {JSON.parse(localStorage.getItem("cart")).length ? (
+          {cart ? (
             <>
               <h2 className=" text-base font-medium">
                 Finalize suas compras clicando aqui
