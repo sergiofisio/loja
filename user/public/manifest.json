@@ -3,15 +3,15 @@
   "name": "Loja Green life - suplementos para sua saúde",
   "icons": [
     {
-      "src": "../src/assets/logo/logo.svg",
+      "src": "/src/assets/logo/logo.svg",
       "sizes": "192x192",
       "type": "image/svg",
       "purpose": "any maskable"
     }
   ],
-  "start_url": "/",
+  "start_url": "./",
   "background_color": "#FFF",
   "display": "standalone",
-  "scope": "/",
+  "scope": "./",
   "theme_color": "#FFF"
 }
