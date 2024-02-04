@@ -2,9 +2,12 @@
   "scripts": {
     "push": "./push.sh",
     "admin": "cd admin && yarn dev",
+    "dep":"cd server && yarn",
+    "init":"cd server && yarn build && cd dist && pm2 start index.js --name loja",
     "server": "cd server && yarn dev",
     "user": "cd user && yarn dev",
-    "prisma": "cd server && yarn prisma"
+    "prisma": "cd server && yarn prisma",
+    "seed": "cd server && yarn seed"
   },
   "license": "MIT"
 }
