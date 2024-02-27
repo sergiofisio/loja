@@ -1,5 +1,21 @@
 import { toast } from "react-toastify";
 
+export function toastfy(type, msg, classname, time) {
+  toast[type](msg, {
+    position: "bottom-center",
+    autoClose: time,
+    hideProgressBar: false,
+    pauseOnHover: false,
+    closeOnClick: true,
+    draggable: false,
+    icon: false,
+    closeButton: false,
+    theme: "colored",
+    className: `${classname} w-full h-full !rounded-xl`,
+  });
+}
+
+
 export function toastSuccess(msg, time, position) {
   toast.success(`${msg}`, {
     icon: false,

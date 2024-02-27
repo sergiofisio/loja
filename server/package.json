@@ -20,7 +20,7 @@
     "seed": "node ./prisma/seed.js"
   },
   "dependencies": {
-    "@prisma/client": "^5.8.0",
+    "@prisma/client": "^5.10.2",
     "aws-sdk": "^2.1506.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",

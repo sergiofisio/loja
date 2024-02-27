@@ -2,10 +2,14 @@
   "scripts": {
     "push": "./push.sh",
     "admin": "cd admin && yarn dev",
-    "dep":"cd server && yarn",
-    "aws":"cd server && yarn build && cd dist && pm2 start index.js --name loja",
+    "admin:offline": "cd admin && yarn dev --offline",
+    "dep": "cd server && yarn && cd ../admin && yarn && cd ../user && yarn && cd ..",
+    "dep:offline": "cd server && yarn --offline && cd ../admin && yarn --offline && cd ../user && yarn --offline && cd ..",
+    "aws": "cd server && yarn build && cd dist && pm2 start index.js --name loja",
     "server": "cd server && yarn dev",
+    "server:offline": "cd server && yarn dev --offline",
     "user": "cd user && yarn dev",
+    "user:offline": "cd user && yarn dev --offline",
     "prisma": "cd server && yarn prisma",
     "seed": "cd server && yarn seed"
   },

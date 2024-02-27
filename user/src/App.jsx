@@ -1,5 +1,5 @@
 import { AnimatePresence } from "framer-motion";
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import {
   Navigate,
   Outlet,
@@ -20,7 +20,17 @@ import Cart from "./pages/cart";
 import ModalHeader from "./components/modalHeader";
 import Confirm from "./pages/confirm";
 import ModalContato from "./components/modalContato";
-import { PulseLoader } from "react-spinners";
+import TopBarProgress from "react-topbar-progress-indicator";
+import { AppContext } from "./context/context";
+import { toast } from "react-toastify";
+
+TopBarProgress.config({
+  barColors: {
+    0: "#f00",
+    "1.0": "#0f0",
+  },
+  shadowBlur: 5,
+});
 
 function App() {
   const location = useLocation();
@@ -34,6 +44,25 @@ function App() {
   const [id, setId] = useState("");
   const [initialization, setInitialization] = useState(false);
   const [showModalContato, setShowModalContato] = useState(false);
+  const { isLoading } = useContext(AppContext);
+
+  useEffect(() => {
+    const handleLoading = () => {
+      if (isLoading) {
+        toast.info("Colocando produtos na estante...", {
+          progress: undefined,
+          autoClose: false,
+          closeButton: false,
+          toastId: "loadingToast",
+          theme: "colored",
+        });
+      } else {
+        toast.dismiss("loadingToast");
+      }
+    };
+
+    handleLoading();
+  }, [isLoading]);
 
   function LogedUser({ redirecionarPara }) {
     const isAutheticated = localStorage.getItem("token");
@@ -83,6 +112,12 @@ function App() {
         setLogin={setLogin}
         login={login}
       />
+      {isLoading && (
+        <>
+          <TopBarProgress />
+          <div className="fixed top-0 left-0 z-50 w-full h-full bg-black opacity-50" />
+        </>
+      )}
       <AnimatePresence mode="wait">
         <Routes>
           <Route element={<LogedUser redirecionarPara={"/home"} />}>
