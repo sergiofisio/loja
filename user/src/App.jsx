@@ -76,22 +76,6 @@ function App() {
     return isAutheticated ? <Outlet /> : <Navigate to={redirecionarPara} />;
   }
 
-  async function startDb() {
-    try {
-      await axios.get("/");
-      setInitialization(true);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    if (!initialization) {
-      console.log("OK");
-      startDb();
-    }
-  }, []);
-
   useEffect(() => {
     location.pathname === "/"
       ? (setSingIn(false), setLogin(false))

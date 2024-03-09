@@ -1,0 +1,19 @@
+{
+"category": [
+	{
+		"id" : 1,
+		"name" : "Suplemento"
+	},
+	{
+		"id" : 2,
+		"name" : "Floral"
+	},
+	{
+		"id" : 3,
+		"name" : "Livro"
+	},
+	{
+		"id" : 4,
+		"name" : "Incenso"
+	}
+]}
