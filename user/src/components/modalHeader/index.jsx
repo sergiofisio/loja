@@ -4,6 +4,7 @@ import Button from "../button";
 import { motion } from "framer-motion";
 import { useEffect, useState } from "react";
 import { toastFail } from "../../context/toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ModalHeader({ setShowModal, showModal }) {
   const [cart, setCart] = useState(null);
@@ -22,6 +23,13 @@ export default function ModalHeader({ setShowModal, showModal }) {
       localStorage.removeItem("cart");
     }
   }
+
+  useEffect(() => {
+    async function getLocalStorage() {
+      setCart(await AsyncStorage.getItem("cart"));
+    }
+    getLocalStorage();
+  }, []);
 
   return (
     <motion.div
@@ -82,8 +90,7 @@ export default function ModalHeader({ setShowModal, showModal }) {
                 onClick={(e) => {
                   e.preventDefault();
                   e.stopPropagation();
-                  if (!cart.length)
-                    return toastFail("Seu carrinho esta vazio", 3000);
+                  if (!cart) return toastFail("Seu carrinho esta vazio", 3000);
                   setShowModal(false);
                   navigate("/cart");
                 }}

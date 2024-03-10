@@ -2,93 +2,44 @@ const axios = require("axios");
 
 async function frete(req, res) {
   let { cep } = req.params;
-  let {
-    amount,
-    weight,
-    document,
-    name,
-    email,
-    phone,
-    street,
-    number,
-    district,
-    city,
-    state,
-  } = req.body;
+  let { amount, document, cart, name } = req.body;
+
+  console.log({ cep, amount, document, cart, name });
 
   try {
-    const data = JSON.stringify({
-      origin: {
-        name: "Green Life",
-        company: "Green Life",
-        email: "contato@greenlifesaude.com.br",
-        phone: "11965932620",
-        street: "Rua Municipal",
-        number: "507",
-        district: "Centro",
-        city: "São Bernardo do Campo",
-        state: "SP",
-        country: "BR",
-        postalCode: "09710-212",
-      },
-      destination: {
-        name,
-        email,
-        phone,
-        street,
-        number,
-        district,
-        city,
-        state,
-        country: "BR",
-        postalCode: cep,
-      },
-      packages: [
-        {
-          content: `Produtos de ${name}`,
-          amount: 1,
-          type: "box",
-          weight,
-          insurance: amount,
-          declaredValue: amount,
-          weightUnit: "KG",
-          lengthUnit: "CM",
-          dimensions: {
-            length: 11,
-            width: 16,
-            height: 10,
-          },
-        },
-      ],
-      shipment: {
-        carrier: "correios",
-        type: 1,
-      },
-      settings: {
-        currency: "BRL",
-      },
-    });
-
-    const config = {
-      method: "post",
-      maxBodyLength: Infinity,
-      url: `${process.env.ENVIA_URL}/ship/rate/`,
-      headers: {
-        "Content-Type": "application/json",
-        Authorization: `Bearer ${process.env.ENVIA_TOKEN}`,
-      },
-      data: data,
-    };
-    await axios(config)
-      .then(function (response) {
-        return res.json({ fretes: response.data.data });
-      })
-      .catch(function (error) {
-        console.log(error);
+    function volumes() {
+      let weight = 0;
+      cart.forEach((product) => {
+        weight += product.product.peso / 1000;
       });
+      console.log(weight);
+      return [{ width: 16, height: 16, length: 16, weight, quantity: 1 }];
+    }
+    volumes();
+    const {
+      data: { code, prices },
+    } = await axios.post(
+      `${process.env.CENTRALURL}/v1/quotation`,
+      {
+        from: "09710212",
+        to: cep,
+        cargo_types: [1],
+        invoice_amount: amount,
+        volumes: volumes(),
+        recipient: { document, name: `Encomenda de ${name}` },
+      },
+      {
+        headers: {
+          Authorization: `${process.env.TOKENCENTRAL}`,
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      }
+    );
+    console.log(code, prices);
+    res.json({ code, prices });
   } catch (error) {
-    console.log(error);
-
+    console.log(error.response.data);
     res.status(500).json({ error: "Erro interno" });
   }
 }

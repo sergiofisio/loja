@@ -45,6 +45,8 @@ export default function Cart() {
   const [code, setCode] = useState("");
   const [discount, setDiscount] = useState(false);
 
+  console.log({ sedex, pac });
+
   function calcWeight() {
     let weigth = 0;
     let sum = 0;
@@ -83,6 +85,7 @@ export default function Cart() {
   }
 
   async function getFrete() {
+    const cart = JSON.parse(await AsyncStorage.getItem("cart"));
     try {
       const {
         data: { user, adresses },
@@ -99,25 +102,18 @@ export default function Cart() {
       setAdressUser(adresses[0]);
 
       const {
-        data: { fretes },
+        data: { code, prices },
       } = await axios.post(
-        `/frete/${adresses[0].zip_code}`,
+        `/frete/${adresses[0].zip_code.replace("-", "")}`,
         {
           amount:
             JSON.parse(localStorage.getItem("cart")).reduce(
               (total, item) => total + item.product.preco * item.quantidade,
               0
             ) / 100,
-          weight: Number(calcWeight()) / 1000,
+          cart,
           document: user.document,
           name: user.name,
-          email: user.email,
-          phone: `${user.phones.mobile_phone.area_code}${user.phones.mobile_phone.number}`,
-          street: adresses[0].line_1.split(",")[1],
-          number: adresses[0].line_1.split(",")[0],
-          district: adresses[0].line_1.split(",")[2],
-          city: adresses[0].city,
-          state: adresses[0].state,
         },
         {
           headers: {
@@ -126,17 +122,25 @@ export default function Cart() {
         }
       );
 
-      for (const frete of fretes) {
-        if (frete.service === "pac") {
+      for (const frete of prices) {
+        if (frete.service_type === "PAC") {
           setPac({
-            date: Number(frete.deliveryEstimate.slice(2, 3)),
-            price: frete.totalPrice,
+            date: (() => {
+              let date = new Date();
+              date.setDate(date.getDate() + frete.delivery_time + 2);
+              return date.toLocaleDateString("pt-BR");
+            })(),
+            price: frete.price * 1.1,
           });
         }
-        if (frete.service === "sedex") {
+        if (frete.service_type === "SEDEX") {
           setSedex({
-            date: Number(frete.deliveryEstimate.slice(2, 3)),
-            price: frete.totalPrice,
+            date: (() => {
+              let date = new Date();
+              date.setDate(date.getDate() + frete.delivery_time + 2);
+              return date.toLocaleDateString("pt-BR");
+            })(),
+            price: frete.price * 1.1,
           });
         }
       }
@@ -352,7 +356,7 @@ export default function Cart() {
       setInit(true);
     }
     verifyCart();
-  }, [changeProductCart]);
+  }, []);
 
   return (
     <main className="relative flex justify-center w-full min-h-[calc(100vh-6rem)] p-9">
@@ -474,7 +478,9 @@ export default function Cart() {
                     <th className="w-1/5  border-gray-200 border-r-2">
                       Produtos
                     </th>
-                    <th className="w-1/5  border-gray-200 border-r-2">Tempo</th>
+                    <th className="w-1/5  border-gray-200 border-r-2">
+                      Data estimada de entrega
+                    </th>
                     <th className="w-1/5">Total</th>
                   </tr>
                   <tr className="flex flex-col items-end  font-main text-base">
@@ -501,7 +507,7 @@ export default function Cart() {
                         })}
                       </h2>
                       <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                        {sedex ? `${Number(sedex.date) + 2} dia(s)` : ""}
+                        {sedex ? sedex.date : ""}
                       </h2>
                       <h2 className="w-1/5 font-normal">
                         {sedex
@@ -537,7 +543,7 @@ export default function Cart() {
                         })}
                       </h2>
                       <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                        {pac ? `${Number(pac.date) + 2} dia(s)` : ""}
+                        {pac ? pac.date : ""}
                       </h2>
                       <h2 className="w-1/5 font-normal">
                         {pac

@@ -7,12 +7,10 @@ import App from "./App.jsx";
 import { ContextProvider } from "./context/context.jsx";
 
 ReactDOM.createRoot(document.getElementById("root")).render(
-  <StrictMode>
-    <BrowserRouter>
-      <ContextProvider>
-        <App />
-        <ToastContainer />
-      </ContextProvider>
-    </BrowserRouter>
-  </StrictMode>
+  <BrowserRouter>
+    <ContextProvider>
+      <App />
+      <ToastContainer />
+    </ContextProvider>
+  </BrowserRouter>
 );

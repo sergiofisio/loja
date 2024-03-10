@@ -56,7 +56,6 @@ export default function Access({ setId, setAdress, setCard }) {
           },
         }
       );
-      console.log({ user, adresses, orders });
       if (adresses.length) {
         setAdressUser({
           id: adresses[0].id,
