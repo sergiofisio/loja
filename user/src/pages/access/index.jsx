@@ -56,7 +56,7 @@ export default function Access({ setId, setAdress, setCard }) {
           },
         }
       );
-      if (adresses.length) {
+      if (adresses !== undefined) {
         setAdressUser({
           id: adresses[0].id,
           zip_code: adresses[0].zip_code,

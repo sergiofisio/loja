@@ -25,6 +25,7 @@ import { DotLoader } from "react-spinners";
 
 export default function Cart() {
   const navigate = useNavigate();
+  const [cart, setCart] = useState([]);
   const [userInfo, setUserInfo] = useState("");
   const [sedex, setSedex] = useState("");
   const [pac, setPac] = useState("");
@@ -45,8 +46,6 @@ export default function Cart() {
   const [code, setCode] = useState("");
   const [discount, setDiscount] = useState(false);
 
-  console.log({ sedex, pac });
-
   function calcWeight() {
     let weigth = 0;
     let sum = 0;
@@ -60,7 +59,7 @@ export default function Cart() {
   }
 
   function sumValueFrete(value, frete) {
-    return frete * 1.2 + value;
+    return frete + value;
   }
 
   function changeQtd(e, id, operation) {
@@ -348,15 +347,17 @@ export default function Cart() {
         navigate("/home");
         return;
       }
+      setCart(JSON.parse(await AsyncStorage.getItem("cart")));
       getFrete();
       calcWeight();
 
       products();
       auth();
       setInit(true);
+      console.log({ cart });
     }
     verifyCart();
-  }, []);
+  }, [changeProductCart]);
 
   return (
     <main className="relative flex justify-center w-full min-h-[calc(100vh-6rem)] p-9">
@@ -491,13 +492,10 @@ export default function Cart() {
 
                       <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
                         {sedex
-                          ? `${(Number(sedex.price) * 1.2).toLocaleString(
-                              "pt-br",
-                              {
-                                style: "currency",
-                                currency: "BRL",
-                              }
-                            )}`
+                          ? `${Number(sedex.price).toLocaleString("pt-br", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}`
                           : ""}
                       </h2>
                       <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
@@ -527,13 +525,10 @@ export default function Cart() {
                       </h2>
                       <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
                         {pac
-                          ? `${(Number(pac.price) * 1.2).toLocaleString(
-                              "pt-br",
-                              {
-                                style: "currency",
-                                currency: "BRL",
-                              }
-                            )}`
+                          ? `${Number(pac.price).toLocaleString("pt-br", {
+                              style: "currency",
+                              currency: "BRL",
+                            })}`
                           : ""}
                       </h2>
                       <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">

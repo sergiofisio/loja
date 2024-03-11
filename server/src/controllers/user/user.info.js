@@ -25,6 +25,8 @@ async function userInfo(req, res) {
         return error;
       });
 
+    console.log(id);
+
     delete userInfo.address;
 
     const adresses = await axios
@@ -56,7 +58,7 @@ async function userInfo(req, res) {
           url: `https://api.pagar.me/core/v5/orders/${order.idPagarme}`,
           headers: {
             accept: "application/json",
-            authorization: "Basic c2tfdGVzdF9LZGE1WjE0c2ttVGxQd0JxOg==",
+            authorization: `Basic ${basicAuthorization}`,
           },
         })
         .then(function (response) {
