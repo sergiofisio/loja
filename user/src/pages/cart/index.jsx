@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useCallback, useEffect, useState } from "react";
 import { localconfig } from "../../utils/localConfig";
 import arrowRight from "../../assets/access/ArrowRight.svg";
 import axios from "../../Service/api";
@@ -341,23 +341,27 @@ export default function Cart() {
     }
   }
 
-  useEffect(() => {
-    async function verifyCart() {
-      if (!(await AsyncStorage.getItem("cart"))) {
+  const verifyCart = useCallback(async () => {
+    try {
+      const cartItem = await AsyncStorage.getItem("cart");
+      if (!cartItem) {
         navigate("/home");
         return;
       }
-      setCart(JSON.parse(await AsyncStorage.getItem("cart")));
+      setCart(JSON.parse(cartItem));
       getFrete();
       calcWeight();
-
       products();
       auth();
       setInit(true);
-      console.log({ cart });
+    } catch (error) {
+      console.error("Failed to load cart:", error);
     }
+  }, [navigate, setCart, getFrete, calcWeight, products, auth, setInit]);
+
+  useEffect(() => {
     verifyCart();
-  }, [changeProductCart]);
+  }, []);
 
   return (
     <main className="relative flex justify-center w-full min-h-[calc(100vh-6rem)] p-9">

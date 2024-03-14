@@ -23,6 +23,7 @@ import ModalContato from "./components/modalContato";
 import TopBarProgress from "react-topbar-progress-indicator";
 import { AppContext } from "./context/context";
 import { toast } from "react-toastify";
+import Whatsapp from "./components/whatsapp";
 
 TopBarProgress.config({
   barColors: {
@@ -177,6 +178,7 @@ function App() {
         </Routes>
       </AnimatePresence>
       <Footer setShowModalContato={setShowModalContato} />
+      <Whatsapp />
       {showModalContato && (
         <ModalContato setShowModalContato={setShowModalContato} />
       )}

@@ -7,7 +7,7 @@ import contact from "../../assets/contact.svg";
 import SelectContact from "../input/selectContact";
 import emailjs from "@emailjs/browser";
 import Button from "../button";
-import { toastFail } from "../../context/toast";
+import { toastFail, toastfy } from "../../context/toast";
 import { verifyInputs } from "../../functions/errorTreatment";
 
 export default function ModalContato({ setShowModalContato }) {
@@ -48,6 +48,13 @@ export default function ModalContato({ setShowModalContato }) {
         },
         import.meta.env.VITE_SMTP_EMAIL_PUBLIC_KEY
       );
+      toastfy("success", "Email enviado com sucesso!", "bg-green", 3000);
+      setNome("");
+      setEmail("");
+      setTelefone("");
+      setAssunto("");
+      setPedido("");
+      setMensagem("");
     } catch (error) {
       console.log(error);
     }
@@ -97,7 +104,7 @@ export default function ModalContato({ setShowModalContato }) {
             label="Nome"
             type="text"
             placeholder="Digite seu nome"
-            set={setNome}
+            set={(e) => setNome(e.target.value)}
             value={nome}
             required={true}
           />
@@ -107,7 +114,7 @@ export default function ModalContato({ setShowModalContato }) {
             label="E-mail"
             type="email"
             placeholder="Digite seu email"
-            set={setEmail}
+            set={(e) => setEmail(e.target.value)}
             value={email}
             required={true}
           />
@@ -117,7 +124,7 @@ export default function ModalContato({ setShowModalContato }) {
             label="Telefone"
             type="text"
             placeholder="Digite seu Telefone"
-            set={setTelefone}
+            set={(e) => setTelefone(e.target.value)}
             value={telefone}
             required={true}
           />
@@ -135,7 +142,7 @@ export default function ModalContato({ setShowModalContato }) {
               </label>
               <SelectContact
                 className="font-main font-normal text-black !rounded-xl !border-[#555555] !border-solid !border-2 h-12 w-full "
-                setSelectInput={setAssunto}
+                setSelectInput={(e) => setAssunto(e)}
                 selectInput={assunto}
               />
             </div>
@@ -145,7 +152,7 @@ export default function ModalContato({ setShowModalContato }) {
                 label="Pedido"
                 type="text"
                 placeholder="Codigo do pedido"
-                set={setPedido}
+                set={(e) => setPedido(e.target.value)}
                 value={pedido}
               />
             )}
@@ -160,7 +167,7 @@ export default function ModalContato({ setShowModalContato }) {
             <textarea
               className="resize-none border-[#555555] border-solid border-2 rounded-xl w-full p-3"
               name="mensagem"
-              onChange={e => {
+              onChange={(e) => {
                 setMensagem(e.target.value);
               }}
               value={mensagem}
@@ -169,7 +176,7 @@ export default function ModalContato({ setShowModalContato }) {
             ></textarea>
           </div>
           <Button
-            onClick={e => {
+            onClick={(e) => {
               handleSubmit(e);
             }}
             className="bg-green !w-1/3 self-center h-24 rounded-r-2xl rounded-bl-3xl !text-xl"

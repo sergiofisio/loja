@@ -1,6 +1,32 @@
 import { ToastPosition, toast } from "react-toastify";
 
-export function toastSuccess(msg: string, time?: number, position?: ToastPosition) {
+type ToastType = "success" | "error" | "info" | "warn";
+
+export function toastfy(
+  type: ToastType,
+  msg: string,
+  classname: string,
+  time: number
+) {
+  toast[type](msg, {
+    position: "bottom-center",
+    autoClose: time,
+    hideProgressBar: false,
+    pauseOnHover: false,
+    closeOnClick: true,
+    draggable: false,
+    icon: false,
+    closeButton: false,
+    theme: "colored",
+    className: `${classname} w-full h-full !rounded-xl`,
+  });
+}
+
+export function toastSuccess(
+  msg: string,
+  time?: number,
+  position?: ToastPosition
+) {
   toast.success(`${msg}`, {
     icon: false,
     position,

@@ -216,10 +216,14 @@ export default function Access({ setId, setAdress, setCard }) {
                   </tr>
                 </thead>
                 {loading ? (
-                  <div className="flex flex-col justify-center items-center w-full">
-                    <DotLoader color="#3bb77e" />
-                    <h2>Carregando...</h2>
-                  </div>
+                  <tbody className="flex flex-col justify-center items-center w-full">
+                    <tr>
+                      <td>
+                        <DotLoader color="#3bb77e" />
+                        <h2>Carregando...</h2>
+                      </td>
+                    </tr>
+                  </tbody>
                 ) : (
                   <tbody className="flex flex-col justify-between items-center w-full text-black font-main text-base font-medium border-b-2 border-green h-2/3 overflow-y-scroll">
                     {orders.length ? (

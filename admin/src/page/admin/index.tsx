@@ -69,7 +69,7 @@ export default function Admin() {
         },
       });
 
-      const { data } = await axiosPrivate.get("allUsersInfo", {
+      const { data } = await axiosPrivate.get("/allUsersInfo", {
         headers: {
           authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
@@ -79,9 +79,14 @@ export default function Admin() {
         depoimentos: testimonials,
         parceiros: partners,
         produtos: products,
-        usuarios: data.users.filter(
-          (user: any) => user.user.id !== localStorage.getItem("usuarioId")
-        ),
+        usuarios: data.users.filter((user: any) => !user.admin),
+      });
+
+      console.log({
+        user: data.users.filter((user: any) => !user.admin),
+        products,
+        testimonials,
+        partners,
       });
 
       setSort({ ...sort, produtos: products });

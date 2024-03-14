@@ -25,8 +25,6 @@ async function userInfo(req, res) {
         return error;
       });
 
-    console.log(id);
-
     delete userInfo.address;
 
     const adresses = await axios

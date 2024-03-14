@@ -8,6 +8,7 @@ const infoDb = async (req, res) => {
     let users = await findMany("user", {
       cart: true,
     });
+
     if (admin !== "true") {
       users = null;
     }
