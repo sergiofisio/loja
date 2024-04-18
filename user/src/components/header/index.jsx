@@ -31,7 +31,7 @@ export default function Header({
   }
 
   return (
-    <header className="relative flex w-full h-24 py-6 px-8">
+    <header className="relative flex w-full h-24 py-6 px-8 md:px-2 md:gap-2">
       <div className="flex items-center gap-5 w-full">
         <img
           className="cursor-pointer"
@@ -47,13 +47,13 @@ export default function Header({
         >
           {localStorage.getItem("cart") && (
             <>
-              <h2 className=" text-base font-medium">
+              <h2 className=" text-base font-medium md:hidden">
                 Finalize suas compras clicando aqui
               </h2>
               <div className="flex items-center h-full gap-3">
                 <div className="relative flex w-full">
                   <img className="w-4/5 h-4/5" src={cart} alt="icon fav" />
-                  <h2 className="absolute right-0 top-1 flex items-center justify-center bg-green text-white rounded-full w-5 h-5 font-main">
+                  <h2 className="absolute right-0 top-1 flex items-center justify-center bg-green text-white rounded-full w-5 h-5 font-main md:hidden">
                     {localStorage.getItem("cart")
                       ? JSON.parse(localStorage.getItem("cart")).length
                       : 0}
@@ -102,7 +102,7 @@ export default function Header({
           </h2>
         </div>
       </div>
-      {showModalHeader && (
+      {localStorage.getItem("usuarioId") && showModalHeader && (
         <ModalUserHeader setShowModalHeader={setShowModalHeader} />
       )}
     </header>

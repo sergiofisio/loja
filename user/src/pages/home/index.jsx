@@ -69,23 +69,23 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
   return (
     <div className="flex flex-col w-full h-full">
       <section className="flex w-full min-h-full">
-        <div className="flex items-center justify-center w-full h-[40rem] px-32">
+        <div className="flex items-center justify-center w-full h-[40rem] px-32 md:px-8">
           {!login && !singIn ? (
             <div className="relative flex flex-col gap-10">
-              <div className="absolute top-[3%] -left-[5%]">
+              <div className="absolute top-[3%] -left-[5%] md:hidden">
                 <img
                   className="absolute -top-[10%]"
                   src={logo}
                   alt="img logo"
                 />
                 <img
-                  className="absolute top-[3%] -left-[5%]"
+                  className="absolute top-[3%] -left-[5%] "
                   src={leaftMini}
                   alt="img leaf-mini"
                 />
               </div>
               <div className="flex flex-col gap-5">
-                <h1 className="text-black font-main text-5xl font-bold">
+                <h1 className="text-black font-main text-5xl font-bold md:text-2xl">
                   Traga equilíbrio para sua vida com soluções naturais!
                 </h1>
                 <h2 className="text-black text-3xl font-light">
@@ -113,7 +113,7 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
               </div>
             </div>
           ) : (
-            <div className="flex flex-col items-center justify-center w-full h-full">
+            <div className="flex flex-col items-center justify-center w-full h-full md:justify-start md:items-start">
               <Form
                 login={login}
                 setLogin={setLogin}
@@ -129,7 +129,7 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
             </div>
           )}
         </div>
-        <div className="right relative flex w-full h-[50rem]">
+        <div className="right relative flex w-full h-[50rem] md:hidden">
           <img
             className="home-products absolute min-h-[50%] max-h-[63%] bottom-[11%] left-[3%]"
             src={remedy}
@@ -152,8 +152,10 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
           <Sellers products={infoDb.produtos} />
           <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
           <Benefits />
-          {infoDb.depoimentos.length && (
+          {infoDb.depoimentos.length ? (
             <Testimonials testimonials={infoDb.depoimentos} user={user} />
+          ) : (
+            ""
           )}
           <Payment />
         </>

@@ -80,9 +80,9 @@ export default function Store({ setShowModal }) {
   return (
     <main className="flex justify-center w-full">
       <div className="sidebar"></div>
-      <div className="flex flex-col justify-evenly items-center first-letter:main w-full h-full py-20 pl-40 pr-20 gap-8">
+      <div className="flex flex-col justify-evenly items-center first-letter:main w-full h-full py-20 pl-40 pr-20 gap-8 md:p-2">
         <div className="flex justify-evenly items-center w-full h-full">
-          <div className="relative flex items-center justify-center w-1/2 bg-[#f3f3f3] gap-[5%] p-3 rounded-l-2xl">
+          <div className="relative flex items-center justify-center w-1/2 bg-[#f3f3f3] gap-[5%] p-3 rounded-l-2xl md:hidden">
             <SelectProduct
               className="!w-1/5 !bg-transparent !border-none"
               setSelectInput={setSelectInput}
@@ -106,13 +106,13 @@ export default function Store({ setShowModal }) {
               className="absolute right-0 h-full rounded-r-2xl rounded-bl-2xl bg-green p-2"
             />
           </div>
-          <div className="cursor-pointer bg-[#f3f3f3] w-44 h-12 rounded-2xl flex justify-center items-center border-solid border-2 border-grey transition-all duration-500  text-green hover:border-green hover:bg-green hover:text-[#f3f3f3]">
+          <div className="cursor-pointer bg-[#f3f3f3] w-44 h-12 rounded-2xl flex justify-center items-center border-solid border-2 border-grey transition-all duration-500  text-green hover:border-green hover:bg-green hover:text-[#f3f3f3] md:hidden">
             <h2 className=" flex justify-center items-center font-main text-sm font-black w-72 h-fit after:content-['x'] after:ml-4">
               Limpar filtro
             </h2>
           </div>
         </div>
-        <div className="flex flex-wrap items-center justify-center w-full h-full gap-20">
+        <div className="flex flex-wrap items-center justify-center w-full h-full gap-20 md:gap-2">
           {productsFilter.length
             ? productsFilter.map((product) => {
                 return (

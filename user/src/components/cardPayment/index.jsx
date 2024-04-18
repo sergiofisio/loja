@@ -1,6 +1,6 @@
 export default function CardPayment({ img, text, paragraph }) {
   return (
-    <div className="relative w-80 h-full rounded-xl border-2 border-solid border-black p-5 font-main text-white font-semibold bg-black">
+    <div className="relative min-w-[20rem] h-full rounded-xl border-2 border-solid border-black p-5 font-main text-white font-semibold bg-black md:p-2">
       <img
         className="absolute top-[5%] right-[5%] w-6 h-6"
         src={img}

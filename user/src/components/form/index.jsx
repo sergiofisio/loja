@@ -160,18 +160,18 @@ export default function Form({ login, setLogin, setSingIn }) {
   }
 
   return (
-    <div className="flex flex-col justify-evenly items-center w-[70%] h-[60%] px-8 py-4 bg-[#2f2d2d] rounded-r-xl rounded-bl-xl relative">
+    <div className="flex flex-col justify-evenly items-center w-[70%] h-[60%] px-8 py-4 bg-[#2f2d2d] rounded-r-xl rounded-bl-xl relative md:w-full md:h-full">
       <img
         className={`absolute top-0 rotate-12 w-16 transition-all ${
           !login ? "w-24 left-[90%] top-[-10%] rotate-[20deg]" : "left-[-10%]"
-        }`}
+        } md:hidden`}
         src={leaf}
         alt="img folha"
       />
       <h2 className="text-green font-main text-5xl font-bold ">
         {login ? "Entrar" : "Cadastrar"}
       </h2>
-      <div className=" flex flex-col w-full h-[inherit] gap-[10%]">
+      <div className=" flex flex-col w-full h-[inherit] gap-[10%] md:justify-center">
         <Input
           password={step === "step3" ? true : false}
           type={login ? "email" : "text"}

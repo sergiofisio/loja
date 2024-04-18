@@ -13,7 +13,7 @@ import { format } from "date-fns";
 import { formatValue } from "../../functions/functions";
 import { DotLoader } from "react-spinners";
 
-export default function Access({ setId, setAdress, setCard }) {
+export default function Access() {
   const navigate = useNavigate();
 
   const [adress, setAdressUser] = useState({
@@ -113,8 +113,8 @@ export default function Access({ setId, setAdress, setCard }) {
   }, [showModal]);
 
   return (
-    <main className="flex justify-center w-full max-h-[calc(100vh-6rem)] px-9">
-      <div className="flex flex-col w-1/4 gap-4">
+    <main className="flex justify-center w-full min-h-[calc(100vh-6rem)] px-9 md:flex-col md:overflow-x-scroll md:p-2">
+      <div className="flex flex-col w-1/4 gap-4 md:w-full md:items-center">
         <div
           onClick={(e) => handleStore(e)}
           className="flex items-center gap-4 cursor-pointer"
@@ -166,20 +166,22 @@ export default function Access({ setId, setAdress, setCard }) {
           </div>
         </div>
         <img
-          className="absolute bottom-0 flex self-center w-60"
+          className="absolute bottom-0 flex self-center w-60 md:hidden"
           src={img}
           alt="img"
         />
       </div>
-      <div className=" max-h-[80vh] w-1 bg-gradient-to-b from-[#fff] via-green to-[#fff]"></div>
-      <div className="flex flex-col items-start w-3/4 p-8 gap-12 overflow-hidden">
+      <div className=" max-h-[80vh] w-1 bg-gradient-to-b from-[#fff] via-green to-[#fff] md:hidden"></div>
+      <div className="flex flex-col items-start w-3/4 p-8 gap-12 overflow-hidden md:overflow-scroll md:w-full md:p-2 md:gap-3">
         <div className="flex gap-12">
-          <div className="flex flex-col justify-center items-start gap-6">
+          <div className="flex flex-col justify-center items-start gap-6 md:gap-3">
             <div>
-              <h1 className="text-green font-main text-[2rem] font-semibold">
+              <h1 className="text-green font-main text-[2rem] font-semibold md:text-base">
                 {user.name}
               </h1>
-              <h2 className="text-gray-900 font-main text-xl">{user.email}</h2>
+              <h2 className="text-gray-900 font-main text-xl md:text-base">
+                {user.email}
+              </h2>
             </div>
             <h1
               onClick={(e) => handleModal(e, "Editar")}
@@ -189,28 +191,28 @@ export default function Access({ setId, setAdress, setCard }) {
             </h1>
           </div>
         </div>
-        <div className="flex flex-col w-full gap-5">
-          <h1 className="text-[#253D4E] font-main font-semibold text-2xl">
+        <div className="flex flex-col w-full gap-5 md:gap-3">
+          <h1 className="text-[#253D4E] font-main font-semibold text-2xl md:text-base">
             Histórico
           </h1>
           <div>
             <div className="flex ">
               <table className="flex flex-col w-full">
-                <thead className="flex justify-between items-center w-full text-green font-main text-xl font-medium border-b-2 border-green py-4">
+                <thead className="flex justify-between items-center w-full text-green font-main text-xl font-medium border-b-2 border-green py-4 md:text-sm">
                   <tr className="flex justify-between items-center w-full">
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3 md:text-ellipsis md:w-1/6">
                       <h2>Código pedido</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-2/12 md:text-sm">
                       <h2>Data</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-2/12 md:text-sm">
                       <h2>Valor</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-3/12 md:text-sm">
                       <h2>Pagamento</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-2/12 md:text-sm">
                       <h2>Status</h2>
                     </th>
                   </tr>

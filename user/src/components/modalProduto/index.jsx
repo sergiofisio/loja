@@ -10,7 +10,7 @@ export default function ModalProdutos({
   return (
     <div className="flex flex-col justify-center items-center bg-bgModal fixed top-0 w-full h-full z-50">
       <div
-        className={`relative flex items-center justify-evenly w-2/3 h-[90%] bg-white rounded-3xl px-12 py-8 shadow-green shadow-2xl  gap-4`}
+        className={`relative flex items-center justify-evenly w-2/3 h-[90%] bg-white rounded-3xl px-12 py-8 shadow-green shadow-2xl gap-4 md:w-full md:h-full md:flex-col md:px-3 md:justify-normal`}
       >
         <img
           onClick={() => {
@@ -20,15 +20,15 @@ export default function ModalProdutos({
           src={closeBtn}
           alt="btnClose"
         />
-        <div className="flex flex-col w-full h-full gap-12">
+        <div className="flex flex-col w-full h-full gap-12 md:gap-3">
           <div className="flex flex-col gap-3">
             <h2 className="text-green font-bold font-main text-3xl uppercase">
               {produto.name}
             </h2>
           </div>
-          <div className="flex flex-col h-full">
+          <div className="flex flex-col h-full md:items-center md:flex-row">
             <img
-              className=" border-2 border-green rounded-3xl border-solid py-12 w-96 p-28"
+              className=" border-2 border-green rounded-3xl border-solid py-12 w-96 p-28 md:p-3 md:w-20"
               src={produto.image}
               alt=""
             />
@@ -44,8 +44,8 @@ export default function ModalProdutos({
             </h2>
           </div>
         </div>
-        <div className="flex items-center justify-center border-solid border-green border-[1px] rounded-full h-2/3"></div>
-        <div className="flex flex-col justify-evenly w-full h-full text-3xl ">
+        <div className="flex items-center justify-center border-solid border-green border-[1px] rounded-full h-2/3 md:hidden"></div>
+        <div className="flex flex-col justify-evenly w-full h-full text-3xl md:text-xl md:justify-normal">
           <div className="flex flex-col justify-evenly items-center gap-4 h-3/4">
             <h2 className="font-bold">{produto.name}</h2>
             <div className="overflow-y-scroll h-full ">
@@ -62,7 +62,9 @@ export default function ModalProdutos({
           <Button
             onClick={(e) => handleAddProduct(e, produto)}
             type="button"
-            className={"bg-green min-h-[5rem] rounded-r-2xl rounded-bl-3xl"}
+            className={
+              "bg-green min-h-[5rem] rounded-r-2xl rounded-bl-3xl md:min-h-[3rem]"
+            }
             text="Adicionar"
           />
         </div>

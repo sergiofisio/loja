@@ -43,7 +43,6 @@ function App() {
   const [adress, setAdress] = useState("");
   const [card, setCard] = useState("");
   const [id, setId] = useState("");
-  const [initialization, setInitialization] = useState(false);
   const [showModalContato, setShowModalContato] = useState(false);
   const { isLoading } = useContext(AppContext);
 
@@ -90,7 +89,7 @@ function App() {
   }, [location.pathname]);
 
   return (
-    <div className="relative flex flex-col items-center w-full">
+    <div className="relative flex flex-col items-center w-full h-full">
       <Header
         productsCart={productsCart}
         setShowModal={setShowModal}
@@ -147,19 +146,7 @@ function App() {
               path={"/store"}
               element={<Store setShowModal={setShowModal} />}
             />
-            <Route
-              path={"/home"}
-              element={
-                <Access
-                  id={id}
-                  setId={setId}
-                  adress={adress}
-                  setAdress={setAdress}
-                  card={card}
-                  setCard={setCard}
-                />
-              }
-            />
+            <Route path={"/home"} element={<Access login />} />
             <Route
               path="/cart"
               element={
@@ -177,7 +164,7 @@ function App() {
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
-      <Footer setShowModalContato={setShowModalContato} />
+      {!login ? <Footer setShowModalContato={setShowModalContato} /> : ""}
       <Whatsapp />
       {showModalContato && (
         <ModalContato setShowModalContato={setShowModalContato} />

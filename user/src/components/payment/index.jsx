@@ -11,8 +11,8 @@ import CardPayment from "../../components/cardPayment";
 export default function Payment() {
   return (
     <section className="flex flex-col h-full mt-[5%] text-black text-center font-main text-5xl font-bold gap-4">
-      <h1>Métodos de pagamento</h1>
-      <div className="flex items-center justify-around h-full">
+      <h1 className="md:text-2xl">Métodos de pagamento</h1>
+      <div className="flex items-center justify-around max-w-full h-full md:overflow-y-auto md:justify-start md:gap-4">
         <CardPayment
           img={tag}
           text="Melhores preços"
@@ -29,19 +29,27 @@ export default function Payment() {
           paragraph="Entregamos em todo território brasileiro."
         />
       </div>
-      <div className="flex flex-wrap justify-center items-center self-center w-3/5 h-full gap-[3%]">
+      <div className="flex flex-wrap justify-center items-center self-center w-3/5 h-full gap-[3%]  md:w-full">
         <img
-          className="w-1/4 h-2/5 p-4 rounded-3xl"
+          className="min-w-[20%] min-h-[30%] p-4 rounded-3xl md:p-1"
           src={visa}
           alt="img Visa"
         />
         <img
-          className="w-1/4 h-2/5 p-4 rounded-3xl"
+          className="min-w-[20%] p-4 rounded-3xl  md:p-1"
           src={master}
           alt="img MasterCard"
         />
-        <img className="w-1/4 h-2/5 p-4 rounded-3xl" src={elo} alt="img Elo" />
-        <img className="w-1/4 h-2/5 p-4 rounded-3xl" src={pix} alt="img Pix" />
+        <img
+          className="min-w-[20%] p-4 rounded-3xl  md:p-1"
+          src={elo}
+          alt="img Elo"
+        />
+        <img
+          className="min-w-[20%] p-4 rounded-3xl  md:p-1"
+          src={pix}
+          alt="img Pix"
+        />
       </div>
     </section>
   );
