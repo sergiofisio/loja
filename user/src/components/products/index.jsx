@@ -7,9 +7,9 @@ export default function Seller({ onClick, img, name, priceFull, stock }) {
           : "border-green"
       }`}
     >
-      <div className="grid items-end justify-between justify-items-center h-4/5 md:h-full">
+      <div className="flex flex-col items-center justify-between h-4/5 md:h-full">
         <img
-          className={`${!stock ? "grayscale-[100%]" : ""} w-1/2 md:w-1/3`}
+          className={`${!stock ? "grayscale-[100%]" : ""} h-1/2 md:h-1/3`}
           src={img}
           alt={`img ${name}`}
         />
