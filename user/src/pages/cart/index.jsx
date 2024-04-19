@@ -3,7 +3,7 @@ import { localconfig } from "../../utils/localConfig";
 import arrowRight from "../../assets/access/ArrowRight.svg";
 import axios from "../../Service/api";
 import trash from "../../assets/cart/trash.svg";
-import cart from "../../assets/cart/cart-green.svg";
+import cartImg from "../../assets/cart/cart-green.svg";
 import minus from "../../assets/cart/minus.svg";
 import plus from "../../assets/cart/plus.svg";
 import check from "../../assets/cart/checked.svg";
@@ -46,41 +46,53 @@ export default function Cart() {
   const [code, setCode] = useState("");
   const [discount, setDiscount] = useState(false);
 
-  function calcWeight() {
-    let weigth = 0;
+  async function calcWeight() {
+    let weight = 0;
     let sum = 0;
-    for (const product of JSON.parse(localStorage.getItem("cart"))) {
-      weigth += Number(product.product.peso) * product.quantidade;
+
+    // Recuperar dados do AsyncStorage
+    const cart = await AsyncStorage.getItem("cart");
+
+    for (const product of JSON.parse(cart)) {
+      weight += Number(product.product.peso) * product.quantidade;
       sum += Number(product.product.preco) * product.quantidade;
     }
+
     setValue(sum / 100);
-    setWeigth(weigth);
-    return String(weigth);
+    setWeigth(weight);
+
+    return String(weight);
   }
 
   function sumValueFrete(value, frete) {
     return frete + value;
   }
 
-  function changeQtd(e, id, operation) {
+  async function changeQtd(e, id, operation) {
     e.stopPropagation();
-    let cart = JSON.parse(localStorage.getItem("cart"));
+    let oldCart = cart;
 
-    if (operation === "delete") {
-      cart = cart.filter((item) => item.product.id !== id);
-    }
-    const itemIndex = cart.findIndex((item) => item.product.id === id);
+    const itemIndex = oldCart.findIndex((item) => item.product.id === id);
     const product = allProducts.find((product) => product.id === id);
     if (operation === "sum") {
-      if (cart[itemIndex].quantidade + 1 > product.stock)
+      if (oldCart[itemIndex].quantidade + 1 > product.stock)
         return toastFail("Quantidade indisponível");
-      cart[itemIndex].quantidade += 1;
+      oldCart[itemIndex].quantidade += 1;
     }
-    if (operation === "minus" && cart[itemIndex].quantidade > 1) {
-      cart[itemIndex].quantidade -= 1;
+    if (operation === "minus" && oldCart[itemIndex].quantidade > 1) {
+      oldCart[itemIndex].quantidade -= 1;
     }
-    localStorage.setItem("cart", JSON.stringify(cart));
+    if (operation === "delete") {
+      oldCart = oldCart.filter((item) => item.product.id !== id);
+      console.log(oldCart.length);
+      if (!oldCart.length) {
+        await AsyncStorage.setItem("cart", JSON.stringify(oldCart));
+        return navigate("/store");
+      }
+    }
+    await AsyncStorage.setItem("cart", JSON.stringify(oldCart));
     setchangeProductCart(!changeProductCart);
+    window.location.reload();
   }
 
   async function getFrete() {
@@ -106,7 +118,7 @@ export default function Cart() {
         `/frete/${adresses[0].zip_code.replace("-", "")}`,
         {
           amount:
-            JSON.parse(localStorage.getItem("cart")).reduce(
+            cart.reduce(
               (total, item) => total + item.product.preco * item.quantidade,
               0
             ) / 100,
@@ -172,7 +184,7 @@ export default function Cart() {
           state: adressUser.state,
           city: adressUser.city,
           zip_code: adressUser.zip_code,
-          items: JSON.parse(localStorage.getItem("cart")),
+          items: JSON.parse(await AsyncStorage.getItem("cart")),
           recipient_name: userInfo.user.name,
           recipient_phone: userInfo.user.phones.mobile_phone,
           email: userInfo.user.email,
@@ -180,14 +192,14 @@ export default function Cart() {
           amount: Math.round(value * 100 + frete),
           description: `Pedido de ${userInfo.user.name}`,
           data,
-          compra: localStorage.getItem("cart"),
+          compra: await AsyncStorage.getItem("cart"),
           cupom,
           installments: 10,
           id_parceiro,
           shippingType: selectedOption,
           code,
         },
-        localconfig.getAuth(localStorage.getItem("token"))
+        localconfig.getAuth(await AsyncStorage.getItem("token"))
       );
 
       setUrlCheckout(order.data.order.checkouts[0].payment_url);
@@ -245,7 +257,7 @@ export default function Cart() {
         return toastFail(options[selectedOption].message);
       }
 
-      for (const product of JSON.parse(localStorage.getItem("cart"))) {
+      for (const product of JSON.parse(await AsyncStorage.getItem("cart"))) {
         if (!product.quantidade) {
           return toastFail(
             "Há algum produto que esta com quantidade 0. Verifique por favor!!"
@@ -296,7 +308,7 @@ export default function Cart() {
       if (error.response.status === 401 || error.response.status === 408) {
         toastFail("Sua sessão expirou!");
         return setTimeout(() => {
-          localStorage.clear();
+          AsyncStorage.clear();
           navigate("/");
         }, 4000);
       }
@@ -364,7 +376,7 @@ export default function Cart() {
   }, []);
 
   return (
-    <main className="relative flex justify-center w-full min-h-[calc(100vh-6rem)] p-9 md:flex-col">
+    <main className="relative flex justify-center w-full min-h-[calc(100vh-6rem)] p-9 md:flex-col md:p-1">
       {!init ? (
         <DotLoader color="#3bb77e" />
       ) : (
@@ -382,8 +394,8 @@ export default function Cart() {
             }
             alt="img"
           />
-          <div className="flex flex-col w-1/3 min-h-full gap-2 m-4">
-            <div className="flex justify-between px-4 ">
+          <div className="flex flex-col w-1/3 min-h-full gap-2 m-4 md:w-full md:m-0">
+            <div className="flex justify-between px-4 md:flex-col">
               <div
                 onClick={() => {
                   navigate("/store");
@@ -402,12 +414,12 @@ export default function Cart() {
               <h1 className="font-main text-5xl text-green font-semibold">
                 Carrinho
               </h1>
-              <img src={cart} alt="img Cart" />
+              <img src={cartImg} alt="img Cart" className="md:hidden" />
             </div>
             <div className="flex flex-col justify-between w-full h-full border-2 border-green rounded-2xl p-2">
-              <table className="h-full">
+              <table className="h-full ">
                 <thead className="flex justify-between border-b-2 border-greenScale-200 pr-2 1536:pr-0 1440:pr-0 1366:pr-0">
-                  <tr className="flex justify-between items-center w-full">
+                  <tr className="flex justify-between items-center w-full md:text-sm">
                     <th className="w-full border-gray-200 border-r-2">
                       Produto
                     </th>
@@ -416,64 +428,60 @@ export default function Cart() {
                     <th className="w-1/5 opacity-0">Excluir</th>
                   </tr>
                 </thead>
-                <tbody className="flex flex-col max-h-[40rem] 1536:max-h-[20rem] 1440:max-h-[30rem] 1366:max-h-[22rem] overflow-y-scroll scrollbar-thin scrollbar-thumb-green">
-                  {JSON.parse(localStorage.getItem("cart")).map(
-                    ({ product, quantidade }, key) => {
-                      return (
-                        <tr
-                          className="flex justify-center border-grey border-opacity-40 border-b-2 py-2 w-full font-main text-base"
-                          key={key}
-                        >
-                          <td className="flex items-center gap-8 border-grey border-opacity-40 border-r-2 w-full font-medium ">
-                            <img
-                              className="w-16 1536:w-14 md:hidden"
-                              src={product.url}
-                              alt=""
-                            />
-                            {product.nome}
-                          </td>
-                          <td className="flex justify-center items-center font-semibold w-1/2 border-grey border-opacity-40 border-r-2">
-                            {(
-                              (product.preco / 100) *
-                              quantidade
-                            ).toLocaleString("pt-br", {
+                <tbody className="flex flex-col max-h-[40rem] 1536:max-h-[20rem] 1440:max-h-[30rem] 1366:max-h-[22rem] overflow-y-scroll scrollbar-thin scrollbar-thumb-green ">
+                  {cart.map(({ product, quantidade }, key) => {
+                    return (
+                      <tr
+                        className="flex justify-center border-grey border-opacity-40 border-b-2 py-2 w-full font-main text-base md:text-sm"
+                        key={key}
+                      >
+                        <td className="flex items-center gap-8 border-grey border-opacity-40 border-r-2 w-full font-medium ">
+                          <img
+                            className="w-16 1536:w-14 md:hidden"
+                            src={product.url}
+                            alt=""
+                          />
+                          {product.nome}
+                        </td>
+                        <td className="flex justify-center items-center font-semibold w-1/2 border-grey border-opacity-40 border-r-2">
+                          {((product.preco / 100) * quantidade).toLocaleString(
+                            "pt-br",
+                            {
                               style: "currency",
                               currency: "BRL",
-                            })}
-                          </td>
-                          <td className="flex justify-center items-center w-1/3 gap-2 font-semibold">
-                            <img
-                              onClick={(e) => changeQtd(e, product.id, "minus")}
-                              className="w-5 cursor-pointer"
-                              src={minus}
-                              alt="minus"
-                            />
-                            {quantidade}
-                            <img
-                              onClick={(e) => changeQtd(e, product.id, "sum")}
-                              className="w-5 cursor-pointer"
-                              src={plus}
-                              alt="plus"
-                            />
-                          </td>
-                          <td className="flex justify-center items-center  w-1/5">
-                            <img
-                              onClick={(e) =>
-                                changeQtd(e, product.id, "delete")
-                              }
-                              className="cursor-pointer w-5"
-                              src={trash}
-                              alt="icon deletar"
-                            />
-                          </td>
-                        </tr>
-                      );
-                    }
-                  )}
+                            }
+                          )}
+                        </td>
+                        <td className="flex justify-center items-center w-1/3 gap-2 font-semibold">
+                          <img
+                            onClick={(e) => changeQtd(e, product.id, "minus")}
+                            className="w-5 cursor-pointer"
+                            src={minus}
+                            alt="minus"
+                          />
+                          {quantidade}
+                          <img
+                            onClick={(e) => changeQtd(e, product.id, "sum")}
+                            className="w-5 cursor-pointer"
+                            src={plus}
+                            alt="plus"
+                          />
+                        </td>
+                        <td className="flex justify-center items-center  w-1/5">
+                          <img
+                            onClick={(e) => changeQtd(e, product.id, "delete")}
+                            className="cursor-pointer w-5"
+                            src={trash}
+                            alt="icon deletar"
+                          />
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
               <table>
-                <tbody className="flex flex-col justify-end min-h-[22%] ">
+                <tbody className="flex flex-col justify-end min-h-[22%] md:text-sm">
                   <tr className="flex justify-center border-b-2 border-greenScale-200">
                     <th className="">TOTAL</th>
                   </tr>
@@ -489,7 +497,7 @@ export default function Cart() {
                     <th className="w-1/5">Total</th>
                   </tr>
                   <tr className="flex flex-col items-end  font-main text-base">
-                    <th className="flex justify-end w-full border-gray-400 border-b-2 border-dashed">
+                    <th className="flex justify-end w-full border-gray-400 border-b-2 border-dashed md:text-xs">
                       <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                         Sedex
                       </h2>
@@ -523,7 +531,7 @@ export default function Cart() {
                           : ""}
                       </h2>
                     </th>
-                    <th className="flex justify-end w-full">
+                    <th className="flex justify-end w-full md:text-xs">
                       <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                         PAC
                       </h2>
@@ -561,13 +569,13 @@ export default function Cart() {
               </table>
               <div className="flex items-end justify-center gap-4">
                 <Input
-                  className="w-1/2 !font-bold "
+                  className="w-1/2 !font-bold md:text-xs"
                   label="Cupom"
                   set={(e) => setCupom(e.target.value)}
                   value={cupom}
                 />
                 <Button
-                  className="!w-20 h-12 rounded-3xl bg-green"
+                  className="!w-20 h-12 rounded-3xl bg-green md:text-xs"
                   type="button"
                   text="Aplicar"
                   onClick={handleCupom}
@@ -575,7 +583,7 @@ export default function Cart() {
               </div>
             </div>
           </div>
-          <div className="flex flex-col items-start w-2/3 min-h-full p-8 gap-12">
+          <div className="flex flex-col items-start w-2/3 min-h-full p-8 gap-12 md:w-full md:p-1">
             <div className="flex w-full justify-center md:hidden">
               <img
                 className={`${
@@ -661,7 +669,7 @@ export default function Cart() {
             </div>
             <div className="flex flex-col justify-center items-center w-full h-full">
               <form
-                className="flex flex-col w-2/3 gap-4 h-full"
+                className="flex flex-col w-2/3 gap-4 h-full md:w-full"
                 action="submit"
               >
                 <h2 className="font-main text-2xl font-semibold t-[#253D4E]">
@@ -682,7 +690,7 @@ export default function Cart() {
                     ) : (
                       <>
                         <Input
-                          className={"w-1/3"}
+                          className={"w-1/3 md:w-full"}
                           label="Cep"
                           placeholder="cep"
                           value={adressUser.zip_code}

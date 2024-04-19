@@ -7,7 +7,7 @@ import contact from "../../assets/contact.svg";
 import SelectContact from "../input/selectContact";
 import emailjs from "@emailjs/browser";
 import Button from "../button";
-import { toastFail, toastfy } from "../../context/toast";
+import { toastfy } from "../../context/toast";
 import { verifyInputs } from "../../functions/errorTreatment";
 
 export default function ModalContato({ setShowModalContato }) {
@@ -62,7 +62,7 @@ export default function ModalContato({ setShowModalContato }) {
 
   return (
     <div className="flex flex-col justify-center items-center bg-bgModal fixed top-0 w-full h-full">
-      <div className="relative flex justify-evenly w-2/3 h-2/3 1536:h-[90%] 1366:h-[90%] bg-white rounded-3xl p-8 shadow-green shadow-2xl">
+      <div className="relative flex md:flex-col justify-evenly w-2/3 h-2/3 1536:h-[90%] 1366:h-[90%] md:h-full md:w-full bg-white rounded-3xl p-8 shadow-green shadow-2xl">
         <img
           onClick={() => {
             setShowModalContato(false);
@@ -71,8 +71,8 @@ export default function ModalContato({ setShowModalContato }) {
           src={closeBtn}
           alt="btnClose"
         />
-        <div className="flex flex-col justify-center w-1/3 font-main text-2xl gap-4">
-          <img src={contact} alt="" />
+        <div className="flex flex-col justify-center w-1/3 md:w-full font-main text-2xl md:text-sm gap-4">
+          <img src={contact} alt="" className="md:hidden" />
           <h2>
             Tem alguma dúvida, sugestão ou problema com um pedido? Nos envie uma
             mensagem através do formulario ao lado.
@@ -95,7 +95,7 @@ export default function ModalContato({ setShowModalContato }) {
           </div>
         </div>
         <form
-          className="flex flex-col justify-center w-2/4 gap-4 p-8"
+          className="flex flex-col justify-center w-2/4 md:w-full gap-4 p-8 md:p-1"
           action="submit"
         >
           <Input
@@ -179,7 +179,7 @@ export default function ModalContato({ setShowModalContato }) {
             onClick={(e) => {
               handleSubmit(e);
             }}
-            className="bg-green !w-1/3 self-center h-24 rounded-r-2xl rounded-bl-3xl !text-xl"
+            className="bg-green !w-1/3 self-center h-24 rounded-r-2xl rounded-bl-3xl !text-xl md:h-16"
             text="Enviar"
           />
         </form>
