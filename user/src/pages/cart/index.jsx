@@ -22,7 +22,6 @@ import moment from "moment";
 import { useNavigate } from "react-router-dom";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { DotLoader } from "react-spinners";
-
 export default function Cart() {
   const navigate = useNavigate();
   const [cart, setCart] = useState([]);
@@ -43,73 +42,77 @@ export default function Cart() {
   const [urlCheckout, setUrlCheckout] = useState("");
   const [allProducts, setAllProducts] = useState([]);
   const [init, setInit] = useState(false);
+  const [code, setCode] = useState("");
   const [discount, setDiscount] = useState(false);
 
   async function calcWeight() {
+    let weight = 0;
+    let sum = 0;
+
+    // Recuperar dados do AsyncStorage
     const cart = await AsyncStorage.getItem("cart");
-    const parsedCart = JSON.parse(cart);
 
-    const sum =
-      parsedCart.reduce(
-        (acc, { product, quantidade }) =>
-          acc + Number(product.preco) * quantidade,
-        0
-      ) / 100;
+    for (const product of JSON.parse(cart)) {
+      weight += Number(product.product.peso) * product.quantidade;
+      sum += Number(product.product.preco) * product.quantidade;
+    }
 
-    const weight = parsedCart.reduce(
-      (acc, { product, quantidade }) => acc + Number(product.peso) * quantidade,
-      0
-    );
-
-    setValue(sum);
+    setValue(sum / 100);
     setWeigth(weight);
 
     return String(weight);
   }
 
   function sumValueFrete(value, frete) {
-    return value + frete;
+    return frete + value;
   }
 
-  const changeQtd = useCallback(
-    async (id, operation) => {
-      const itemIndex = cart.findIndex((item) => item.product.id === id);
-      const product = allProducts.find((product) => product.id === id);
-      if (operation === "sum" && cart[itemIndex].quantidade + 1 > product.stock)
+  async function changeQtd(e, id, operation) {
+    e.stopPropagation();
+    let oldCart = cart;
+
+    const itemIndex = oldCart.findIndex((item) => item.product.id === id);
+    const product = allProducts.find((product) => product.id === id);
+    if (operation === "sum") {
+      if (oldCart[itemIndex].quantidade + 1 > product.stock)
         return toastFail("Quantidade indisponível");
-      const newCart = [...cart];
-      if (operation === "sum") newCart[itemIndex].quantidade += 1;
-      if (operation === "minus" && cart[itemIndex].quantidade > 1)
-        newCart[itemIndex].quantidade -= 1;
-      if (operation === "delete") newCart.splice(itemIndex, 1);
-      await AsyncStorage.setItem("cart", JSON.stringify(newCart));
-      setchangeProductCart(!changeProductCart);
-    },
-    [cart, allProducts, changeProductCart]
-  );
+      oldCart[itemIndex].quantidade += 1;
+    }
+    if (operation === "minus" && oldCart[itemIndex].quantidade > 1) {
+      oldCart[itemIndex].quantidade -= 1;
+    }
+    if (operation === "delete") {
+      oldCart = oldCart.filter((item) => item.product.id !== id);
+      console.log(oldCart.length);
+      if (!oldCart.length) {
+        await AsyncStorage.setItem("cart", JSON.stringify(oldCart));
+        return navigate("/store");
+      }
+    }
+    await AsyncStorage.setItem("cart", JSON.stringify(oldCart));
+    setchangeProductCart(!changeProductCart);
+    window.location.reload();
+  }
 
   async function getFrete() {
     const cart = JSON.parse(await AsyncStorage.getItem("cart"));
-    const userId = await AsyncStorage.getItem("usuarioId");
-    const token = await AsyncStorage.getItem("token");
-    const zip_code = (await AsyncStorage.getItem("adressUser"))?.zip_code;
-
     try {
       const {
         data: { user, adresses },
-      } = await axios.get(`/infoUser/${userId}`, {
-        headers: { Authorization: `Bearer ${token}` },
-      });
-
-      const adress = adresses.find((adress) => adress.zip_code === zip_code);
-
+      } = await axios.get(
+        `/infoUser/${await AsyncStorage.getItem("usuarioId")}`,
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
+      );
       setUserInfo({ user });
-      setAdressUser(adress);
-
+      setAdressUser(adresses[0]);
       const {
         data: { code, prices },
       } = await axios.post(
-        `/frete/${zip_code?.replace("-", "")}`,
+        `/frete/${adresses[0].zip_code.replace("-", "")}`,
         {
           amount:
             cart.reduce(
@@ -121,49 +124,51 @@ export default function Cart() {
           name: user.name,
         },
         {
-          headers: { Authorization: `Bearer ${token}` },
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
         }
       );
-
-      const sedexPrice = prices.find((frete) => frete.service_type === "SEDEX");
-      setSedex({
-        date: (() => {
-          let date = new Date();
-          date.setDate(date.getDate() + sedexPrice.delivery_time + 2);
-          return date.toLocaleDateString("pt-BR");
-        })(),
-        price: sedexPrice.price * 1.1,
-      });
-
-      const pacPrice = prices.find((frete) => frete.service_type === "PAC");
-      setPac({
-        date: (() => {
-          let date = new Date();
-          date.setDate(date.getDate() + pacPrice.delivery_time + 2);
-          return date.toLocaleDateString("pt-BR");
-        })(),
-        price: pacPrice.price * 1.1,
-      });
+      for (const frete of prices) {
+        if (frete.service_type === "PAC") {
+          setPac({
+            date: (() => {
+              let date = new Date();
+              date.setDate(date.getDate() + frete.delivery_time + 2);
+              return date.toLocaleDateString("pt-BR");
+            })(),
+            price: frete.price * 1.1,
+          });
+        }
+        if (frete.service_type === "SEDEX") {
+          setSedex({
+            date: (() => {
+              let date = new Date();
+              date.setDate(date.getDate() + frete.delivery_time + 2);
+              return date.toLocaleDateString("pt-BR");
+            })(),
+            price: frete.price * 1.1,
+          });
+        }
+      }
     } catch (error) {
       console.log(error);
     }
   }
-
-  async function createOrder() {
-    const frete =
-      selectedOption === "Sedex" ? sedex.price * 1.2 : pac.price * 1.2;
+  async function createOrder(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    let frete = "";
+    if (selectedOption === "Sedex") {
+      frete = sedex.price * 1.2;
+    } else {
+      frete = pac.price * 1.2;
+    }
     const data = moment().format("DD/MM/YYYY, h:mm:ss");
-
-    const { id: usuarioId } = JSON.parse(
-      await AsyncStorage.getItem("usuarioId")
-    );
-    const token = await AsyncStorage.getItem("token");
-
     frete = Math.round(frete * 100);
-
     try {
-      const { data: order } = await axios.post(
-        `/createOrder/${usuarioId}`,
+      const order = await axios.post(
+        `/createOrder/${await AsyncStorage.getItem("usuarioId")}`,
         {
           address_id: adressUser.id,
           line_1: adressUser.line_1,
@@ -171,7 +176,7 @@ export default function Cart() {
           state: adressUser.state,
           city: adressUser.city,
           zip_code: adressUser.zip_code,
-          items: cart,
+          items: JSON.parse(await AsyncStorage.getItem("cart")),
           recipient_name: userInfo.user.name,
           recipient_phone: userInfo.user.phones.mobile_phone,
           email: userInfo.user.email,
@@ -179,103 +184,102 @@ export default function Cart() {
           amount: Math.round(value * 100 + frete),
           description: `Pedido de ${userInfo.user.name}`,
           data,
-          compra: cart,
+          compra: await AsyncStorage.getItem("cart"),
           cupom,
           installments: 10,
           id_parceiro,
           shippingType: selectedOption,
+          code,
         },
-        localconfig.getAuth(token)
+        localconfig.getAuth(await AsyncStorage.getItem("token"))
       );
 
-      setUrlCheckout(order.checkouts[0].payment_url);
+      setUrlCheckout(order.data.order.checkouts[0].payment_url);
       setCheckout(true);
-      setOrder(order);
+      setOrder(order.data.order);
     } catch (error) {
       console.log(error);
     }
   }
-
-  const verifyPayment = async () => {
-    const response = await axios.get(`/verifyOrder/${order.id}`, {
-      headers: {
-        Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-      },
-    });
-
-    const { charges } = response.data.order;
-    const status = charges && charges[0] && charges[0].status;
-
-    if (!status || status === "failed") {
-      toastFail(
-        "Seu pagamento não foi finalizado. Clique novamente para terminar!",
-        3000
-      );
-      return;
-    }
-
-    toastSuccess("Seu pagamento está sendo processado", 3000, "top-left");
-    setPaymentOk(true);
-  };
-
-  const handleChangeStep = (e, type) => {
-    e.preventDefault();
-    e.stopPropagation();
-
-    const nextStep = {
-      step1: "step2",
-      step2: "step3",
-      step3: "step4",
-      step4: "/home",
-    };
-
-    const options = {
-      Sedex: { error: sedex.error, message: "Sedex indisponível" },
-      PAC: { error: pac.error, message: "PAC indisponível" },
-    };
-
-    if (
-      type !== "prev" ||
-      (type === "prev" && step !== "step2") ||
-      !options[selectedOption]?.error
-    ) {
-      const cart = JSON.parse(localStorage.getItem("cart"));
-      if (step === "step1" && cart.some((product) => !product.quantidade)) {
+  async function verifyPayment() {
+    try {
+      const response = await axios.get(`/verifyOrder/${order.id}`, {
+        headers: {
+          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+        },
+      });
+      if (!response.data.order.charges) {
         return toastFail(
-          "Há algum produto que esta com quantidade 0. Verifique por favor!!"
+          "Seu pagamento não foi finalizado. Clique novamente para terminar!",
+          3000
         );
       }
-
-      setStep(nextStep[step]);
-
-      if (step === "step4") {
-        axios
-          .patch(
-            `/finishOrder/${order.id}`,
-            { email: userInfo.user.email },
-            {
-              headers: {
-                Authorization: `Bearer ${localStorage.getItem("token")}`,
-              },
-            }
-          )
-          .then(() => {
-            toastSuccess(
-              "Sua compra foi concluída, você receberá um resumo da sua compra por email!",
-              3000,
-              "top-center"
-            );
-            setTimeout(() => {
-              localStorage.removeItem("cart");
-              navigate(nextStep[step]);
-            }, 3000);
-          });
+      if (response.data.order.charges[0].status === "failed") {
+        return toastFail(
+          "Seu pagamento foi negado. Reveja os dados. Clique para pagar e tente novamente",
+          3000
+        );
       }
-    } else {
-      toastFail(options[selectedOption].message);
+      toastSuccess("Seu pagamento está sendo processado", 3000, "top-left");
+      setPaymentOk(true);
+    } catch (error) {
+      console.log(error);
     }
-  };
+  }
+  async function handleChangeStep(e, type) {
+    e.preventDefault();
+    e.stopPropagation();
+    if (type === "prev" && step === "step2") {
+      setStep("step1");
+      return;
+    }
+    if (step === "step1") {
+      const options = {
+        Sedex: { error: sedex.error, message: "Sedex indisponível" },
+        PAC: { error: pac.error, message: "PAC indisponível" },
+      };
+      if (options[selectedOption]?.error) {
+        return toastFail(options[selectedOption].message);
+      }
 
+      for (const product of JSON.parse(await AsyncStorage.getItem("cart"))) {
+        if (!product.quantidade) {
+          return toastFail(
+            "Há algum produto que esta com quantidade 0. Verifique por favor!!"
+          );
+        }
+      }
+      setStep("step2");
+    }
+    if (step === "step2") {
+      setStep("step3");
+    }
+    if (step === "step3") {
+      // sendOrderInfo();
+      setStep("step4");
+    }
+    if (step === "step4") {
+      await AsyncStorage.removeItem("cart");
+      await axios.patch(
+        `/finishOrder/${order.id}`,
+        { email: userInfo.user.email },
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
+      );
+      toastSuccess(
+        "Sua compra foi concluída, você receberá um resumo da sua compra por email!",
+        3000,
+        "top-center"
+      );
+      setTimeout(() => {
+        AsyncStorage.removeItem("cart");
+        navigate("/home");
+      }, 3000);
+    }
+  }
   async function auth() {
     try {
       await axios.get("/verifyToken", {
@@ -294,7 +298,6 @@ export default function Cart() {
       }
     }
   }
-
   async function products() {
     try {
       const {
@@ -309,7 +312,6 @@ export default function Cart() {
       toastFail(error.response.data.error, 3000);
     }
   }
-
   async function handleCupom(e) {
     e.preventDefault();
     e.stopPropagation();
@@ -332,7 +334,6 @@ export default function Cart() {
       else toastFail(error.message, 3000);
     }
   }
-
   const verifyCart = useCallback(async () => {
     try {
       const cartItem = await AsyncStorage.getItem("cart");
@@ -350,7 +351,6 @@ export default function Cart() {
       console.error("Failed to load cart:", error);
     }
   }, [navigate, setCart, getFrete, calcWeight, products, auth, setInit]);
-
   useEffect(() => {
     verifyCart();
   }, []);
@@ -481,7 +481,6 @@ export default function Cart() {
                       <h2 className="w-1/5 border-gray-200 border-r-2 font-normal">
                         Sedex
                       </h2>
-
                       <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
                         {sedex
                           ? `${Number(sedex.price).toLocaleString("pt-br", {
@@ -710,7 +709,6 @@ export default function Cart() {
                             disabled={true}
                           />
                         </div>
-
                         <div className="flex flex-col">
                           <label className="cursor-pointer">
                             <input
@@ -725,7 +723,6 @@ export default function Cart() {
                             />
                             Envio por Sedex
                           </label>
-
                           <label className="cursor-pointer">
                             <input
                               className="cursor-pointer"
