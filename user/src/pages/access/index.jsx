@@ -56,6 +56,7 @@ export default function Access() {
           },
         }
       );
+      console.log({ user });
       if (adresses !== undefined) {
         setAdressUser({
           id: adresses[0].id,

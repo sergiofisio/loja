@@ -26,7 +26,6 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
   });
   const [selectCategory, setSelectCategory] = useState("Todas");
   const [categories, setCategories] = useState(null);
-  const [init, setInit] = useState(false);
 
   function handleBtnClick(e) {
     e.preventDefault();
@@ -56,7 +55,6 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
         parceiros: partners,
         produtos: products,
       });
-      setInit(true);
     } catch (error) {
       console.log(error);
     }
@@ -64,7 +62,7 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
 
   useEffect(() => {
     getPorductsCategoriesTestimonials();
-  }, [init]);
+  }, []);
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -94,21 +92,12 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
                 </h2>
               </div>
               <div className="flex items-center gap-7">
-                {!init ? (
-                  <div className="flex flex-col justify-center items-center w-full h-full">
-                    <div>
-                      <PulseLoader color="#000" />
-                      <h2>Carregando...</h2>
-                    </div>
-                  </div>
-                ) : (
-                  <Button
-                    onClick={handleBtnClick}
-                    type="submit"
-                    className="bg-black h-20 text-3xl rounded-r-2xl rounded-bl-3xl"
-                    text="Entrar"
-                  />
-                )}
+                <Button
+                  onClick={handleBtnClick}
+                  type="submit"
+                  className="bg-black h-20 text-3xl rounded-r-2xl rounded-bl-3xl"
+                  text="Entrar"
+                />
                 <h2>10% OFF para novos usuários</h2>
               </div>
             </div>
@@ -147,26 +136,15 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
           />
         </div>
       </section>
-      {init ? (
-        <>
-          <Sellers products={infoDb.produtos} />
-          <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
-          <Benefits />
-          {infoDb.depoimentos.length ? (
-            <Testimonials testimonials={infoDb.depoimentos} user={user} />
-          ) : (
-            ""
-          )}
-          <Payment />
-        </>
+      <Sellers products={infoDb.produtos} />
+      <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
+      <Benefits />
+      {infoDb.depoimentos.length ? (
+        <Testimonials testimonials={infoDb.depoimentos} user={user} />
       ) : (
-        <div className="flex flex-col justify-center items-center w-full h-full">
-          <div>
-            <PulseLoader color="#000" />
-            <h2>Carregando...</h2>
-          </div>
-        </div>
+        ""
       )}
+      <Payment />
     </div>
   );
 }
