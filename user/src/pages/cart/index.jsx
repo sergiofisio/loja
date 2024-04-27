@@ -111,7 +111,6 @@ export default function Cart() {
           headers: { Authorization: `Bearer ${token}` },
         }
       );
-
       const freteData = prices.reduce((acc, frete) => {
         if (frete.service_type === "PAC" || frete.service_type === "SEDEX") {
           let date = new Date();
@@ -123,6 +122,7 @@ export default function Cart() {
         }
         return acc;
       }, {});
+
       setState((prevState) => ({
         ...prevState,
         freteValue: freteData,
@@ -237,19 +237,35 @@ export default function Cart() {
         throw new Error("Se tiver um cupom de desconto, preencha o campo");
       if (state.discount)
         throw new Error("Você so pode usar um cupom de desconto");
-      const { data } = await axios.get(`/cupom/${cupom.toLowerCase()}`, {
+      const { data } = await axios.get(`/cupom/${state.cupom.toLowerCase()}`, {
         headers: {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
       });
       if (data.cupom) {
+        const valueDiscount = state.value * 0.9;
+        console.log({ valueDiscount });
         setState((prevState) => ({ ...prevState, discount: data.cupom }));
-        return setValue(Math.round(value * 0.9));
+        return setState((prevState) => ({
+          ...prevState,
+          value: Math.round(state.value * 0.9),
+        }));
       }
     } catch (error) {
       if (error.response) return toastFail(error.response.data.error, 3000);
       else toastFail(error.message, 3000);
     }
+  }
+
+  function valueCartProducts(discount) {
+    let value = 0;
+    for (const product of state.cart) {
+      value += product.product.preco * product.quantidade;
+    }
+    if (discount) {
+      return (value * 0.9) / 100;
+    }
+    return value / 100;
   }
 
   const verifyCart = useCallback(async () => {
@@ -294,7 +310,8 @@ export default function Cart() {
             cart={state.cart}
             setState={setState}
             handleCupom={handleCupom}
-            frete={{ sedex: state.sedex, pac: state.pac }}
+            frete={state.freteValue}
+            valueCartProducts={valueCartProducts(state.discount)}
           />
           <div className="flex flex-col items-start w-2/3 min-h-full p-8 gap-12 md:w-full md:p-1">
             <ChangeStep step={state.step} />

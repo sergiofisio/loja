@@ -17,6 +17,7 @@ export default function InfoCart({
   cupom,
   handleCupom,
   frete,
+  valueCartProducts,
 }) {
   const navigate = useNavigate();
 
@@ -47,21 +48,13 @@ export default function InfoCart({
       if (
         operation === "delete" ||
         operation === "sum" ||
-        (operation === "minus" && oldCart[itemIndex].quantidade > 1)
+        operation === "minus"
       ) {
         setState((prevState) => ({ ...prevState, cart: oldCart }));
       }
     },
     [cart, allProducts, navigate, setState]
   );
-
-  function valueCartProducts() {
-    let value = 0;
-    for (const product of cart) {
-      value += product.product.preco * product.quantidade;
-    }
-    return value / 100;
-  }
 
   function sumValueFrete(value, frete) {
     return frete + value;
@@ -174,7 +167,7 @@ export default function InfoCart({
                     : ""}
                 </h2>
                 <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                  {valueCartProducts().toLocaleString("pt-br", {
+                  {valueCartProducts.toLocaleString("pt-br", {
                     style: "currency",
                     currency: "BRL",
                   })}
@@ -185,7 +178,7 @@ export default function InfoCart({
                 <h2 className="w-1/5 font-normal">
                   {frete.sedex
                     ? `${sumValueFrete(
-                        valueCartProducts(),
+                        valueCartProducts,
                         frete.sedex.price
                       ).toLocaleString("pt-br", {
                         style: "currency",
@@ -207,7 +200,7 @@ export default function InfoCart({
                     : ""}
                 </h2>
                 <h2 className="w-1/5  border-gray-200 border-r-2 font-normal">
-                  {valueCartProducts().toLocaleString("pt-br", {
+                  {valueCartProducts.toLocaleString("pt-br", {
                     style: "currency",
                     currency: "BRL",
                   })}
@@ -218,7 +211,7 @@ export default function InfoCart({
                 <h2 className="w-1/5 font-normal">
                   {frete.pac
                     ? `${sumValueFrete(
-                        valueCartProducts(),
+                        valueCartProducts,
                         frete.pac.price
                       ).toLocaleString("pt-br", {
                         style: "currency",
@@ -234,7 +227,9 @@ export default function InfoCart({
           <Input
             className="w-1/2 !font-bold md:text-xs"
             label="Cupom"
-            set={(e) => setCupom(e.target.value)}
+            set={(e) =>
+              setState((prevState) => ({ ...prevState, cupom: e.target.value }))
+            }
             value={cupom}
           />
           <Button
