@@ -14,7 +14,6 @@ import Payment from "../../components/payment";
 import Sellers from "../../components/sellers";
 import Testimonials from "../../components/testimonials";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { PulseLoader } from "react-spinners";
 
 export default function Home({ login, setLogin, singIn, setSingIn }) {
   const navigate = useNavigate();
@@ -24,14 +23,11 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
     parceiros: [],
     produtos: [],
   });
-  const [selectCategory, setSelectCategory] = useState("Todas");
-  const [categories, setCategories] = useState(null);
 
   function handleBtnClick(e) {
     e.preventDefault();
     e.stopPropagation();
-    navigate("/login");
-    setLogin(true);
+    navigate("/store");
   }
 
   async function getPorductsCategoriesTestimonials() {
@@ -43,11 +39,6 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
           Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
         },
       });
-
-      const {
-        data: { categories },
-      } = await axios.get("/categories");
-      setCategories(categories);
 
       setInfoDb({
         depoimentos: testimonials,
@@ -136,15 +127,19 @@ export default function Home({ login, setLogin, singIn, setSingIn }) {
           />
         </div>
       </section>
-      <Sellers products={infoDb.produtos} />
-      <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
-      <Benefits />
-      {infoDb.depoimentos.length ? (
-        <Testimonials testimonials={infoDb.depoimentos} user={user} />
-      ) : (
-        ""
+      {!login && (
+        <>
+          <Sellers products={infoDb.produtos} />
+          <div className="w-full border-b-2 border-gray-500 border-dotted border-opacity-30 my-4" />
+          <Benefits />
+          {infoDb.depoimentos.length ? (
+            <Testimonials testimonials={infoDb.depoimentos} user={user} />
+          ) : (
+            ""
+          )}
+          <Payment />
+        </>
       )}
-      <Payment />
     </div>
   );
 }

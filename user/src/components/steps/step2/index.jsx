@@ -24,9 +24,9 @@ export default function Step2({
     e.stopPropagation();
     let frete = "";
     if (selectedOption === "Sedex") {
-      frete = freteValue.sedex.price * 1.2;
+      frete = freteValue.sedex.price;
     } else {
-      frete = freteValue.pac.price * 1.2;
+      frete = freteValue.pac.price;
     }
     const data = moment().format("DD/MM/YYYY, h:mm:ss");
     frete = Math.round(frete * 100);
@@ -45,7 +45,7 @@ export default function Step2({
           recipient_phone: userInfo.phones.mobile_phone,
           email: userInfo.email,
           frete,
-          amount: Math.round(value * 100 + frete),
+          amount: Math.round(Number(value) * 100 + frete),
           description: `Pedido de ${userInfo.name}`,
           data,
           compra: await AsyncStorage.getItem("cart"),

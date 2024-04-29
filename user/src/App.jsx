@@ -9,7 +9,6 @@ import {
   useNavigate,
 } from "react-router-dom";
 import "./App.css";
-import axios from "./Service/api";
 import Footer from "./components/footer";
 import Header from "./components/header";
 import Access from "./pages/access";
@@ -33,7 +32,7 @@ TopBarProgress.config({
   shadowBlur: 5,
 });
 
-function App() {
+export default function App() {
   const location = useLocation();
   const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
@@ -142,10 +141,6 @@ function App() {
           </Route>
 
           <Route element={<ProtectRoutes redirecionarPara={"/"} />}>
-            <Route
-              path={"/store"}
-              element={<Store setShowModal={setShowModal} />}
-            />
             <Route path={"/home"} element={<Access login />} />
             <Route
               path="/cart"
@@ -161,6 +156,10 @@ function App() {
               }
             />
           </Route>
+          <Route
+            path={"/store"}
+            element={<Store setShowModal={setShowModal} />}
+          />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </AnimatePresence>
@@ -170,12 +169,15 @@ function App() {
         <ModalContato setShowModalContato={setShowModalContato} />
       )}
       {showModal ? (
-        <ModalHeader setShowModal={setShowModal} showModal={showModal} />
+        <ModalHeader
+          setShowModal={setShowModal}
+          showModal={showModal}
+          login={login}
+          setLogin={setLogin}
+        />
       ) : (
         ""
       )}
     </div>
   );
 }
-
-export default App;

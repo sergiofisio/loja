@@ -1,6 +1,6 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import axios from "../../Service/api";
-import { toastSuccess } from "../../context/toast";
+import { toastFail, toastSuccess } from "../../context/toast";
 
 export default function Checkout({ setState, urlCheckout, order }) {
   async function verifyPayment() {

@@ -15,6 +15,8 @@ export default function Store({ setShowModal }) {
   const [selectInput, setSelectInput] = useState("Todos");
   const [searchTerm, setSearchTerm] = useState("");
 
+  console.log({ modalProduto });
+
   function handleAddProduct(e, product) {
     e.preventDefault();
     e.stopPropagation();
@@ -42,6 +44,7 @@ export default function Store({ setShowModal }) {
     cartProducts.push(produto);
     localStorage.setItem("cart", JSON.stringify(cartProducts));
     setShowModal(true);
+    setModalProduto("");
   }
 
   function searchProduct(searchTerm) {

@@ -42,6 +42,8 @@ export default function Cart() {
     discount: false,
   });
 
+  console.log({ state });
+
   const loadCartData = useCallback(async () => {
     const cart = await AsyncStorage.getItem("cart");
     setState((prevState) => ({ ...prevState, cart: JSON.parse(cart) }));
@@ -243,12 +245,10 @@ export default function Cart() {
         },
       });
       if (data.cupom) {
-        const valueDiscount = state.value * 0.9;
-        console.log({ valueDiscount });
         setState((prevState) => ({ ...prevState, discount: data.cupom }));
         return setState((prevState) => ({
           ...prevState,
-          value: Math.round(state.value * 0.9),
+          value: (state.value * 0.9).toFixed(2),
         }));
       }
     } catch (error) {

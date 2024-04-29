@@ -6,7 +6,12 @@ import { useEffect, useState } from "react";
 import { toastFail } from "../../context/toast";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
-export default function ModalHeader({ setShowModal, showModal }) {
+export default function ModalHeader({
+  setShowModal,
+  showModal,
+  login,
+  setLogin,
+}) {
   const [cart, setCart] = useState(null);
   const navigate = useNavigate();
 
@@ -92,7 +97,8 @@ export default function ModalHeader({ setShowModal, showModal }) {
                   e.stopPropagation();
                   if (!cart) return toastFail("Seu carrinho esta vazio", 3000);
                   setShowModal(false);
-                  navigate("/cart");
+                  setLogin(true);
+                  navigate(login ? "/cart" : "/login");
                 }}
                 type="button"
                 className=" w-full min-h-[3rem] bg-green rounded-b-xl"
