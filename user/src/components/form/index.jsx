@@ -7,6 +7,7 @@ import { validadeInputs } from "../../functions/errorTreatment";
 import Button from "../button";
 import Input from "../input/form/input";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { validate } from "gerador-validador-cpf";
 
 export default function Form({ login, setLogin, setSingIn }) {
   const navigate = useNavigate();
@@ -96,6 +97,12 @@ export default function Form({ login, setLogin, setSingIn }) {
 
     if (!user.document) {
       return toastFail("O campo CPF é obrigatório");
+    }
+
+    const validateCpf = validate(user.document.replace(/[.-]/g, ""));
+
+    if (!validateCpf) {
+      return toastFail("CPF inválido");
     }
 
     if (await validadeInputs("document", user.document.replace(/[.-]/g, ""))) {
