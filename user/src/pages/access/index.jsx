@@ -201,19 +201,19 @@ export default function Access() {
               <table className="flex flex-col w-full">
                 <thead className="flex justify-between items-center w-full text-green font-main text-xl font-medium border-b-2 border-green py-4 md:text-sm">
                   <tr className="flex justify-between items-center w-full">
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3 md:text-ellipsis md:w-1/6">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3 md:text-ellipsis md:w-1/3">
                       <h2>Código pedido</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-2/12 md:text-sm">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-1/3 ">
                       <h2>Data</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-2/12 md:text-sm">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-1/3 ">
                       <h2>Valor</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-3/12 md:text-sm">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis  md:hidden">
                       <h2>Pagamento</h2>
                     </th>
-                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis md:w-2/12 md:text-sm">
+                    <th className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:text-ellipsis  md:hidden">
                       <h2>Status</h2>
                     </th>
                   </tr>
@@ -228,36 +228,36 @@ export default function Access() {
                     </tr>
                   </tbody>
                 ) : (
-                  <tbody className="flex flex-col justify-between items-center w-full text-black font-main text-base font-medium border-b-2 border-green h-2/3 overflow-y-scroll">
+                  <tbody className="flex flex-col justify-between items-center w-full text-black font-main text-base font-medium border-b-2 border-green h-2/3 overflow-y-scroll md:overflow-scroll">
                     {orders.length ? (
                       orders.map((order, key) => {
                         return (
                           <tr
-                            className="relative flex justify-center border-grey border-opacity-40 border-b-2 py-2 w-full cursor-pointer"
+                            className="relative flex justify-center border-grey border-opacity-40 border-b-2 py-2 w-full cursor-pointer text-xs"
                             key={key}
                             onClick={(e) => {
                               setShowModalOrder(order);
                             }}
                           >
-                            <td className="absolute flex items-center justify-center top-0 text-white font-black w-full h-full text-base opacity-0 bg-gray-500 transition-all duration-300 ease-in-out hover:opacity-80">
+                            <td className="absolute flex items-center justify-center top-0 text-white font-black w-full h-full text-base opacity-0 bg-gray-500 transition-all duration-300 ease-in-out hover:opacity-80 md:hidden">
                               <h2>Clique para acessar o pedido</h2>
                             </td>
-                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3">
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/3 md:w-1/3">
                               <h2>{order.idPagarme}</h2>
                             </td>
-                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:w-1/3">
                               <h2>
                                 {format(new Date(order.date), "dd/MM/yyyy")}
                               </h2>
                             </td>
-                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:w-1/3">
                               <h2>
                                 {formatValue(
                                   sumOrders(JSON.parse(order.products)) / 100
                                 )}
                               </h2>
                             </td>
-                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6">
+                            <td className="flex justify-center border-grey border-opacity-40 border-r-2 w-1/6 md:hidden">
                               <h2>
                                 {order.transactionType === "pix"
                                   ? "Pix"
@@ -267,7 +267,7 @@ export default function Access() {
                               </h2>
                             </td>
                             <td
-                              className={`flex justify-center text-center w-1/6`}
+                              className={`flex justify-center text-center w-1/6 md:hidden`}
                             >
                               <h2
                                 className={`rounded-3xl ${

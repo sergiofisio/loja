@@ -110,11 +110,11 @@ export default function ModalAdressCard({ type, setShowModal, adressUser }) {
   }, []);
 
   return (
-    <div className="flex flex-col items-center bg-bgModal absolute top-0 w-full h-full z-50 p-10">
+    <div className="flex flex-col items-center bg-bgModal absolute top-0 w-full h-full z-50 p-10 md:p-2 md:fixed">
       <div
         className={`relative flex flex-col justify-evenly w-1/3 ${
           type === "Endereço" ? "h-2/4" : "h-3/5"
-        } h-2/4 bg-white rounded-3xl p-8 1536:h-4/5 1440:h-2/3 1366:h-5/6 1366:w-1/2`}
+        } h-2/4 bg-white rounded-3xl p-8 1536:h-4/5 1440:h-2/3 1366:h-5/6 1366:w-1/2 md:w-full md:h-full md:p-3`}
       >
         <img
           onClick={() => {
@@ -124,10 +124,10 @@ export default function ModalAdressCard({ type, setShowModal, adressUser }) {
           src={closeBtn}
           alt="btnClose"
         />
-        <h2 className="text-[#253D4E] font-main text-4xl font-semibold ">
+        <h2 className="text-[#253D4E] font-main text-4xl font-semibold md:text-center capitalize">
           {type}
         </h2>
-        <form className="flex flex-col items-center justify-between h-full">
+        <form className="flex flex-col items-center justify-between h-full md:justify-center md:gap-5">
           <div>
             <div className="w-full flex items-end gap-4">
               <Input
