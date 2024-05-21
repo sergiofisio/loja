@@ -1,6 +1,13 @@
+import { toastfy } from "./toast";
+import { useState, useEffect, useContext } from "react";
+import axios from "axios";
+
+export const AppContext = useContext();
+
 export const ContextProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [retryCount, setRetryCount] = useState(0);
 
   useEffect(() => {
     const getProducts = async () => {
@@ -12,12 +19,14 @@ export const ContextProvider = ({ children }) => {
         if (allProducts && allProducts.length > 0) {
           setProducts(allProducts);
           setIsLoading(false);
-        } else {
+        } else if (retryCount < 5) {
           setTimeout(getProducts, 3000);
+          setRetryCount(retryCount + 1);
         }
       } catch (error) {
-        if (error.code === "ECONNABORTED") {
+        if (error.code === "ECONNABORTED" && retryCount < 5) {
           setTimeout(getProducts, 3000);
+          setRetryCount(retryCount + 1);
         } else {
           toastfy(
             "error",
@@ -30,7 +39,7 @@ export const ContextProvider = ({ children }) => {
       }
     };
     getProducts();
-  }, []);
+  }, [retryCount]);
 
   return (
     <AppContext.Provider value={{ products, setProducts, isLoading }}>
