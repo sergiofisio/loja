@@ -1,8 +1,8 @@
 import { toastfy } from "./toast";
-import { useState, useEffect, useContext } from "react";
-import axios from "axios";
+import { useState, useEffect, createContext } from "react";
+import axios from "../Service/api";
 
-export const AppContext = useContext();
+export const AppContext = createContext();
 
 export const ContextProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
