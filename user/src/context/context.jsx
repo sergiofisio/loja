@@ -1,33 +1,34 @@
-import { useEffect, useState } from "react";
-import { createContext } from "react";
-import axios from "../Service/api";
-import { toastfy } from "../context/toast";
-
-export const AppContext = createContext();
-
 export const ContextProvider = ({ children }) => {
   const [products, setProducts] = useState([]);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    async function getProducts() {
+    const getProducts = async () => {
       setIsLoading(true);
       try {
         const {
           data: { allProducts },
         } = await axios.get("/products");
-        setProducts(allProducts);
-        setIsLoading(false);
+        if (allProducts && allProducts.length > 0) {
+          setProducts(allProducts);
+          setIsLoading(false);
+        } else {
+          setTimeout(getProducts, 3000);
+        }
       } catch (error) {
-        toastfy(
-          "error",
-          "Ocorreu um erro, por favor entre com contato com o suporte da Green Life",
-          "text-red",
-          3000
-        );
-        setIsLoading(false);
+        if (error.code === "ECONNABORTED") {
+          setTimeout(getProducts, 3000);
+        } else {
+          toastfy(
+            "error",
+            "Ocorreu um erro, por favor entre com contato com o suporte da Green Life",
+            "text-red",
+            3000
+          );
+          setIsLoading(false);
+        }
       }
-    }
+    };
     getProducts();
   }, []);
 

@@ -34,3 +34,35 @@ export interface order {
   trackingCode?: string;
   ticketUrl?: string;
 }
+
+interface phones {
+  country_code: string;
+  number: string;
+  area_code: string;
+}
+
+interface address {
+  city: string;
+  country: string;
+  created_at: string;
+  id: string;
+  line_1: string;
+  state: string;
+  status: string;
+  updated_at: string;
+  zip_code: string;
+}
+
+export interface User {
+  id: string;
+  code: string;
+  name: string;
+  type: string;
+  document: string;
+  email: string;
+  created_at: string;
+  updated_at: string;
+  delinquent: boolean;
+  address: address;
+  phones: { mobile_phone: phones };
+}
