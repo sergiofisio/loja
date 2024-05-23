@@ -42,8 +42,6 @@ export default function Cart() {
     discount: false,
   });
 
-  console.log({ state });
-
   const loadCartData = useCallback(async () => {
     const cart = await AsyncStorage.getItem("cart");
     setState((prevState) => ({ ...prevState, cart: JSON.parse(cart) }));

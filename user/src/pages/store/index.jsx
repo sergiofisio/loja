@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import axios from "../../Service/api";
 import search from "../../assets/search.svg";
 import SelectProduct from "../../components/input/select";
@@ -7,15 +7,14 @@ import { toastFail } from "../../context/toast";
 import { formatValue, sortById } from "../../functions/functions";
 import ModalProdutos from "../../components/modalProduto";
 import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppContext } from "../../context/context";
 
 export default function Store({ setShowModal }) {
-  const [products, setProducts] = useState([]);
-  const [productsFilter, setProductsFilter] = useState([]);
+  const { products } = useContext(AppContext);
+  const [productsFilter, setProductsFilter] = useState(products);
   const [modalProduto, setModalProduto] = useState("");
   const [selectInput, setSelectInput] = useState("Todos");
   const [searchTerm, setSearchTerm] = useState("");
-
-  console.log({ modalProduto });
 
   function handleAddProduct(e, product) {
     e.preventDefault();
@@ -58,27 +57,9 @@ export default function Store({ setShowModal }) {
     }
   }
 
-  async function getAllProducts() {
-    try {
-      const {
-        data: { products },
-      } = await axios.get("/infoHome/false", {
-        headers: {
-          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-        },
-      });
-      setProducts(products);
-      setProductsFilter(sortById(products));
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
   useEffect(() => {
-    if (products.length < 1) {
-      getAllProducts();
-    }
-  }, []);
+    setProductsFilter(products);
+  }, [products]);
 
   return (
     <main className="flex justify-center w-full">

@@ -25,8 +25,6 @@ export default function Header({ setShowModal, login, setLogin }) {
     }
   }
 
-  console.log(window.location.pathname);
-
   return (
     <header className="relative flex w-full h-24 py-6 px-8 md:px-2 md:gap-2">
       <div className="flex items-center gap-5 w-full">
