@@ -56,7 +56,6 @@ export default function Access() {
           },
         }
       );
-      console.log({ user });
       if (adresses !== undefined) {
         setAdressUser({
           id: adresses[0].id,
@@ -84,10 +83,9 @@ export default function Access() {
       setOrders(orders);
       setLoading(false);
     } catch (error) {
-      console.log(error);
       if (error.response.status === 408) {
         toastFail(error.response.data.error);
-        localStorage.clear();
+        await AsyncStorage.clear();
         navigate("/");
       }
     }

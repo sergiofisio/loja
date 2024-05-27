@@ -10,8 +10,8 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import { AppContext } from "../../context/context";
 
 export default function Store({ setShowModal }) {
-  const { products } = useContext(AppContext);
-  const [productsFilter, setProductsFilter] = useState(products);
+  const { infoDb } = useContext(AppContext);
+  const [productsFilter, setProductsFilter] = useState(infoDb.produtos);
   const [modalProduto, setModalProduto] = useState("");
   const [selectInput, setSelectInput] = useState("Todos");
   const [searchTerm, setSearchTerm] = useState("");
@@ -48,18 +48,18 @@ export default function Store({ setShowModal }) {
 
   function searchProduct(searchTerm) {
     if (searchTerm) {
-      const searchProduct = products.filter((item) =>
+      const searchProduct = infoDb.produtos.filter((item) =>
         item.name.toLowerCase().includes(searchTerm.toLowerCase())
       );
       setProductsFilter(searchProduct);
     } else {
-      setProductsFilter(products);
+      setProductsFilter(infoDb.produtos);
     }
   }
 
   useEffect(() => {
-    setProductsFilter(products);
-  }, [products]);
+    setProductsFilter(infoDb.produtos);
+  }, [infoDb.produtos]);
 
   return (
     <main className="flex justify-center w-full">

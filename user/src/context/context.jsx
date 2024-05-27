@@ -5,28 +5,39 @@ import axios from "../Service/api";
 export const AppContext = createContext();
 
 export const ContextProvider = ({ children }) => {
-  const [products, setProducts] = useState([]);
-  const [isLoading, setIsLoading] = useState(true);
-  const [retryCount, setRetryCount] = useState(0);
+  const [infoDb, setInfoDb] = useState({
+    depoimentos: [],
+    historicos: [],
+    parceiros: [],
+    produtos: [],
+    isLoading: true,
+    retryCount: 0,
+  });
 
   useEffect(() => {
     const getProducts = async () => {
-      setIsLoading(true);
+      setInfoDb({ ...infoDb, isLoading: true });
       try {
         const {
-          data: { allProducts },
-        } = await axios.get("/products");
-        if (allProducts && allProducts.length > 0) {
-          setProducts(allProducts);
-          setIsLoading(false);
-        } else if (retryCount < 5) {
+          data: { products, testimonials, partners },
+        } = await axios.get("/infoHome/false");
+        if (products && products.length > 0) {
+          setInfoDb({
+            ...infoDb,
+            depoimentos: testimonials,
+            historicos: [],
+            parceiros: partners,
+            produtos: products,
+            isLoading: false,
+          });
+        } else if (infoDb.retryCount < 5) {
           setTimeout(getProducts, 3000);
-          setRetryCount(retryCount + 1);
+          setInfoDb({ ...infoDb, retryCount: retryCount + 1 });
         }
       } catch (error) {
-        if (error.code === "ECONNABORTED" && retryCount < 5) {
+        if (error.code === "ECONNABORTED" && infoDb.retryCount < 5) {
           setTimeout(getProducts, 3000);
-          setRetryCount(retryCount + 1);
+          setRetryCount(infoDb.retryCount + 1);
         } else {
           toastfy(
             "error",
@@ -39,10 +50,10 @@ export const ContextProvider = ({ children }) => {
       }
     };
     getProducts();
-  }, [retryCount]);
+  }, [infoDb.retryCount]);
 
   return (
-    <AppContext.Provider value={{ products, setProducts, isLoading }}>
+    <AppContext.Provider value={{ infoDb, setInfoDb }}>
       {children}
     </AppContext.Provider>
   );

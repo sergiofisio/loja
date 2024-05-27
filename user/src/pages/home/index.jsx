@@ -1,6 +1,5 @@
-import { useEffect, useState } from "react";
+import { useContext } from "react";
 import { useNavigate } from "react-router-dom";
-import axios from "../../Service/api";
 import leaftArrow from "../../assets/home/leaf-arrow.svg";
 import leaftMini from "../../assets/home/leaf-mini.svg";
 import leaft from "../../assets/home/leaf.svg";
@@ -13,47 +12,17 @@ import Form from "../../components/form";
 import Payment from "../../components/payment";
 import Sellers from "../../components/sellers";
 import Testimonials from "../../components/testimonials";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import { AppContext } from "../../context/context";
 
 export default function Home({ login, setLogin, singIn, setSingIn }) {
   const navigate = useNavigate();
-  const [infoDb, setInfoDb] = useState({
-    depoimentos: [],
-    historicos: [],
-    parceiros: [],
-    produtos: [],
-  });
+  const { infoDb } = useContext(AppContext);
 
   function handleBtnClick(e) {
     e.preventDefault();
     e.stopPropagation();
     navigate("/store");
   }
-
-  async function getPorductsCategoriesTestimonials() {
-    try {
-      const {
-        data: { products, users, testimonials, partners },
-      } = await axios.get("/infoHome/false", {
-        headers: {
-          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-        },
-      });
-
-      setInfoDb({
-        depoimentos: testimonials,
-        historicos: [],
-        parceiros: partners,
-        produtos: products,
-      });
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    getPorductsCategoriesTestimonials();
-  }, []);
 
   return (
     <div className="flex flex-col w-full h-full">
