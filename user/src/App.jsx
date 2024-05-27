@@ -43,11 +43,12 @@ export default function App() {
   const [card, setCard] = useState("");
   const [id, setId] = useState("");
   const [showModalContato, setShowModalContato] = useState(false);
-  const { isLoading } = useContext(AppContext);
+  const { infoDb } = useContext(AppContext);
+  console.log(infoDb.isLoading);
 
   useEffect(() => {
     const handleLoading = () => {
-      if (isLoading) {
+      if (infoDb.isLoading) {
         toast.info("Colocando produtos na estante...", {
           progress: undefined,
           autoClose: false,
@@ -61,7 +62,7 @@ export default function App() {
     };
 
     handleLoading();
-  }, [isLoading]);
+  }, [infoDb.isLoading]);
 
   function LogedUser({ redirecionarPara }) {
     const isAutheticated = localStorage.getItem("token");
@@ -95,7 +96,7 @@ export default function App() {
         setLogin={setLogin}
         login={login}
       />
-      {isLoading && (
+      {infoDb.isLoading && (
         <>
           <TopBarProgress />
           <div className="fixed top-0 left-0 z-50 w-full h-full bg-black opacity-50" />
