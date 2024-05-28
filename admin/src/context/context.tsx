@@ -27,11 +27,7 @@ export const ContextProvider = ({ children }: ProviderProps) => {
       try {
         const {
           data: { users },
-        } = await axios.get("/allUsersInfo", {
-          headers: {
-            authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-          },
-        });
+        } = await axios.get("/allUsersInfo");
 
         console.log({ users });
 

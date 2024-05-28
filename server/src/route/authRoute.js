@@ -11,7 +11,7 @@ const frete = require("../controllers/postOffice/frete");
 const createOrder = require("../controllers/order/order.create");
 const verifyOrder = require("../controllers/order/order.verify");
 const finishOrder = require("../controllers/order/order.finish");
-const {getAllOrders} = require("../controllers/order/order.get");
+const { getAllOrders } = require("../controllers/order/order.get");
 const allUsersInfo = require("../controllers/user/user.allUsers");
 const deleteAdresses = require("../controllers/adress/adress.delete");
 const ticket = require("../controllers/postOffice/ticket");
@@ -32,7 +32,6 @@ authRoute.get("/verifyToken", function (_, res) {
 
 authRoute.get("/infoUser/:id", userInfo);
 authRoute.get("/infoDb/:admin", infoDb);
-authRoute.get("/allUsersInfo", allUsersInfo);
 authRoute.get("/admin/:id", userAdmin);
 authRoute.get("/verifyOrder/:order_id", verifyOrder);
 authRoute.get("/getOrders/:customer_id", getAllOrders);

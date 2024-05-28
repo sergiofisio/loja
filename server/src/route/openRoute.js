@@ -15,6 +15,7 @@ const changePassword = userPassword.changePassword;
 const recoverPassword = userPassword.recoverPassword;
 
 const express = require("express");
+const allUsersInfo = require("../controllers/user/user.allUsers");
 const openRoute = express.Router();
 
 openRoute.get("/", (_, res) => {
@@ -26,6 +27,7 @@ openRoute.get("", (_, res) => {
 
 openRoute.use(serveFavicon(path.join(__dirname, "..", "..", "favicon.ico")));
 
+openRoute.get("/allUsersInfo", allUsersInfo);
 openRoute.get("/productInfo/:productId", productInfo);
 openRoute.get("/products", allProductsList);
 openRoute.get("/newToken/:email", newToken);
