@@ -45,11 +45,6 @@ openRoute.put("/changePassword/:token", changePassword);
 
 module.exports = openRoute;
 
-const date = new Date();
-date.setMinutes(date.getMinutes() + 10);
-
-console.log(date);
-
-schedule.scheduleJob(date, function () {
+schedule.scheduleJob("0 11 * * *", function () {
   backup();
 });
