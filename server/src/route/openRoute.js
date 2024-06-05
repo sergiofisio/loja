@@ -1,5 +1,5 @@
 const path = require("path");
-const cron = require("node-cron");
+const schedule = require("node-schedule");
 const serveFavicon = require("serve-favicon");
 const productInfo = require("../controllers/product/product.info");
 const newToken = require("../controllers/user/user.token");
@@ -45,4 +45,9 @@ openRoute.put("/changePassword/:token", changePassword);
 
 module.exports = openRoute;
 
-cron.schedule("0 10 * * *", backup);
+const date = new Date();
+date.setMinutes(date.getMinutes() + 10);
+
+schedule.scheduleJob(date, function () {
+  backup();
+});

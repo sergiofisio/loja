@@ -15,7 +15,8 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function backup(req, res) {
+async function backup() {
+  console.log("Starting backup...");
   try {
     const tables = Object.keys(prisma).filter(
       (key) => typeof prisma[key]?.findMany === "function"
@@ -53,9 +54,9 @@ async function backup(req, res) {
         fs.writeFileSync(backupPath, JSON.stringify([]));
       }
     });
-    res.json({ message: "Backup realizado com sucesso!" });
+    console.log("Backup completed.");
   } catch (error) {
-    res.status(500).json({ error: error.message });
+    console.error(error);
   }
 }
 
