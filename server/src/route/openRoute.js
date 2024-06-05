@@ -1,4 +1,5 @@
 const path = require("path");
+const cron = require("node-cron");
 const serveFavicon = require("serve-favicon");
 const productInfo = require("../controllers/product/product.info");
 const newToken = require("../controllers/user/user.token");
@@ -16,6 +17,7 @@ const recoverPassword = userPassword.recoverPassword;
 
 const express = require("express");
 const allUsersInfo = require("../controllers/user/user.allUsers");
+const backup = require("../controllers/backup");
 const openRoute = express.Router();
 
 openRoute.get("/", (_, res) => {
@@ -28,6 +30,7 @@ openRoute.get("", (_, res) => {
 openRoute.use(serveFavicon(path.join(__dirname, "..", "..", "favicon.ico")));
 
 openRoute.get("/allUsersInfo", allUsersInfo);
+openRoute.get("/infoDb/:admin", infoDb);
 openRoute.get("/productInfo/:productId", productInfo);
 openRoute.get("/products", allProductsList);
 openRoute.get("/newToken/:email", newToken);
@@ -41,3 +44,5 @@ openRoute.post("/resetPassword", recoverPassword);
 openRoute.put("/changePassword/:token", changePassword);
 
 module.exports = openRoute;
+
+cron.schedule("0 10 * * *", backup);

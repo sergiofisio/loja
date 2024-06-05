@@ -8,6 +8,7 @@ export interface Order {
 }
 
 export interface User {
+  usuarios: User[];
   orders: Order[];
 }
 

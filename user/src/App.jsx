@@ -44,7 +44,6 @@ export default function App() {
   const [id, setId] = useState("");
   const [showModalContato, setShowModalContato] = useState(false);
   const { infoDb } = useContext(AppContext);
-  console.log(infoDb.isLoading);
 
   useEffect(() => {
     const handleLoading = () => {

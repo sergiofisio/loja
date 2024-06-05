@@ -2,98 +2,32 @@ import dashboard from "../../assets/admin/dashboard.svg";
 import dashboardUnselected from "../../assets/admin/dashboard-unselected.svg";
 import store from "../../assets/admin/store.svg";
 import storeUnselected from "../../assets/admin/store-unselected.svg";
-import { useEffect, useState } from "react";
-import axiosPrivate from "../../Service/api";
+import { useContext, useEffect, useState } from "react";
 import userImg from "../../assets/user/User.svg";
 import Card from "../../components/card";
 import { formatValue } from "../../functions/functions";
 import edit from "../../assets/admin/edit.svg";
 import ModalAdminProduto from "../../components/modalAdminProduto";
 import { GridLoader } from "react-spinners";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import ModalUser from "../../components/modalUser";
 import { Accumulator, Order, Product, User } from "../../interfaces/interface";
 // import Button from "../../components/button";
 import ModalMelhorEnvio from "../../components/modalMelhorEnvio";
+import { AppContext } from "../../context/context";
 
 export default function Admin() {
   const [selectSidebar, setSelectSidebar] = useState("dashboard");
-  const [infoDb, setInfoDb]: any = useState({
-    depoimentos: [],
-    parceiros: [],
-    produtos: [],
-    usuarios: [],
-  });
+  const { infoDb } = useContext(AppContext);
   const [sort, setSort] = useState({
-    users: [],
-    produtos: [],
+    users: infoDb.usuarios,
+    produtos: infoDb.produtos,
   });
   const [search, setSearch] = useState("");
   const [showModal, setShowModal] = useState("");
   const [produto, setProduto] = useState("");
-  // const [page, setPage] = useState(1);
   const [sum, setSum] = useState(0);
   const [numberSold, setNumberSold] = useState(0);
-  const [user, setUser] = useState({ user: "", orders: "" });
-  // const [saldo, setSaldo] = useState(0);
-
-  // useEffect(() => {
-  //   async function getSaldo() {
-  //     try {
-  //       const { data } = await axiosPrivate.get("/balance", {
-  //         headers: {
-  //           authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-  //         },
-  //       });
-
-  //       console.log(data);
-
-  //       // console.log(balance);
-
-  //       // setSaldo(balance.balance);
-  //     } catch (error) {
-  //       console.log(error);
-  //     }
-  //   }
-  //   // console.log({ saldo });
-  //   if (!saldo) getSaldo();
-  // }, [saldo]);
-
-  async function getAllInfoDb() {
-    try {
-      const {
-        data: { products, testimonials, partners },
-      } = await axiosPrivate.get("/infoDb/true", {
-        headers: {
-          authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-        },
-      });
-
-      const { data } = await axiosPrivate.get("/allUsersInfo", {
-        headers: {
-          authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-        },
-      });
-
-      setInfoDb({
-        depoimentos: testimonials,
-        parceiros: partners,
-        produtos: products,
-        usuarios: data.users.filter((user: any) => !user.admin),
-      });
-
-      console.log({
-        user: data.users.filter((user: any) => !user.admin),
-        products,
-        testimonials,
-        partners,
-      });
-
-      setSort({ ...sort, produtos: products });
-    } catch (error) {
-      console.log(error);
-    }
-  }
+  const [user, setUser] = useState({} as any);
 
   function sortHistoric(searchTerm: any) {
     if (searchTerm) {
@@ -130,10 +64,6 @@ export default function Admin() {
       }, 0);
     return formatValue(sum / 100);
   }
-
-  useEffect(() => {
-    if (infoDb.usuarios.length === 0) getAllInfoDb();
-  }, [showModal]);
 
   useEffect(() => {
     if (!infoDb) return;

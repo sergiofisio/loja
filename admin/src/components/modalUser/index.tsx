@@ -27,6 +27,8 @@ export default function ModalUser({
   const [sumFail, setSumFail] = useState("");
   const [showOrderInfo, setShowOrderInfo] = useState("");
 
+  console.log({ user });
+
   function sortHistoric(searchTerm: any) {
     console.log({ searchTerm });
 
@@ -99,7 +101,7 @@ export default function ModalUser({
                 )}`}
               />
             </div>
-            <div>
+            <div className="h-fit flex flex-col">
               <h2>Endereço</h2>
               <div className="flex flex-col items-start gap-3 justify-center w-80 bg-green border-green border-solid rounded-b-xl rounded-r-xl border-4 p-4 h-full">
                 <h2 className="font-main text-white text-xl font-medium">
@@ -115,6 +117,15 @@ export default function ModalUser({
                 </h2>
               </div>
             </div>
+            <InfoModalUser
+              label="Telefone"
+              value={`(${
+                user.phones.mobile_phone.area_code
+              }) ${user.phones.mobile_phone.number.slice(
+                0,
+                5
+              )}-${user.phones.mobile_phone.number.slice(5)}`}
+            />
           </div>
           <div className="flex flex-col w-full gap-4">
             <h2 className="text-3xl font-semibold text-center">Pedidos</h2>

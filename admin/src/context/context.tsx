@@ -2,12 +2,11 @@ import { ReactNode, useEffect, useState } from "react";
 import { createContext } from "react";
 import axios from "../Service/api";
 import { toastfy } from "./toast";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import { User } from "../interfaces/interface";
 
 interface ContextProps {
-  usersInfo: User[];
-  setUsers: React.Dispatch<React.SetStateAction<User[]>>;
+  infoDb: any;
+  setInfoDb: React.Dispatch<React.SetStateAction<User[]>>;
   isLoading: boolean;
 }
 
@@ -15,10 +14,22 @@ interface ProviderProps {
   children: ReactNode;
 }
 
-export const AppContext = createContext<ContextProps | null>(null);
+// Fornecer um valor padrão para o contexto
+const defaultContext: ContextProps = {
+  infoDb: [],
+  setInfoDb: () => {},
+  isLoading: true,
+};
+
+export const AppContext = createContext<ContextProps>(defaultContext);
 
 export const ContextProvider = ({ children }: ProviderProps) => {
-  const [usersInfo, setUsers] = useState<User[]>([]);
+  const [infoDb, setInfoDb]: any = useState({
+    depoimentos: [],
+    parceiros: [],
+    produtos: [],
+    usuarios: [],
+  });
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
@@ -26,13 +37,16 @@ export const ContextProvider = ({ children }: ProviderProps) => {
       setIsLoading(true);
       try {
         const {
-          data: { users },
-        } = await axios.get("/allUsersInfo");
-
-        console.log({ users });
+          data: { users, products, testimonials, partners },
+        } = await axios.get("/infoDb/true");
 
         if (users && users.length > 0) {
-          setUsers(users);
+          setInfoDb({
+            depoimentos: testimonials,
+            parceiros: partners,
+            produtos: products,
+            usuarios: users,
+          });
           setIsLoading(false);
         } else {
           setTimeout(getUsers, 3000);
@@ -55,7 +69,7 @@ export const ContextProvider = ({ children }: ProviderProps) => {
   }, []);
 
   return (
-    <AppContext.Provider value={{ usersInfo, setUsers, isLoading }}>
+    <AppContext.Provider value={{ infoDb, setInfoDb, isLoading }}>
       {children}
     </AppContext.Provider>
   );

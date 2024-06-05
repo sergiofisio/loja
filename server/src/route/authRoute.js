@@ -21,6 +21,7 @@ const cupom = require("../controllers/partner/cupom");
 
 const authRoute = require("express").Router();
 const multer = require("../middleware/multer");
+const backup = require("../controllers/backup");
 
 authRoute.get("/verifyToken", function (_, res) {
   try {
@@ -32,6 +33,7 @@ authRoute.get("/verifyToken", function (_, res) {
 
 authRoute.get("/infoUser/:id", userInfo);
 authRoute.get("/infoDb/:admin", infoDb);
+authRoute.get("/backup", backup);
 authRoute.get("/admin/:id", userAdmin);
 authRoute.get("/verifyOrder/:order_id", verifyOrder);
 authRoute.get("/getOrders/:customer_id", getAllOrders);

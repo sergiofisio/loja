@@ -1,7 +1,6 @@
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import "./App.css";
 import axios from "./Service/api";
-import { PulseLoader } from "react-spinners";
 import Header from "./components/header";
 import Form from "./components/form";
 import { AnimatePresence } from "framer-motion";
@@ -9,11 +8,32 @@ import { Navigate, Outlet, Route, Routes } from "react-router-dom";
 import Admin from "./page/admin";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { toastFail } from "./context/toast";
+import { AppContext } from "./context/context";
+import { toast } from "react-toastify";
+import TopBarProgress from "react-topbar-progress-indicator";
 
 function App() {
-  const [init, setInit] = useState(false);
   const [admin, setAdmin] = useState(false);
   const [type, setType] = useState("login");
+  const { isLoading } = useContext(AppContext);
+
+  useEffect(() => {
+    const handleLoading = () => {
+      if (isLoading) {
+        toast.info("Colocando produtos na estante...", {
+          progress: undefined,
+          autoClose: false,
+          closeButton: false,
+          toastId: "loadingToast",
+          theme: "colored",
+        });
+      } else {
+        toast.dismiss("loadingToast");
+      }
+    };
+
+    handleLoading();
+  }, [isLoading]);
 
   function LogedUser({ redirecionarPara }: { redirecionarPara: string }) {
     const isAutheticated = localStorage.getItem("token");
@@ -49,24 +69,6 @@ function App() {
     }
   }
 
-  async function startDb() {
-    try {
-      const {
-        data: { init },
-      } = await axios.get("/");
-
-      setInit(init);
-    } catch (error) {
-      console.log(error);
-    }
-  }
-
-  useEffect(() => {
-    if (!init) {
-      startDb();
-    }
-  }, []);
-
   useEffect(() => {
     location.pathname === "/" || location.pathname === "/login"
       ? setType("login")
@@ -75,45 +77,44 @@ function App() {
 
   return (
     <div className="relative flex flex-col items-center justify-between w-full h-full">
-      {!init ? (
-        <div className="flex flex-col items-center">
-          <PulseLoader color="#000" />
-          <h1>Carregando...</h1>
+      <>
+        <Header admin={admin} setAdmin={setAdmin} />
+        {isLoading && (
+          <>
+            <TopBarProgress />
+            <div className="fixed top-0 left-0 z-50 w-full h-full bg-black opacity-50" />
+          </>
+        )}
+        <div className="flex items-center justify-center h-full w-full overflow-hidden">
+          <AnimatePresence mode="wait">
+            <Routes>
+              <Route element={<LogedUser redirecionarPara="/home" />}>
+                <Route
+                  path="/"
+                  element={
+                    <Form type={type} setType={setType} setAdmin={setAdmin} />
+                  }
+                />
+                <Route
+                  path="/login"
+                  element={
+                    <Form type={type} setType={setType} setAdmin={setAdmin} />
+                  }
+                />
+                <Route
+                  path="/register"
+                  element={
+                    <Form type={type} setType={setType} setAdmin={setAdmin} />
+                  }
+                />
+              </Route>
+              <Route element={<ProtectRoutes redirecionarPara="/" />}>
+                <Route path="/home" element={<Admin />} />
+              </Route>
+            </Routes>
+          </AnimatePresence>
         </div>
-      ) : (
-        <>
-          <Header admin={admin} setAdmin={setAdmin} />
-          <div className="flex items-center justify-center h-full w-full overflow-hidden">
-            <AnimatePresence mode="wait">
-              <Routes>
-                <Route element={<LogedUser redirecionarPara="/home" />}>
-                  <Route
-                    path="/"
-                    element={
-                      <Form type={type} setType={setType} setAdmin={setAdmin} />
-                    }
-                  />
-                  <Route
-                    path="/login"
-                    element={
-                      <Form type={type} setType={setType} setAdmin={setAdmin} />
-                    }
-                  />
-                  <Route
-                    path="/register"
-                    element={
-                      <Form type={type} setType={setType} setAdmin={setAdmin} />
-                    }
-                  />
-                </Route>
-                <Route element={<ProtectRoutes redirecionarPara="/" />}>
-                  <Route path="/home" element={<Admin />} />
-                </Route>
-              </Routes>
-            </AnimatePresence>
-          </div>
-        </>
-      )}
+      </>
     </div>
   );
 }
