@@ -28,7 +28,7 @@ async function backup(req, res) {
       backupData[table] = data;
     }
 
-    const backupPath = "D:/onedrive/programação/backup/loja/backup.json";
+    const backupPath = "../server/backup/backup.json";
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
     await prisma.$disconnect();
