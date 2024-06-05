@@ -48,6 +48,8 @@ module.exports = openRoute;
 const date = new Date();
 date.setMinutes(date.getMinutes() + 10);
 
+console.log(date);
+
 schedule.scheduleJob(date, function () {
   backup();
 });
