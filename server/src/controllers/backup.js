@@ -35,7 +35,7 @@ async function backup(req, res) {
 
     let mailOptions = {
       from: process.env.ZOHO_USER,
-      to: "sergiobastosfisio@yahoo.com.br", // replace with your email
+      to: "sergiobastosfisio@yahoo.com.br",
       subject: "Database Backup",
       text: "Please find attached the latest database backup.",
       attachments: [
@@ -50,8 +50,7 @@ async function backup(req, res) {
         console.log(error);
       } else {
         console.log("Email sent: " + info.response);
-        // Remove o arquivo de backup após o envio do e-mail
-        fs.unlinkSync(backupPath);
+        fs.writeFileSync(backupPath, JSON.stringify([]));
       }
     });
     res.json({ message: "Backup realizado com sucesso!" });
