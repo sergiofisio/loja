@@ -3,7 +3,8 @@ const { findUnique } = require("../prismaFunctions/prisma");
 const jwt = require("jsonwebtoken");
 
 const verifyToken = (req, res, next) => {
-  const token = req.headers["authorization"].split(" ")[1];
+  const authHeader = req.headers["authorization"];
+  const token = authHeader ? authHeader.split(" ")[1] : null;
 
   try {
     if (!token) {
