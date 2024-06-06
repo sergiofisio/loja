@@ -18,8 +18,9 @@ allRoutes.use(verifyToken);
 
 allRoutes.use(require("./route/authRoute"));
 
-allRoutes.use(function (req, res, next) {
-  // Não faz nada
+allRoutes.use(function (_, res, next) {
+  res.status(404).json({ error: "undefined" });
+  next();
 });
 
 module.exports = allRoutes;
