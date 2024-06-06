@@ -8,7 +8,7 @@ const verifyToken = (req, res, next) => {
 
   try {
     if (!token) {
-      res.status(401).json({ error: "Token não encontrado" });
+      next();
     } else {
       jwt.verify(token, process.env.JWT_SECRET, async (err, decoded) => {
         if (err) {
