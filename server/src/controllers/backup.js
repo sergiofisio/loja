@@ -17,6 +17,7 @@ const transporter = nodemailer.createTransport({
 
 async function backup() {
   console.log("Starting backup...");
+  const date = new Date().toISOString().replace(/:/g, "-");
   try {
     const tables = Object.keys(prisma).filter(
       (key) => typeof prisma[key]?.findMany === "function"
@@ -37,7 +38,7 @@ async function backup() {
     let mailOptions = {
       from: process.env.ZOHO_USER,
       to: "sergiobastosfisio@yahoo.com.br",
-      subject: "Database Backup",
+      subject: `Database Backup - GREENLIFE DATA: ${date}`,
       text: "Please find attached the latest database backup.",
       attachments: [
         {
