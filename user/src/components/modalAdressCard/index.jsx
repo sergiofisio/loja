@@ -43,15 +43,18 @@ export default function ModalAdressCard({ type, setShowModal, adressUser }) {
     e.preventDefault();
     e.stopPropagation();
 
-    verifyInputs({
-      Cep: adress.zip_code,
-      Logradouro: adress.street,
-      Número: adress.number,
-      Bairro: adress.neighborhood,
-      Cidade: adress.city,
-      Estado: adress.state,
-      Pais: adress.country,
-    });
+    if (
+      verifyInputs({
+        Cep: adress.zip_code,
+        Logradouro: adress.street,
+        Número: adress.number,
+        Bairro: adress.neighborhood,
+        Cidade: adress.city,
+        Estado: adress.state,
+        Pais: adress.country,
+      })
+    )
+      return;
 
     try {
       if (type === "editar") {
@@ -159,7 +162,7 @@ export default function ModalAdressCard({ type, setShowModal, adressUser }) {
               />
               <Input
                 label="Número"
-                type="number"
+                type="text"
                 placeholder="Número"
                 set={(e) => {
                   setAdress({ ...adress, number: e.target.value });

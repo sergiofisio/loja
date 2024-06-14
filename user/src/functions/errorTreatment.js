@@ -40,7 +40,9 @@ export async function validadeInputs(input, data) {
 export function verifyInputs(inputs) {
   for (const input in inputs) {
     if (!inputs[input]) {
-      toastFail(`O campo ${input} é obrigatório!`);
+      toastFail(
+        `O campo ${input} é obrigatório!${input === "Número" && " Se não houver número digite s/n"}`
+      );
       return true;
     }
   }
