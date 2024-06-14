@@ -15,13 +15,13 @@ export default function ModalHeader({
   const [cart, setCart] = useState(null);
   const navigate = useNavigate();
 
-  function handleDeleteProduct(e, id) {
+  async function handleDeleteProduct(e, id) {
     e.preventDefault();
     e.stopPropagation();
     const newCart = JSON.parse(localStorage.getItem("cart")).filter(
       (product) => product.product.id !== id
     );
-    localStorage.setItem("cart", JSON.stringify(newCart));
+    await AsyncStorage.setItem("cart", JSON.stringify(newCart));
     setCart(newCart.length);
     if (!newCart.length) {
       setShowModal(false);

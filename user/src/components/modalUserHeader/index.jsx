@@ -1,5 +1,6 @@
 import { useLocation, useNavigate } from "react-router-dom";
 import { toastSuccess } from "../../context/toast";
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 export default function ModalUserHeader({ setShowModalHeader }) {
   const navigate = useNavigate();
@@ -17,8 +18,8 @@ export default function ModalUserHeader({ setShowModalHeader }) {
     e.preventDefault();
     e.stopPropagation();
     toastSuccess("Até mais!", 3000, "top-center");
-    setTimeout(() => {
-      localStorage.clear();
+    setTimeout(async () => {
+      await AsyncStorage.clear();
       setShowModalHeader(false);
       navigate("/");
     }, 3000);

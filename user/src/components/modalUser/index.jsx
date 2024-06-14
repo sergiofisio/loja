@@ -11,7 +11,6 @@ export default function ModalUser({ user, setUser, setShowModal }) {
     e.stopPropagation();
 
     try {
-      console.log(user);
       if (user.password) {
         if (user.password !== user.confPassword) {
           return toastFail("Os campos Senha e Confirmar Senha deve sem iguais");

@@ -51,9 +51,9 @@ export default function Form({ login, setLogin, setSingIn }) {
         email: user.email,
         password: user.password,
       });
-      localStorage.setItem("token", token);
-      localStorage.setItem("usuarioId", loggedInUser.id);
-      localStorage.setItem("usuarioNome", loggedInUser.name);
+      await AsyncStorage.setItem("token", token);
+      await AsyncStorage.setItem("usuarioId", loggedInUser.id);
+      await AsyncStorage.setItem("usuarioNome", loggedInUser.name);
       toastSuccess(
         `Bem vindo, ${await AsyncStorage.getItem("usuarioNome")}`,
         3000,

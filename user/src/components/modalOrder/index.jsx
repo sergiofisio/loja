@@ -6,7 +6,6 @@ import { formatValue } from "../../functions/functions";
 export default function ModalOrder({ setShowModalOrder, order }) {
   const [allProducts, setAllProducts] = useState([]);
 
-  console.log({ order });
   async function getAllProducts() {
     try {
       const {

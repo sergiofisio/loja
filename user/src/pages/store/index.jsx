@@ -1,5 +1,4 @@
 import { useContext, useEffect, useState } from "react";
-import axios from "../../Service/api";
 import search from "../../assets/search.svg";
 import SelectProduct from "../../components/input/select";
 import Seller from "../../components/products";
@@ -16,7 +15,7 @@ export default function Store({ setShowModal }) {
   const [selectInput, setSelectInput] = useState("Todos");
   const [searchTerm, setSearchTerm] = useState("");
 
-  function handleAddProduct(e, product) {
+  async function handleAddProduct(e, product) {
     e.preventDefault();
     e.stopPropagation();
     let cartProducts = [];
@@ -41,7 +40,7 @@ export default function Store({ setShowModal }) {
       quantidade: 0,
     };
     cartProducts.push(produto);
-    localStorage.setItem("cart", JSON.stringify(cartProducts));
+    await AsyncStorage.setItem("cart", JSON.stringify(cartProducts));
     setShowModal(true);
     setModalProduto("");
   }
