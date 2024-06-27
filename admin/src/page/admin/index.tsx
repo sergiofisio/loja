@@ -171,7 +171,7 @@ export default function Admin() {
       <div className="w-full">
         {selectSidebar === "dashboard" && (
           <>
-            <div className="flex flex-col px-6 gap-4">
+            <div className="flex flex-col w-full h-full px-6 gap-4">
               <h2 className="font-main text-3xl text-[#253D4E] font-semibold">
                 Dados de Vendas
               </h2>
@@ -202,7 +202,7 @@ export default function Admin() {
                 />
               </div>
               <div className="w-full h-full">
-                <table className="flex flex-col">
+                <table className="flex flex-col w-full h-full">
                   <thead className="flex gap-1 text-black font-main text-base font-semibold border-b-2 border-greenScale-200 border-solid">
                     <tr className="flex items-center justify-evenly w-full border-b-2 border-solid border-greenScale-200 py-2">
                       <th className="w-1/5 border-r-2 border-dotted border-greenScale-600">
@@ -224,7 +224,7 @@ export default function Admin() {
                       <th className="w-1/5">Valor total compras</th>
                     </tr>
                   </thead>
-                  <tbody className="flex flex-col gap-1 text-black font-main text-base font-semibold overflow-y-scroll max-h-96 scrollbar-thin scrollbar-thumb-green">
+                  <tbody className="flex flex-col gap-1 text-black font-main text-base font-semibold overflow-y-auto max-h-[90%] scrollbar-thin scrollbar-thumb-green">
                     {infoDb.usuarios.length ? (
                       infoDb.usuarios.map(({ user, orders }: any, key: any) => {
                         return (
@@ -239,7 +239,7 @@ export default function Admin() {
                             <td className="absolute flex items-center justify-center top-0 text-white font-black w-full h-full text-base opacity-0 bg-gray-500 transition-all duration-300 ease-in-out hover:opacity-80">
                               <h2>Clique para mais informações</h2>
                             </td>
-                            <td className="w-1/5 text-center border-r-2 border-dotted border-greenScale-600">
+                            <td className="w-1/5 text-center border-r-2 border-dotted border-greenScale-600 md:text-sm">
                               {user.id}
                             </td>
                             <td className="w-1/5 text-center border-r-2 border-dotted border-greenScale-600">
@@ -277,7 +277,7 @@ export default function Admin() {
               Produtos
             </h2>
             <div className="flex items-center gap-4">
-              <div className="flex gap-4 h-56 overflow-x-scroll scrollbar-thin scrollbar-thumb-green p-2">
+              <div className="flex gap-4 h-56 overflow-x-auto scrollbar-thin scrollbar-thumb-green p-2">
                 {!infoDb.produtos.length ? (
                   <div>
                     <GridLoader color="#000" />
@@ -406,7 +406,7 @@ export default function Admin() {
           <h2 className="font-main text-xl font-semibold text-black">
             Usuários
           </h2>
-          <div className="flex flex-col gap-3 overflow-y-scroll max-h-64 scrollbar-thin scrollbar-thumb-green">
+          <div className="flex flex-col gap-3 overflow-y-auto max-h-64 scrollbar-thin scrollbar-thumb-green">
             {infoDb.usuarios.length &&
               infoDb.usuarios.map((user: any, key: number) => {
                 return (
@@ -430,7 +430,7 @@ export default function Admin() {
           <h2 className="font-main text-xl font-semibold text-black">
             Parceiros
           </h2>
-          <div className="flex flex-col gap-3 overflow-y-scroll max-h-64 scrollbar-thin scrollbar-thumb-green">
+          <div className="flex flex-col gap-3 overflow-y-auto max-h-64 scrollbar-thin scrollbar-thumb-green">
             {infoDb.parceiros.length &&
               infoDb.parceiros.map((user: any, key: any) => {
                 return (
@@ -450,7 +450,7 @@ export default function Admin() {
           <h2 className="font-main text-xl font-semibold text-black">
             Avaliações
           </h2>
-          <div className="flex flex-col gap-3 overflow-y-scroll max-h-64 scrollbar-thin scrollbar-thumb-green">
+          <div className="flex flex-col gap-3 overflow-y-auto max-h-64 scrollbar-thin scrollbar-thumb-green">
             {infoDb.depoimentos.length &&
               infoDb.depoimentos.map((user: any, key: any) => {
                 return (
