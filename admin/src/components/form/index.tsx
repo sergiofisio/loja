@@ -165,7 +165,10 @@ export default function Form({
           <h2 className="text-green font-main text-5xl font-bold ">
             {type === "login" ? "Entrar" : "Cadastrar"}
           </h2>
-          <div className=" flex flex-col w-full h-[inherit] gap-[10%]">
+          <form
+            action="submit"
+            className=" flex flex-col w-full h-[inherit] gap-[10%]"
+          >
             <Input
               password={step === "step3" ? true : false}
               type={type === "login" ? "email" : "text"}
@@ -224,13 +227,13 @@ export default function Form({
               }
               required={true}
             />
-          </div>
-          <Button
-            onClick={(e) => handleNext(e)}
-            type="submit"
-            className="bg-green h-16 rounded-r-2xl rounded-bl-3xl w-1/3"
-            text={type === "login" ? "Entrar" : "Próximo"}
-          />
+            <Button
+              onClick={(e) => handleNext(e)}
+              type="submit"
+              className="bg-green h-16 rounded-r-2xl rounded-bl-3xl w-1/3 self-center"
+              text={type === "login" ? "Entrar" : "Próximo"}
+            />
+          </form>
           <h3 className="flex gap-3 text-white text-center font-main text-base font-normal">
             {type === "login" ? "Não possui conta?" : "Ja possui cadastro?"}{" "}
             <span
