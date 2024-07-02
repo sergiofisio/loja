@@ -17,7 +17,7 @@ export default function ModalMelhorEnvio({
     e.preventDefault();
     e.stopPropagation();
     try {
-      const response = await axios.post(
+      await axios.post(
         "/balance",
         {
           redirect: window.location.href,
