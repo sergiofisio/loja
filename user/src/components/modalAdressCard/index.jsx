@@ -34,7 +34,7 @@ export default function ModalAdressCard({ type, setShowModal, adressUser }) {
           state: uf,
         });
       } catch (error) {
-        console.log(error);
+        console.error(error);
       }
     }
   }
@@ -93,7 +93,7 @@ export default function ModalAdressCard({ type, setShowModal, adressUser }) {
         setShowModal("");
       }, 3000);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

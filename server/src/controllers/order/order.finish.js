@@ -1216,7 +1216,7 @@ async function finishOrder(req, res) {
 
     res.send("ok");
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 

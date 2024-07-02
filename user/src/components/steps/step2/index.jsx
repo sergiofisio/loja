@@ -64,7 +64,7 @@ export default function Step2({
         order: order.data.order,
       }));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

@@ -27,7 +27,7 @@ export default function ModalUser({ user, setUser, setShowModal }) {
         setShowModal("");
       }, 3000);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.response.data.hasOwnProperty("senha")) {
         toastFail(error.response.data.senha, 5000);
       }

@@ -9,8 +9,6 @@ async function updateUser(req, res) {
 
   phone = phone.replace(/\D/g, "");
 
-  console.log(phone);
-
   const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString(
     "base64"
   );
@@ -53,14 +51,14 @@ async function updateUser(req, res) {
         return response.data;
       })
       .catch(function (error) {
-        console.log({ error: error.response.data.errors });
+        console.error({ error: error.response.data.errors });
 
         throw new CustomError(error.response.data.errors, 400);
       });
 
     res.status(200).json({ mensagem: "Usuário atualizado com sucesso" });
   } catch (error) {
-    console.log({ errorCatch: error });
+    console.error({ errorCatch: error });
 
     res.status(error.status).json({ message: error.message });
   }

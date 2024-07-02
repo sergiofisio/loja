@@ -13,7 +13,7 @@ export default function ModalOrder({ setShowModalOrder, order }) {
       } = await axiosPrivate.get(`/products`);
       setAllProducts(allProducts);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

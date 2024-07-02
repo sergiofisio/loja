@@ -1,23 +1,20 @@
 const { findUnique } = require("../../prismaFunctions/prisma");
 
 async function verify(req, res) {
-    try {
-        const data = req.body;
-        
-        console.log({ data });
-        
+  try {
+    const data = req.body;
 
-        const verifyInput = await findUnique('user', { [data.input]: data.value });
+    const verifyInput = await findUnique("user", { [data.input]: data.value });
 
-        if (verifyInput)
-            return res.json(true);
-        return res.json(false)
-    } catch (error) {
-        console.log(error);
-
-        return res.status(error.status).json({ error: error.message });
-
-    }
+    if (verifyInput)
+      return res.json({
+        validate: true,
+        message: `O ${data.input} digitado já esta registrado, por favor tente novamente ou peça uma nova senha.`,
+      });
+    return res.json(false);
+  } catch (error) {
+    return res.status(error.status).json({ error: error.message });
+  }
 }
 
 module.exports = verify;

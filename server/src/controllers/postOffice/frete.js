@@ -35,7 +35,7 @@ async function frete(req, res) {
     );
     res.json({ code, prices });
   } catch (error) {
-    console.log(error.response.data);
+    console.error(error.response.data);
     res.status(500).json({ error: "Erro interno" });
   }
 }

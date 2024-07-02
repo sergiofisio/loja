@@ -1,10 +1,8 @@
 const axios = require("axios");
 
- async function createAdress(req, res) {
+async function createAdress(req, res) {
   const { id } = req.params;
   const { line_1, zip_code, line_2, city, state, country } = req.body;
-
-  console.log({ id, line_1, zip_code, line_2, city, state, country });
 
   try {
     const basicAuthorization = Buffer.from(
@@ -42,4 +40,4 @@ const axios = require("axios");
   }
 }
 
-module.exports = createAdress
+module.exports = createAdress;

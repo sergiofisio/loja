@@ -20,7 +20,7 @@ export default function Confirm() {
       }
       setValidToken(true);
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 
@@ -30,7 +30,7 @@ export default function Confirm() {
         token,
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

@@ -56,7 +56,7 @@ export default function ModalContato({ setShowModalContato }) {
       setPedido("");
       setMensagem("");
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
 

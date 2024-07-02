@@ -75,10 +75,6 @@ export default function ModalAdminProduto({
   async function handleOnSubmit(e: any) {
     e.preventDefault();
     e.stopPropagation();
-    for (const key in infoProduto) {
-      console.log(infoProduto[key]);
-    }
-
     await axios[type === "create" ? "post" : "patch"](
       `/${type === "create" ? "createProduct" : `uploadProduct/${produto.id}`}`,
       { ...infoProduto, price: Number(infoProduto.price) * 100 },

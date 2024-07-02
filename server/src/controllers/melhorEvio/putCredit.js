@@ -20,14 +20,14 @@ async function PutCredit(req, res) {
         return response.data;
       })
       .catch(function (error) {
-        console.log(error);
+        console.error(error);
 
         return error;
       });
 
     res.json({ balance });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ error: "Erro interno" });
   }
 }

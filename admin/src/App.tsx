@@ -60,7 +60,6 @@ function App() {
       });
       return setAdmin(user);
     } catch (error: any) {
-      console.log(error);
       if (error.response.status === 408) {
         await AsyncStorage.clear();
         toastFail("Sessão expirada, faca login novamente");

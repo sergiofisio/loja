@@ -67,3 +67,9 @@ export interface User {
   address: address;
   phones: { mobile_phone: phones };
 }
+
+export interface FormProps {
+  type: string;
+  setType: (type: string) => void;
+  setAdmin: (isAdmin: boolean) => void;
+}

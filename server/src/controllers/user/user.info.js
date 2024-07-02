@@ -75,7 +75,7 @@ async function userInfo(req, res) {
 
     res.json({ user: userInfo, adresses: adresses.data, orders: cart });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     return res.status(500).json({ error: error.message });
   }

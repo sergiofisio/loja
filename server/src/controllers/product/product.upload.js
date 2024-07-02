@@ -23,7 +23,7 @@ async function updateProduct(req, res) {
 
     return res.status(200).json({ message: "Produto atualizado com sucesso" });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(error.status).json({ error: error.message });
   }
 }

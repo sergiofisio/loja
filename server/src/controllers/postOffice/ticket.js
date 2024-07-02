@@ -91,12 +91,12 @@ async function ticket(req, res) {
       // return res.json({ fretes: response.data.data });
     })
     .catch(function (error) {
-      console.log(error);
+      console.error(error);
     });
 
   try {
   } catch (error) {
-    console.log(error.response.data);
+    console.error(error.response.data);
 
     res.json({ error: "erro interno" });
   }

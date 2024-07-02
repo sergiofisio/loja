@@ -49,7 +49,7 @@ export default function Input({
 
   const masks: {
     Preço: string;
-    Cpf: string;
+    CPF: string;
     Telefone: string;
     numeração: string;
     Cep: string;
@@ -57,7 +57,7 @@ export default function Input({
   } = {
     Valor: "R$ 0.00",
     Preço: "R$ 0.00",
-    Cpf: "999.999.999-99",
+    CPF: "999.999.999-99",
     Telefone: "(99) 99999-9999",
     numeração: "9999 9999 9999 9999",
     Cep: "99999-999",

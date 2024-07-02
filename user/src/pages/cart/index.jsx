@@ -128,7 +128,7 @@ export default function Cart() {
         freteValue: freteData,
       }));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   async function handleChangeStep(e, type) {
@@ -205,7 +205,7 @@ export default function Cart() {
         },
       });
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.response.status === 401 || error.response.status === 408) {
         toastFail("Sua sessão expirou!");
         return setTimeout(() => {

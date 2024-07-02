@@ -49,7 +49,7 @@ async function verifyOrder(req, res) {
     }
     res.json({ order });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     res.status(400).json({ error: error.message });
   }

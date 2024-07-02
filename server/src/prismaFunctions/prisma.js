@@ -11,7 +11,7 @@ async function findUnique(table, data, includes) {
     });
     return Infos;
   } catch (findUniqueError) {
-    console.log({ findUniqueError });
+    console.error({ findUniqueError });
   }
 }
 
@@ -43,8 +43,8 @@ async function deleteOne(table, id) {
 
 async function findFirst(table, data) {
   const Infos = await prisma[table].findFirst({
-    where: data
-  })
+    where: data,
+  });
 
   return Infos;
 }
@@ -55,5 +55,5 @@ module.exports = {
   findMany,
   createOrUpdate,
   deleteOne,
-  findFirst
+  findFirst,
 };

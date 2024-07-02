@@ -76,7 +76,7 @@ const infoDb = async (req, res) => {
 
     res.json({ products, users: allUsersInfo, testimonials, partners });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 };
 

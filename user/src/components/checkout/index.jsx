@@ -25,7 +25,7 @@ export default function Checkout({ setState, urlCheckout, order }) {
       toastSuccess("Seu pagamento está sendo processado", 3000, "top-left");
       setState((prevState) => ({ ...prevState, paymentOk: true }));
     } catch (error) {
-      console.log(error);
+      console.error(error);
     }
   }
   return (

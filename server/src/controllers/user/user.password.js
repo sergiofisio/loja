@@ -16,7 +16,7 @@ const transporter = createTransport({
 
 const prisma = new PrismaClient();
 
-async function recoverPassword(req, res){
+async function recoverPassword(req, res) {
   const { email, url } = req.body;
 
   try {
@@ -61,20 +61,17 @@ async function recoverPassword(req, res){
     `,
     };
 
-    const response = transporter.sendMail(
-      mailOptions,
-      function (error, info) {
-        if (error) {
-          return error;
-        } else {
-          throw new CustomError(info.response, 400);
-        }
+    const response = transporter.sendMail(mailOptions, function (error, info) {
+      if (error) {
+        return error;
+      } else {
+        throw new CustomError(info.response, 400);
       }
-    );
+    });
 
     res.status(200).json({ response });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(error.status).json({ error: error.message });
   }
 }
@@ -88,7 +85,6 @@ async function changePassword(req, res) {
     if (!process.env.JWT_SECRET)
       throw new CustomError("Erro interno, Favor contactar o suporte!", 500);
     const verifyToken = jwt.verify(token, process.env.JWT_SECRET);
-    console.log(verifyToken);
 
     if (!verifyToken) throw new CustomError("Invalid information", 400);
     const user = await prisma.user.findFirst({

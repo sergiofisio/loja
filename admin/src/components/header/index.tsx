@@ -21,9 +21,7 @@ export default function Header({
     async function getUserName() {
       try {
         setUserName(await AsyncStorage.getItem("usuarioNome"));
-      } catch (error: any) {
-        console.log(error);
-      }
+      } catch (error: any) {}
     }
 
     getUserName();

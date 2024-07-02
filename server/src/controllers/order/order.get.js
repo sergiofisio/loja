@@ -27,7 +27,7 @@ async function getOrder(req, res) {
         res.status(400).json(error.response.data.errors);
       });
   } catch (error) {
-    console.log(error);
+    console.error(error);
 
     res.status(400).json(error.response.data.errors);
   }
@@ -38,8 +38,6 @@ async function getAllOrders(req, res) {
   const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString(
     "base64"
   );
-
-  console.log({ customer_id });
 
   const orders = [];
   let total = 0;
@@ -65,8 +63,6 @@ async function getAllOrders(req, res) {
       .catch(function (error) {
         res.status(400).json(error.response.data.errors);
       });
-
-    console.log({ total });
 
     page = Math.ceil(total / 30);
 
@@ -97,6 +93,5 @@ async function getAllOrders(req, res) {
     return res.status(400).json(error.response);
   }
 }
-
 
 module.exports = { getOrder, getAllOrders };

@@ -29,9 +29,8 @@ export default function ModalMelhorEnvio({
           },
         }
       );
-      console.log(response);
     } catch (error: any) {
-      console.log(error);
+      console.error(error);
     }
   }
   return (

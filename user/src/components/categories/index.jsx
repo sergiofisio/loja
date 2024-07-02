@@ -21,7 +21,6 @@ export default function Categories({
     try {
       setProductsCategory(
         products.filter((product) => {
-          console.log({ product, categoryNome: selectCategory });
           return product.categoria === selectCategory;
         })
       );
@@ -32,7 +31,7 @@ export default function Categories({
       // const sortProducts = sortById(products);
       // return setProductsCategory(sortProducts);
     } catch (error) {
-      return console.log(error);
+      return console.error(error);
     }
   }
 

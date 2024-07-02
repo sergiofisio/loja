@@ -1,6 +1,6 @@
 const axios = require("axios");
 
-  async function deleteAdresses(req, res) {
+async function deleteAdresses(req, res) {
   const { id } = req.params;
 
   const basicAuthorization = Buffer.from(`${process.env.SECRET_KEY}:`).toString(
@@ -42,8 +42,8 @@ const axios = require("axios");
 
     res.json({ ok: true });
   } catch (error) {
-    console.log(error);
+    console.error(error);
   }
 }
 
-module.exports = deleteAdresses
+module.exports = deleteAdresses;

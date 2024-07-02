@@ -64,7 +64,7 @@ export default function Form({ login, setLogin, setSingIn }) {
       }, 5000);
       return;
     } catch (error) {
-      console.log(error);
+      console.error(error);
       return toastFail(error.response.data.error);
     }
   }
@@ -117,7 +117,6 @@ export default function Form({ login, setLogin, setSingIn }) {
   }
 
   async function handleRegistration() {
-    console.log(user.password, user.confPassword);
     if (!user.password) {
       return toastFail("O campo Senha é obrigatório");
     }
@@ -145,7 +144,7 @@ export default function Form({ login, setLogin, setSingIn }) {
         setConfirmacao(false);
       }, 2000);
     } catch (error) {
-      console.log(error);
+      console.error(error);
       if (error.response.data.hasOwnProperty("senha")) {
         toastFail(error.response.data.senha, 5000);
       }

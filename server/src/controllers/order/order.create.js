@@ -153,7 +153,7 @@ async function createOrder(req, res) {
         return response.data;
       })
       .catch(function (error) {
-        console.log(error.response.data);
+        console.error(error.response.data);
       });
 
     await prisma.cart.create({
@@ -171,7 +171,7 @@ async function createOrder(req, res) {
     });
     return res.json({ order });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     return res.status(400).json({ error });
   }
 }

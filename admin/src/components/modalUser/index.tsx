@@ -27,11 +27,7 @@ export default function ModalUser({
   const [sumFail, setSumFail] = useState("");
   const [showOrderInfo, setShowOrderInfo] = useState("");
 
-  console.log({ user });
-
   function sortHistoric(searchTerm: any) {
-    console.log({ searchTerm });
-
     if (searchTerm) {
       const searchHistoric = orders.filter((item: any) =>
         item.idPagarme.toLowerCase().includes(searchTerm.toLowerCase())

@@ -49,7 +49,7 @@ async function backup() {
 
     transporter.sendMail(mailOptions, function (error, info) {
       if (error) {
-        console.log(error);
+        console.error(error);
       } else {
         console.log("Email sent: " + info.response);
         fs.writeFileSync(backupPath, JSON.stringify([]));

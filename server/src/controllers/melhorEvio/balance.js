@@ -22,7 +22,7 @@ async function Balance(_, res) {
 
     res.json({ balance });
   } catch (error) {
-    console.log(error);
+    console.error(error);
     res.status(500).json({ error: "Erro interno" });
   }
 }
