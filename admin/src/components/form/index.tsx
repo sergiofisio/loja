@@ -26,6 +26,8 @@ const Form = ({ type, setType, setAdmin }: FormProps) => {
   const [step, setStep] = useState(1);
   const [confirmation, setConfirmation] = useState(1);
 
+  console.log({ user });
+
   const handleLogin = async () => {
     if (!user.email || !user.password) {
       toastFail("Todos os campos são obrigatórios");
@@ -138,11 +140,26 @@ const Form = ({ type, setType, setAdmin }: FormProps) => {
         set={(e) =>
           setUser({
             ...user,
-            [step === 1 ? "name" : step === 2 ? "phone" : "password"]:
-              e.target.value,
+            [type === "login"
+              ? "email"
+              : step === 1
+              ? "name"
+              : step === 2
+              ? "phone"
+              : "password"]: e.target.value,
           })
         }
-        value={user[step === 1 ? "name" : step === 2 ? "phone" : "password"]}
+        value={
+          user[
+            type === "login"
+              ? "email"
+              : step === 1
+              ? "name"
+              : step === 2
+              ? "phone"
+              : "password"
+          ]
+        }
         required={true}
       />
       <Input
@@ -159,12 +176,25 @@ const Form = ({ type, setType, setAdmin }: FormProps) => {
         set={(e) =>
           setUser({
             ...user,
-            [step === 1 ? "email" : step === 2 ? "document" : "confPassword"]:
-              e.target.value,
+            [type === "login"
+              ? "password"
+              : step === 1
+              ? "email"
+              : step === 2
+              ? "document"
+              : "confPassword"]: e.target.value,
           })
         }
         value={
-          user[step === 1 ? "email" : step === 2 ? "document" : "confPassword"]
+          user[
+            type === "login"
+              ? "password"
+              : step === 1
+              ? "email"
+              : step === 2
+              ? "document"
+              : "confPassword"
+          ]
         }
         required={true}
       />

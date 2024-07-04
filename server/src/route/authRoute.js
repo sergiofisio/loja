@@ -12,7 +12,6 @@ const createOrder = require("../controllers/order/order.create");
 const verifyOrder = require("../controllers/order/order.verify");
 const finishOrder = require("../controllers/order/order.finish");
 const { getAllOrders } = require("../controllers/order/order.get");
-const allUsersInfo = require("../controllers/user/user.allUsers");
 const deleteAdresses = require("../controllers/adress/adress.delete");
 const ticket = require("../controllers/postOffice/ticket");
 const Balance = require("../controllers/melhorEvio/balance");
