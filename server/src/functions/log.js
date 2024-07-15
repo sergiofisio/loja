@@ -1,6 +1,8 @@
 const fs = require("fs").promises;
 const winston = require("winston");
 const path = require("path");
+const { exec } = require("child_process");
+
 async function commitAndPushErrorLog() {
   const commands = [
     "git add ../../log/error.json",
