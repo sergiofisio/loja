@@ -11,6 +11,7 @@
     "user": "cd user && yarn dev",
     "user:offline": "cd user && yarn dev --offline",
     "prisma": "cd server && yarn prisma",
+    "prisma:dev": "cd server && yarn prisma:dev",
     "seed": "cd server && yarn seed"
   },
   "license": "MIT"

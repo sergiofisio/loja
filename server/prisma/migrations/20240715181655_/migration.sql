@@ -1,5 +1,6 @@
 -- CreateTable
 CREATE TABLE "user" (
+    "id_user" SERIAL NOT NULL,
     "id" TEXT NOT NULL,
     "name" TEXT NOT NULL,
     "email" TEXT NOT NULL,
@@ -7,6 +8,8 @@ CREATE TABLE "user" (
     "password" TEXT NOT NULL,
     "admin" BOOLEAN NOT NULL DEFAULT false,
     "lostPassword" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "user_pkey" PRIMARY KEY ("id")
 );
@@ -28,6 +31,8 @@ CREATE TABLE "cart" (
     "amount" INTEGER NOT NULL,
     "trackingCode" TEXT,
     "ticketUrl" TEXT,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "cart_pkey" PRIMARY KEY ("id")
 );
@@ -44,6 +49,8 @@ CREATE TABLE "product" (
     "categoryId" INTEGER NOT NULL,
     "image" TEXT NOT NULL,
     "stock" INTEGER NOT NULL DEFAULT 0,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "product_pkey" PRIMARY KEY ("id")
 );
@@ -52,6 +59,8 @@ CREATE TABLE "product" (
 CREATE TABLE "category" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "category_pkey" PRIMARY KEY ("id")
 );
@@ -62,6 +71,8 @@ CREATE TABLE "testimonial" (
     "name" TEXT NOT NULL,
     "text" TEXT NOT NULL,
     "date" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "testimonial_pkey" PRIMARY KEY ("id")
 );
@@ -71,8 +82,21 @@ CREATE TABLE "partner" (
     "id" SERIAL NOT NULL,
     "name" TEXT NOT NULL,
     "code" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
 
     CONSTRAINT "partner_pkey" PRIMARY KEY ("id")
+);
+
+-- CreateTable
+CREATE TABLE "log" (
+    "id" SERIAL NOT NULL,
+    "message" TEXT NOT NULL,
+    "path" TEXT NOT NULL,
+    "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    "updatedAt" TIMESTAMP(3) NOT NULL,
+
+    CONSTRAINT "log_pkey" PRIMARY KEY ("id")
 );
 
 -- CreateIndex
