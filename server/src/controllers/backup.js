@@ -87,7 +87,7 @@ async function backup(_, res) {
     backupData.testimonials = testimonials;
     backupData.partners = partners;
 
-    const backupPath = `../server/backup/backup_${date}.json`;
+    const backupPath = `../server/backup/backup.json`;
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
     await prisma.$disconnect();
