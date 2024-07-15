@@ -9,7 +9,7 @@ async function commitAndPushErrorLog() {
     "git config --global user.name 'Sergio'",
     "git add .",
     `git commit -m "Update error log"`,
-    "git push origin main",
+    "git push",
   ];
 
   for (const command of commands) {
