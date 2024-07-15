@@ -57,14 +57,12 @@ async function backup(_, res) {
     ).toString("base64");
     const [users, products, categories, testimonials, partners] =
       await Promise.all([
-        prisma.users.findMany(),
+        prisma.user.findMany(),
         prisma.product.findMany(),
         prisma.category.findMany(),
         prisma.testimonial.findMany(),
         prisma.partner.findMany(),
       ]);
-
-    console.log({ users, products, categories, testimonials, partners });
 
     const allUsersInfo = await Promise.all(
       users.map((user) => fetchUserInfo(user, basicAuthorization))
@@ -93,7 +91,7 @@ async function backup(_, res) {
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error(error);
+        throw new Error("Erro ao criar backup");
       } else {
         console.log("Email sent: " + info.response);
       }
@@ -101,7 +99,7 @@ async function backup(_, res) {
     console.log("Backup completed.");
     res.json({ backup: "Backup completed." });
   } catch (error) {
-    writeLogError("Erro ao criar backup", "backup");
+    // writeLogError(error.message, "backup");
     res.status(500).send("Backup failed.");
   }
 }

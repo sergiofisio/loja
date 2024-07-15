@@ -8,6 +8,7 @@ datasource db {
 }
 
 model user {
+  id_user      Int      @default(autoincrement())
   id           String   @id @unique
   name         String
   email        String   @unique
@@ -16,6 +17,8 @@ model user {
   admin        Boolean  @default(false)
   lostPassword String?
   cart         cart[]
+    createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 }
 
 model cart {
@@ -36,6 +39,8 @@ model cart {
   amount          Int
   trackingCode    String?
   ticketUrl       String?   
+    createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 }
 
 model product {
@@ -50,12 +55,16 @@ model product {
   category       category       @relation(fields: [categoryId], references: [id])
   image          String
   stock          Int            @default(0)
+    createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 }
 
 model category {
   id      Int       @id @default(autoincrement())
   name    String
   product product[]
+    createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 }
 
 model testimonial {
@@ -63,6 +72,8 @@ model testimonial {
   name String
   text String
   date DateTime @default(now())
+    createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 }
 
 model partner {
@@ -70,4 +81,14 @@ model partner {
   name String
   code String
   cart cart[]
+    createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
+}
+
+model log{
+  id      Int      @id @default(autoincrement())
+  message  String
+  path String
+  createdAt         DateTime     @default(now())
+  updatedAt         DateTime     @updatedAt
 }
