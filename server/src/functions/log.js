@@ -1,6 +1,24 @@
 const fs = require("fs").promises;
 const winston = require("winston");
 const path = require("path");
+async function commitAndPushErrorLog() {
+  const commands = [
+    "git add ../../log/error.json",
+    `git commit -m "Update error log"`,
+    "git push origin main",
+  ];
+
+  for (const command of commands) {
+    exec(command, (error, stdout, stderr) => {
+      if (error) {
+        console.error(`exec error: ${error}`);
+        return;
+      }
+      console.log(`stdout: ${stdout}`);
+      console.error(`stderr: ${stderr}`);
+    });
+  }
+}
 
 const logger = winston.createLogger({
   level: "error",
@@ -28,6 +46,7 @@ async function writeLogError(error, route) {
     errors.push(errorDetails);
 
     await fs.writeFile(errorLogPath, JSON.stringify(errors, null, 2));
+    await commitAndPushErrorLog();
   } catch (error) {
     console.error({ error });
     logger.error("Error accessing or updating the log file:", error);
