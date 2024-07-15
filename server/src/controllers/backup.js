@@ -1,8 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
-const path = require("path");
 const axios = require("axios");
+const writeLogError = require("../functions/log");
 
 const prisma = new PrismaClient();
 
@@ -16,107 +16,93 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+async function fetchUserInfo(user, basicAuthorization) {
+  const userInfoResponse = await axios
+    .get(`https://api.pagar.me/core/v5/customers/${user.id}`, {
+      headers: {
+        accept: "application/json",
+        authorization: `Basic ${basicAuthorization}`,
+      },
+    })
+    .catch((error) => error);
+
+  const addressesResponse = await axios
+    .get(`https://api.pagar.me/core/v5/customers/${user.id}/addresses`, {
+      params: { page: "1", size: "999" },
+      headers: {
+        accept: "application/json",
+        authorization: `Basic ${basicAuthorization}`,
+      },
+    })
+    .catch((error) => error);
+
+  const { cart } = await prisma.user.findUnique({
+    where: { id: user.id },
+    include: { cart: true },
+  });
+
+  return {
+    ...user,
+    user: userInfoResponse.data,
+    adresses: addressesResponse.data,
+    orders: cart,
+  };
+}
+
 async function backup(_, res) {
-  console.log("Starting backup...");
   const date = new Date().toISOString().replace(/:/g, "-");
   try {
-    let backupData = {};
     const basicAuthorization = Buffer.from(
       `${process.env.SECRET_KEY}:`
     ).toString("base64");
-    const allUsersInfo = [];
-    const users = await prisma.user.findMany();
-    const products = await prisma.product.findMany();
-    const categories = await prisma.category.findMany();
-    const testimonials = await prisma.testimonial.findMany();
-    const partners = await prisma.partner.findMany();
+    const [users, products, categories, testimonials, partners] =
+      await Promise.all([
+        prisma.users.findMany(),
+        prisma.product.findMany(),
+        prisma.category.findMany(),
+        prisma.testimonial.findMany(),
+        prisma.partner.findMany(),
+      ]);
 
-    for (const user of users) {
-      const userInfo = {
-        ...user,
-        admin: user.admin,
-        user: {},
-        adresses: [],
-        orders: [],
-      };
-      const infoUser = await axios
-        .request({
-          method: "GET",
-          url: `https://api.pagar.me/core/v5/customers/${user.id}`,
-          headers: {
-            accept: "application/json",
-            authorization: `Basic ${basicAuthorization}`,
-          },
-        })
-        .then(function (response) {
-          return response.data;
-        })
-        .catch(function (error) {
-          return error;
-        });
-      const adresses = await axios
-        .request({
-          method: "GET",
-          url: `https://api.pagar.me/core/v5/customers/${user.id}/addresses`,
-          params: { page: "1", size: "999" },
-          headers: {
-            accept: "application/json",
-            authorization: `Basic ${basicAuthorization}`,
-          },
-        })
-        .then(function (response) {
-          return response.data;
-        })
-        .catch(function (error) {
-          return error;
-        });
+    console.log({ users, products, categories, testimonials, partners });
 
-      const { cart } = await prisma.user.findUnique({
-        where: { id: user.id },
-        include: { cart: true },
-      });
-      userInfo.user = infoUser;
-      userInfo.adresses = adresses;
-      userInfo.orders = cart;
-      allUsersInfo.push(userInfo);
-    }
+    const allUsersInfo = await Promise.all(
+      users.map((user) => fetchUserInfo(user, basicAuthorization))
+    );
 
-    backupData.users = allUsersInfo;
-    backupData.products = products;
-    backupData.categories = categories;
-    backupData.testimonials = testimonials;
-    backupData.partners = partners;
+    const backupData = {
+      users: allUsersInfo,
+      products,
+      categories,
+      testimonials,
+      partners,
+    };
 
     const backupPath = `../server/backup/backup.json`;
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
     await prisma.$disconnect();
 
-    let mailOptions = {
+    const mailOptions = {
       from: process.env.ZOHO_USER,
       to: "sergiobastosfisio@yahoo.com.br",
       subject: `Database Backup - GREENLIFE DATA: ${date}`,
       text: "Please find attached the latest database backup.",
-      attachments: [
-        {
-          path: backupPath,
-        },
-      ],
+      attachments: [{ path: backupPath }],
     };
 
-    transporter.sendMail(mailOptions, function (error, info) {
-      console.log({ error, info });
+    transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
         console.error(error);
       } else {
         console.log("Email sent: " + info.response);
-        fs.writeFileSync(backupPath, JSON.stringify([]));
       }
     });
     console.log("Backup completed.");
     res.json({ backup: "Backup completed." });
   } catch (error) {
-    console.error(error);
+    writeLogError("Erro ao criar backup", "backup");
+    res.status(500).send("Backup failed.");
   }
 }
 
