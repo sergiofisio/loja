@@ -5,9 +5,9 @@ const { exec } = require("child_process");
 
 async function commitAndPushErrorLog() {
   const commands = [
-    "git config --global user.email `sergiobastosfisio@gmail.com`",
-    "git config --global user.name `Sergio`",
-    "git add ../../log/error.json",
+    "git config --global user.email 'sergiobastosfisio@gmail.com'",
+    "git config --global user.name 'Sergio'",
+    "git add .",
     `git commit -m "Update error log"`,
     "git push origin main",
   ];
