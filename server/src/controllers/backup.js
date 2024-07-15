@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 const path = require("path");
+const axios = require("axios");
 
 const prisma = new PrismaClient();
 
@@ -15,22 +16,78 @@ const transporter = nodemailer.createTransport({
   },
 });
 
-async function backup() {
+async function backup(_, res) {
   console.log("Starting backup...");
   const date = new Date().toISOString().replace(/:/g, "-");
   try {
-    const tables = Object.keys(prisma).filter(
-      (key) => typeof prisma[key]?.findMany === "function"
-    );
-
     let backupData = {};
+    const basicAuthorization = Buffer.from(
+      `${process.env.SECRET_KEY}:`
+    ).toString("base64");
+    const allUsersInfo = [];
+    const users = await prisma.user.findMany();
+    const products = await prisma.product.findMany();
+    const categories = await prisma.category.findMany();
+    const testimonials = await prisma.testimonial.findMany();
+    const partners = await prisma.partner.findMany();
 
-    for (let table of tables) {
-      const data = await prisma[table].findMany();
-      backupData[table] = data;
+    for (const user of users) {
+      const userInfo = {
+        ...user,
+        admin: user.admin,
+        user: {},
+        adresses: [],
+        orders: [],
+      };
+      const infoUser = await axios
+        .request({
+          method: "GET",
+          url: `https://api.pagar.me/core/v5/customers/${user.id}`,
+          headers: {
+            accept: "application/json",
+            authorization: `Basic ${basicAuthorization}`,
+          },
+        })
+        .then(function (response) {
+          return response.data;
+        })
+        .catch(function (error) {
+          return error;
+        });
+      const adresses = await axios
+        .request({
+          method: "GET",
+          url: `https://api.pagar.me/core/v5/customers/${user.id}/addresses`,
+          params: { page: "1", size: "999" },
+          headers: {
+            accept: "application/json",
+            authorization: `Basic ${basicAuthorization}`,
+          },
+        })
+        .then(function (response) {
+          return response.data;
+        })
+        .catch(function (error) {
+          return error;
+        });
+
+      const { cart } = await prisma.user.findUnique({
+        where: { id: user.id },
+        include: { cart: true },
+      });
+      userInfo.user = infoUser;
+      userInfo.adresses = adresses;
+      userInfo.orders = cart;
+      allUsersInfo.push(userInfo);
     }
 
-    const backupPath = "../server/backup/backup.json";
+    backupData.users = allUsersInfo;
+    backupData.products = products;
+    backupData.categories = categories;
+    backupData.testimonials = testimonials;
+    backupData.partners = partners;
+
+    const backupPath = `../server/backup/backup_${date}.json`;
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
     await prisma.$disconnect();
@@ -48,6 +105,7 @@ async function backup() {
     };
 
     transporter.sendMail(mailOptions, function (error, info) {
+      console.log({ error, info });
       if (error) {
         console.error(error);
       } else {
@@ -56,6 +114,7 @@ async function backup() {
       }
     });
     console.log("Backup completed.");
+    res.json({ backup: "Backup completed." });
   } catch (error) {
     console.error(error);
   }

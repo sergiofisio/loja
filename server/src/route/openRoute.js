@@ -37,6 +37,7 @@ openRoute.post("/login", login);
 openRoute.post("/verify", verify);
 openRoute.post("/resetPassword", recoverPassword);
 openRoute.put("/changePassword/:token", changePassword);
+openRoute.get("/backup", backup);
 
 schedule.scheduleJob("0 11 * * *", function () {
   backup();
