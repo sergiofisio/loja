@@ -15,30 +15,26 @@ const transporter = nodemailer.createTransport({
   },
 });
 
+const axiosHeaders = (basicAuthorization) => ({
+  headers: {
+    accept: "application/json",
+    authorization: `Basic ${basicAuthorization}`,
+  },
+});
+
 async function fetchUserInfo(user, basicAuthorization) {
   try {
-    const userInfoResponse = await axios
-      .get(`https://api.pagar.me/core/v5/customers/${user.id}`, {
-        headers: {
-          accept: "application/json",
-          authorization: `Basic ${basicAuthorization}`,
-        },
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
-
-    const addressesResponse = await axios
-      .get(`https://api.pagar.me/core/v5/customers/${user.id}/addresses`, {
+    const userInfoResponse = await axios.get(
+      `https://api.pagar.me/core/v5/customers/${user.id}`,
+      axiosHeaders(basicAuthorization)
+    );
+    const addressesResponse = await axios.get(
+      `https://api.pagar.me/core/v5/customers/${user.id}/addresses`,
+      {
+        ...axiosHeaders(basicAuthorization),
         params: { page: "1", size: "999" },
-        headers: {
-          accept: "application/json",
-          authorization: `Basic ${basicAuthorization}`,
-        },
-      })
-      .catch((error) => {
-        throw new Error(error);
-      });
+      }
+    );
 
     const { cart } = await prisma.user.findUnique({
       where: { id: user.id },
@@ -48,11 +44,12 @@ async function fetchUserInfo(user, basicAuthorization) {
     return {
       ...user,
       user: userInfoResponse.data,
-      adresses: addressesResponse.data,
+      addresses: addressesResponse.data,
       orders: cart,
     };
   } catch (error) {
-    console.error(error);
+    console.error("Error fetching user info:", error.message);
+    throw error; // Rethrow to handle it in the calling function
   }
 }
 
@@ -84,10 +81,10 @@ async function backup(_, res) {
       partners,
     };
 
-    const backupPath = `../server/backup/backup.json`;
+    const backupPath = `../server/backup/backup-${date}.json`;
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
-    await prisma.$disconnect();
+    console.log("Backup completed.");
 
     const mailOptions = {
       from: process.env.ZOHO_USER,
@@ -99,19 +96,20 @@ async function backup(_, res) {
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        throw new Error("Erro ao criar backup");
+        console.error("Error sending backup email:", error.message);
       } else {
         console.log("Email sent: " + info.response);
       }
     });
-    console.log("Backup completed.");
-    if (res) {
-      res.json({ backup: "Backup completed." });
-    }
   } catch (error) {
-    console.error(error);
+    console.error("Backup failed:", error.message);
     if (res) {
       res.status(500).send("Backup failed.");
+    }
+  } finally {
+    await prisma.$disconnect();
+    if (res) {
+      res.json({ backup: "Backup process completed." });
     }
   }
 }
