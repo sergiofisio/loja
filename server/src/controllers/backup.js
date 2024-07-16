@@ -2,7 +2,6 @@ const { PrismaClient } = require("@prisma/client");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
-const writeLogError = require("../functions/log");
 
 const prisma = new PrismaClient();
 
@@ -17,36 +16,44 @@ const transporter = nodemailer.createTransport({
 });
 
 async function fetchUserInfo(user, basicAuthorization) {
-  const userInfoResponse = await axios
-    .get(`https://api.pagar.me/core/v5/customers/${user.id}`, {
-      headers: {
-        accept: "application/json",
-        authorization: `Basic ${basicAuthorization}`,
-      },
-    })
-    .catch((error) => error);
+  try {
+    const userInfoResponse = await axios
+      .get(`https://api.pagar.me/core/v5/customers/${user.id}`, {
+        headers: {
+          accept: "application/json",
+          authorization: `Basic ${basicAuthorization}`,
+        },
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
 
-  const addressesResponse = await axios
-    .get(`https://api.pagar.me/core/v5/customers/${user.id}/addresses`, {
-      params: { page: "1", size: "999" },
-      headers: {
-        accept: "application/json",
-        authorization: `Basic ${basicAuthorization}`,
-      },
-    })
-    .catch((error) => error);
+    const addressesResponse = await axios
+      .get(`https://api.pagar.me/core/v5/customers/${user.id}/addresses`, {
+        params: { page: "1", size: "999" },
+        headers: {
+          accept: "application/json",
+          authorization: `Basic ${basicAuthorization}`,
+        },
+      })
+      .catch((error) => {
+        throw new Error(error);
+      });
 
-  const { cart } = await prisma.user.findUnique({
-    where: { id: user.id },
-    include: { cart: true },
-  });
+    const { cart } = await prisma.user.findUnique({
+      where: { id: user.id },
+      include: { cart: true },
+    });
 
-  return {
-    ...user,
-    user: userInfoResponse.data,
-    adresses: addressesResponse.data,
-    orders: cart,
-  };
+    return {
+      ...user,
+      user: userInfoResponse.data,
+      adresses: addressesResponse.data,
+      orders: cart,
+    };
+  } catch (error) {
+    console.error(error);
+  }
 }
 
 async function backup(_, res) {
@@ -55,6 +62,7 @@ async function backup(_, res) {
     const basicAuthorization = Buffer.from(
       `${process.env.SECRET_KEY}:`
     ).toString("base64");
+
     const [users, products, categories, testimonials, partners] =
       await Promise.all([
         prisma.user.findMany(),
@@ -97,10 +105,14 @@ async function backup(_, res) {
       }
     });
     console.log("Backup completed.");
-    res.json({ backup: "Backup completed." });
+    if (res) {
+      res.json({ backup: "Backup completed." });
+    }
   } catch (error) {
-    // writeLogError(error.message, "backup");
-    res.status(500).send("Backup failed.");
+    console.error(error);
+    if (res) {
+      res.status(500).send("Backup failed.");
+    }
   }
 }
 
