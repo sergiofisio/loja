@@ -35,10 +35,10 @@ async function login(req, res) {
 
     if (error.missingInput)
       return res
-        .status(error.status)
+        .status(error.status || 500)
         .json({ missingInput: error.missingInput });
 
-    return res.status(error.status).json({ error: error.message });
+    return res.status(error.status || 500).json({ error: error.message });
   }
 }
 

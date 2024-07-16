@@ -60,7 +60,7 @@ async function updateUser(req, res) {
   } catch (error) {
     console.error({ errorCatch: error });
 
-    res.status(error.status).json({ message: error.message });
+    res.status(error.status || 500).json({ message: error.message });
   }
 }
 

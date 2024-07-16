@@ -98,7 +98,7 @@ async function ticket(req, res) {
   } catch (error) {
     console.error(error.response.data);
 
-    res.json({ error: "erro interno" });
+    res.status(500).json({ error: "erro interno" });
   }
 }
 

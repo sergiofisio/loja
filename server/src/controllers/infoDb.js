@@ -34,7 +34,7 @@ const infoDb = async (req, res) => {
           return response.data;
         })
         .catch(function (error) {
-          return error;
+          throw new Error(error);
         });
 
       const adresses = await axios
@@ -51,7 +51,7 @@ const infoDb = async (req, res) => {
           return response.data;
         })
         .catch(function (error) {
-          return error;
+          throw new Error(error);
         });
 
       const { cart } = await prisma.user.findUnique({
@@ -76,6 +76,12 @@ const infoDb = async (req, res) => {
 
     res.json({ products, users: allUsersInfo, testimonials, partners });
   } catch (error) {
+    await prisma.log.create({
+      data: {
+        message: JSON.stringify(error),
+        path: "infoDb",
+      },
+    });
     console.error(error);
   }
 };

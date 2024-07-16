@@ -43,6 +43,7 @@ async function deleteAdresses(req, res) {
     res.json({ ok: true });
   } catch (error) {
     console.error(error);
+    res.status(500).json({ error });
   }
 }
 

@@ -14,8 +14,7 @@ const uploadImg = async (req, res) => {
   const file = req.file;
 
   try {
-    // Verificar se o arquivo já existe no bucket
-    const response = await s3
+    await s3
       .headObject({
         Bucket: process.env.BACKBLAZE_BUCKET,
         Key: `${file.originalname}`,
@@ -24,10 +23,8 @@ const uploadImg = async (req, res) => {
 
     const url = `https://${process.env.BACKBLAZE_BUCKET}.s3.us-east-005.backblazeb2.com/${file.originalname}`;
 
-    // Se o arquivo existir, retornar um erro
     return res.status(200).json({ url, fileExist: true });
   } catch (error) {
-    // Se o arquivo não existir, o método headObject lançará um erro
     if (error.code === "NotFound") {
       try {
         const upload = await s3
@@ -47,19 +44,27 @@ const uploadImg = async (req, res) => {
         return res.status(201).json({ url: location, fileExist: false });
       } catch (uploadError) {
         console.error(uploadError);
+        await prisma.log.create({
+          data: {
+            message: JSON.stringify(uploadError),
+            path: "upload",
+          },
+        });
 
-        return res
-          .status(uploadError.statusCode || 500)
-          .json({
-            error: uploadError.message || "Erro ao fazer o upload do arquivo",
-          });
+        return res.status(uploadError.statusCode || 500).json({
+          error: uploadError.message || "Erro ao fazer o upload do arquivo",
+        });
       }
     } else {
-      return res
-        .status(error.statusCode || 500)
-        .json({
-          error: error.message || "Erro ao verificar a existência do arquivo",
-        });
+      await prisma.log.create({
+        data: {
+          message: error.message || "Erro ao verificar a existência do arquivo",
+          path: "upload",
+        },
+      });
+      return res.status(error.statusCode || 500).json({
+        error: error.message || "Erro ao verificar a existência do arquivo",
+      });
     }
   }
 };

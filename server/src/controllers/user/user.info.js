@@ -22,7 +22,7 @@ async function userInfo(req, res) {
         return response.data;
       })
       .catch(function (error) {
-        return error;
+        throw new Error(error);
       });
 
     delete userInfo.address;
@@ -41,7 +41,7 @@ async function userInfo(req, res) {
         return response.data;
       })
       .catch(function (error) {
-        return error;
+        throw new Error(error);
       });
 
     const { cart } = await prisma.user.findUnique({
@@ -63,7 +63,7 @@ async function userInfo(req, res) {
           return response.data;
         })
         .catch(function (error) {
-          return error;
+          throw new Error(error);
         });
 
       order.adress = shipping.address;

@@ -55,7 +55,7 @@ async function editUser(req, res) {
 
     return res.status(200).json({ mensagem: "Usuário atualizado com sucesso" });
   } catch (error) {
-    return res.status(500).json({ error: error.message });
+    return res.status(error.status || 500).json({ error: error.message });
   }
 }
 

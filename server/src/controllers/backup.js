@@ -49,7 +49,7 @@ async function fetchUserInfo(user, basicAuthorization) {
     };
   } catch (error) {
     console.error("Error fetching user info:", error.message);
-    throw error; // Rethrow to handle it in the calling function
+    throw error;
   }
 }
 
@@ -81,7 +81,7 @@ async function backup(_, res) {
       partners,
     };
 
-    const backupPath = `../server/backup/backup-${date}.json`;
+    const backupPath = `../server/backup/backup.json`;
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
     console.log("Backup completed.");
@@ -103,11 +103,18 @@ async function backup(_, res) {
     });
   } catch (error) {
     console.error("Backup failed:", error.message);
+    await prisma.log.create({
+      data: {
+        message: error.message,
+        path: "Backup",
+      },
+    });
     if (res) {
       res.status(500).send("Backup failed.");
     }
   } finally {
     await prisma.$disconnect();
+
     if (res) {
       res.json({ backup: "Backup process completed." });
     }

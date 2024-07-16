@@ -6,7 +6,12 @@ async function getCategories(_, res) {
 
     return res.json({ categories });
   } catch (error) {
-    console.error(error);
+    await prisma.log.create({
+      data: {
+        message: error.message,
+        path: "categories",
+      },
+    });
     return res.status(500).json({ error: error.message });
   }
 }

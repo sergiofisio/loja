@@ -21,6 +21,12 @@ const infoHome = async (req, res) => {
 
     res.json({ info });
   } catch (error) {
+    await prisma.log.create({
+      data: {
+        message: JSON.stringify(error),
+        path: "infoHome",
+      },
+    });
     console.error(error);
   }
 };

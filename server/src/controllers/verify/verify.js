@@ -13,6 +13,12 @@ async function verify(req, res) {
       });
     return res.json(false);
   } catch (error) {
+    await prisma.log.create({
+      data: {
+        message: JSON.stringify(error),
+        path: "verify",
+      },
+    });
     return res.status(error.status).json({ error: error.message });
   }
 }

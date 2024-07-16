@@ -11,7 +11,7 @@ async function cupom(req, res) {
 
     return res.json({ cupom: true });
   } catch (error) {
-    return res.status(error.status).json({ error: error.message });
+    return res.status(error.status || 500).json({ error: error.message });
   }
 }
 

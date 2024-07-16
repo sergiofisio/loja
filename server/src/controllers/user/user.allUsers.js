@@ -35,7 +35,7 @@ async function allUsersInfo(_, res) {
           return response.data;
         })
         .catch(function (error) {
-          return error;
+          throw new Error(error);
         });
 
       const adresses = await axios
@@ -52,7 +52,7 @@ async function allUsersInfo(_, res) {
           return response.data;
         })
         .catch(function (error) {
-          return error;
+          throw new Error(error);
         });
 
       const { cart } = await prisma.user.findUnique({
@@ -69,8 +69,6 @@ async function allUsersInfo(_, res) {
 
     res.json({ users: allUsersInfo });
   } catch (error) {
-    console.error({ error });
-
     res.status(500).json({ error });
   }
 }
