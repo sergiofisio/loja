@@ -102,10 +102,10 @@ async function backup(_, res) {
       }
     });
   } catch (error) {
-    console.error("Backup failed:", error.message);
+    console.error("Backup failed:", JSON.stringify(error));
     await prisma.log.create({
       data: {
-        message: error.message,
+        message: JSON.stringify(error),
         path: "Backup",
       },
     });
