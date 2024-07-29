@@ -77,6 +77,8 @@ async function register(req, res) {
 
     return res.status(201).json({ message: "Usuário criado com sucesso" });
   } catch (error) {
+    console.error({ error });
+
     if (error.missingInput)
       return res
         .status(error.status || 500)
