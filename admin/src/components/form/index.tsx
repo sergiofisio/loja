@@ -56,6 +56,8 @@ const Form = ({ type, setType, setAdmin }: FormProps) => {
         setAdmin(loggedInUser.admin);
       }, 5000);
     } catch (error: any) {
+      console.log({ error });
+
       toastFail(error.response.data.error);
     }
   };
@@ -81,7 +83,7 @@ const Form = ({ type, setType, setAdmin }: FormProps) => {
       if (
         await validateInputs("document", user.document.replace(/[.-]/g, ""))
       ) {
-        return; // Error message is handled inside validateInputs
+        return;
       }
       // setStep(3);
     } else if (step === 3) {
