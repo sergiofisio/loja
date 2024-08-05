@@ -26,8 +26,6 @@ const Form = ({ type, setType, setAdmin }: FormProps) => {
   const [step, setStep] = useState(1);
   const [confirmation, setConfirmation] = useState(1);
 
-  console.log({ user });
-
   const handleLogin = async () => {
     if (!user.email || !user.password) {
       toastFail("Todos os campos são obrigatórios");
@@ -85,7 +83,7 @@ const Form = ({ type, setType, setAdmin }: FormProps) => {
       ) {
         return;
       }
-      // setStep(3);
+      setStep(3);
     } else if (step === 3) {
       if (!user.password || user.password !== user.confPassword) {
         toastFail("Os campos Senha e Confirmar Senha devem ser iguais");
