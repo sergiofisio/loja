@@ -9,9 +9,9 @@
   },
   "scripts": {
     "dev": "nodemon src/index.js",
-    "begin": "yarn && yarm prisma",
+    "begin": "yarn && npm run generate",
     "start": "node src/index.js",
-    "prisma": "npm run migrate && npm run generate && npm run push && npm run seed",
+    "prisma": "npm run migrate && npm run generate",
     "prisma:dev": "prisma migrate dev && yarn generate && yarn push && yarn seed",
     "migrate": "npx prisma migrate deploy",
     "generate": "npx prisma generate",
