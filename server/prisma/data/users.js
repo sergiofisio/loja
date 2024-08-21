@@ -36,7 +36,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_6dWlR2a5hjTqekQO",
@@ -92,7 +92,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_zy01rv9SZS8dA8pY",
@@ -149,7 +149,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_O3E6KdvFgFEV2L8Y",
@@ -168,7 +168,7 @@ const users = [
     },
     orders: [
       {
-        id: 8,
+        id: 1,
         idPagarme: "or_59JQezKcjxUk1vRn",
         userId: "cus_MrDXwBWF4FPQmleJ",
         products:
@@ -186,7 +186,7 @@ const users = [
         ticketUrl: null,
       },
       {
-        id: 4,
+        id: 2,
         idPagarme: "or_jOA9XR0FJFvzVnqp",
         userId: "cus_MrDXwBWF4FPQmleJ",
         products:
@@ -204,7 +204,7 @@ const users = [
         ticketUrl: null,
       },
       {
-        id: 6,
+        id: 3,
         idPagarme: "or_zpBZ7K8f5cbxgq58",
         userId: "cus_MrDXwBWF4FPQmleJ",
         products:
@@ -222,7 +222,7 @@ const users = [
         ticketUrl: null,
       },
       {
-        id: 11,
+        id: 4,
         idPagarme: "or_6vbOxBdbCbUJQWVk",
         userId: "cus_MrDXwBWF4FPQmleJ",
         products:
@@ -280,7 +280,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_241dmKrHXFz2bOyY",
@@ -336,7 +336,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_xqngknjC0C1km4v8",
@@ -397,7 +397,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_m8nJN96TyTX1lrKB",
@@ -416,7 +416,7 @@ const users = [
     },
     orders: [
       {
-        id: 10,
+        id: 5,
         idPagarme: "or_NGbEe4kSESd8lwjo",
         userId: "cus_QWb2v6YTKRSgZBxz",
         products:
@@ -473,7 +473,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_Q4RNdelsbZUbqKq1",
@@ -530,7 +530,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_0ymNOEhZ7In6qrl7",
@@ -586,7 +586,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_MEkDN71FrF5qY32A",
@@ -647,7 +647,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_5zONZopgtzuNxmLo",
@@ -666,7 +666,7 @@ const users = [
     },
     orders: [
       {
-        id: 12,
+        id: 6,
         idPagarme: "or_P1E5aLBIolcKW4Nq",
         userId: "cus_rk8zL38fyf1eN21x",
         products:
@@ -723,7 +723,7 @@ const users = [
         },
       },
     },
-    adresses: {
+    addresses: {
       data: [
         {
           id: "addr_G0laJLefkGuxdVOL",
@@ -736,6 +736,63 @@ const users = [
           status: "active",
           created_at: "2024-07-11T14:41:38Z",
           updated_at: "2024-07-11T14:41:38Z",
+        },
+      ],
+      paging: { total: 1 },
+    },
+    orders: [],
+  },
+  {
+    id: "cus_6bavBdwUDUJANnJR",
+    name: "Morgana Timoteo Blazio",
+    email: "morgana.blazio@gmail.com",
+    document: "31687305803",
+    password: "$2b$10$RW3Qn67sdpsvCmBPw5v/4ep1OZQ4qxmUANxWArb./kdGyAOQZDMs.",
+    admin: false,
+    lostPassword: null,
+    user: {
+      id: "cus_6bavBdwUDUJANnJR",
+      name: "Morgana Timoteo Blazio",
+      email: "morgana.blazio@gmail.com",
+      document: "31687305803",
+      document_type: "cpf",
+      type: "individual",
+      delinquent: false,
+      address: {
+        id: "addr_JwXgV5PtEt4Oz1pr",
+        line_1: "38,Rua Paschoal Gastaldo,Centro",
+        line_2: "apto 24",
+        zip_code: "09770-120",
+        city: "São Bernardo do Campo",
+        state: "SP",
+        country: "BR",
+        status: "active",
+        created_at: "2024-07-29T13:01:40Z",
+        updated_at: "2024-07-29T13:01:40Z",
+      },
+      created_at: "2024-07-29T12:41:06Z",
+      updated_at: "2024-07-29T12:41:06Z",
+      phones: {
+        mobile_phone: {
+          country_code: "55",
+          number: "940573249",
+          area_code: "11",
+        },
+      },
+    },
+    addresses: {
+      data: [
+        {
+          id: "addr_JwXgV5PtEt4Oz1pr",
+          line_1: "38,Rua Paschoal Gastaldo,Centro",
+          line_2: "apto 24",
+          zip_code: "09770-120",
+          city: "São Bernardo do Campo",
+          state: "SP",
+          country: "BR",
+          status: "active",
+          created_at: "2024-07-29T13:01:40Z",
+          updated_at: "2024-07-29T13:01:40Z",
         },
       ],
       paging: { total: 1 },
