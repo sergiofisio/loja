@@ -28,7 +28,6 @@ export default function Admin() {
   const [sum, setSum] = useState(0);
   const [numberSold, setNumberSold] = useState(0);
   const [user, setUser] = useState({} as any);
-
   function sortHistoric(searchTerm: any) {
     if (searchTerm) {
       const searchHistoric = infoDb.usuarios.filter((item: any) =>
@@ -227,6 +226,8 @@ export default function Admin() {
                   <tbody className="flex flex-col gap-1 text-black font-main text-base font-semibold overflow-y-auto max-h-[90%] scrollbar-thin scrollbar-thumb-green">
                     {infoDb.usuarios.length ? (
                       infoDb.usuarios.map(({ user, orders }: any, key: any) => {
+                        console.log({ user });
+
                         return (
                           <tr
                             className="relative flex items-center justify-evenly w-full border-b-2 border-solid border-greenScale-200 py-2 hover cursor-pointer"
@@ -254,7 +255,7 @@ export default function Admin() {
                             <td
                               className={`w-1/5 text-center border-r-2 border-dotted border-greenScale-600`}
                             >
-                              {user.address.state}
+                              {!user.address ? "UN" : user.address.state}
                             </td>
                             <td className="w-1/5 text-center">
                               {sumAllOrders(orders)}

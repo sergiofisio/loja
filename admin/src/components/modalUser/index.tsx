@@ -84,7 +84,7 @@ export default function ModalUser({
             <InfoModalUser label="Id" value={user.id} />
             <InfoModalUser label="Nome" value={user.name} />
             <div className="flex gap-4">
-              <InfoModalUser label="E-mail" value={user.email} />
+              <InfoModalUser label="E-mail" value={user.email} type="email" />
               <InfoModalUser
                 label="CPF"
                 value={`${user.document
@@ -100,17 +100,25 @@ export default function ModalUser({
             <div className="h-fit flex flex-col">
               <h2>Endereço</h2>
               <div className="flex flex-col items-start gap-3 justify-center w-80 bg-green border-green border-solid rounded-b-xl rounded-r-xl border-4 p-4 h-full">
-                <h2 className="font-main text-white text-xl font-medium">
-                  {` ${user.address.line_1.split(",")[1]},  ${
-                    user.address.line_1.split(",")[0]
-                  } - ${user.address.line_1.split(",")[2]} ${
-                    user.address.line_2 ? `- ${user.address.line_2}` : ""
-                  }`}
-                </h2>
-                <h2 className="font-main text-white text-xl font-medium">
-                  {` ${user.address.city}, ${user.address.state}`} <br />{" "}
-                  {`CEP: ${user.address.zip_code}`}
-                </h2>
+                {!user.address ? (
+                  <h2 className="font-main text-white text-xl font-medium">
+                    Sem endereço cadastrado
+                  </h2>
+                ) : (
+                  <>
+                    <h2 className="font-main text-white text-xl font-medium">
+                      {` ${user.address.line_1.split(",")[1]},  ${
+                        user.address.line_1.split(",")[0]
+                      } - ${user.address.line_1.split(",")[2]} ${
+                        user.address.line_2 ? `- ${user.address.line_2}` : ""
+                      }`}
+                    </h2>
+                    <h2 className="font-main text-white text-xl font-medium">
+                      {` ${user.address.city}, ${user.address.state}`} <br />{" "}
+                      {`CEP: ${user.address.zip_code}`}
+                    </h2>
+                  </>
+                )}
               </div>
             </div>
             <InfoModalUser
