@@ -32,7 +32,6 @@ authRoute.get("/verifyToken", function (_, res) {
 
 authRoute.get("/infoUser/:id", userInfo);
 authRoute.get("/infoDb/:admin", infoDb);
-authRoute.get("/backup", backup);
 authRoute.get("/admin/:id", userAdmin);
 authRoute.get("/verifyOrder/:order_id", verifyOrder);
 authRoute.get("/getOrders/:customer_id", getAllOrders);

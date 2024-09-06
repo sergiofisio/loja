@@ -24,6 +24,7 @@
     "aws-sdk": "^2.1506.0",
     "axios": "^1.4.0",
     "bcrypt": "^5.1.0",
+    "cloudinary": "^2.4.0",
     "correios-brasil": "^3.0.6",
     "cors": "^2.8.5",
     "date-fns": "^2.30.0",
@@ -37,6 +38,7 @@
     "nodemailer": "^6.9.4",
     "nodemon": "^3.0.1",
     "serve-favicon": "^2.5.0",
+    "streamifier": "^0.1.1",
     "winston": "^3.13.1",
     "xml2js": "^0.6.2",
     "zod": "^3.22.4"

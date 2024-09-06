@@ -1,71 +1,58 @@
 const multer = require("multer");
-const aws = require("aws-sdk");
+const { PrismaClient } = require("@prisma/client");
+const cloudinary = require("cloudinary").v2;
+const streamifier = require("streamifier");
 
-const endpoint = new aws.Endpoint(process.env.BACKBLAZE_ENDPOINT_S3);
-const s3 = new aws.S3({
-  endpoint,
-  credentials: {
-    accessKeyId: process.env.BACKBLAZE_KEYID,
-    secretAccessKey: process.env.BACKBLAZE_APPLICATIONKEY,
-  },
+const prisma = new PrismaClient();
+
+cloudinary.config({
+  cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+  api_key: process.env.CLOUDINARY_API_KEY,
+  api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
 const uploadImg = async (req, res) => {
+  console.log({
+    cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
+    api_key: process.env.CLOUDINARY_API_KEY,
+    api_secret: process.env.CLOUDINARY_API_SECRET,
+  });
   const file = req.file;
 
+  if (!file) {
+    return res.status(400).json({ error: "Nenhum ficheiro foi enviado." });
+  }
+
   try {
-    await s3
-      .headObject({
-        Bucket: process.env.BACKBLAZE_BUCKET,
-        Key: `${file.originalname}`,
-      })
-      .promise();
-
-    const url = `https://${process.env.BACKBLAZE_BUCKET}.s3.us-east-005.backblazeb2.com/${file.originalname}`;
-
-    return res.status(200).json({ url, fileExist: true });
-  } catch (error) {
-    if (error.code === "NotFound") {
-      try {
-        const upload = await s3
-          .upload({
-            Bucket: process.env.BACKBLAZE_BUCKET,
-            Key: `${file.originalname}`,
-            Body: file.buffer,
-            ContentType: file.mimetype,
-          })
-          .promise();
-        const location = upload.Location;
-
-        if (!location.includes("https://") && !location.includes("http://")) {
-          upload.Location = `https://f005.backblazeb2.com/file${location}`;
-        }
-
-        return res.status(201).json({ url: location, fileExist: false });
-      } catch (uploadError) {
-        console.error(uploadError);
-        await prisma.log.create({
-          data: {
-            message: JSON.stringify(uploadError),
-            path: "upload",
-          },
-        });
-
-        return res.status(uploadError.statusCode || 500).json({
-          error: uploadError.message || "Erro ao fazer o upload do arquivo",
-        });
-      }
-    } else {
-      await prisma.log.create({
-        data: {
-          message: error.message || "Erro ao verificar a existência do arquivo",
-          path: "upload",
-        },
+    const uploadToCloudinary = (fileBuffer) => {
+      return new Promise((resolve, reject) => {
+        const uploadStream = cloudinary.uploader.upload_stream(
+          (error, result) => {
+            if (error) {
+              reject(error);
+            } else {
+              resolve(result);
+            }
+          }
+        );
+        streamifier.createReadStream(fileBuffer).pipe(uploadStream);
       });
-      return res.status(error.statusCode || 500).json({
-        error: error.message || "Erro ao verificar a existência do arquivo",
-      });
-    }
+    };
+    const result = await uploadToCloudinary(file.buffer);
+    return res.status(201).json({ url: result.secure_url, fileExist: false });
+  } catch (err) {
+    console.error("Erro ao fazer upload para o Cloudinary:", err);
+
+    await prisma.log.create({
+      data: {
+        message: JSON.stringify(err),
+        path: "upload",
+      },
+    });
+
+    return res.status(500).json({
+      error: "Erro ao fazer o upload do ficheiro para o Cloudinary",
+    });
   }
 };
 
