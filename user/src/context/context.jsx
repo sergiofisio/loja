@@ -12,6 +12,7 @@ export const ContextProvider = ({ children }) => {
     produtos: [],
     isLoading: true,
     retryCount: 0,
+    categories: [],
   });
 
   useEffect(() => {
@@ -19,7 +20,7 @@ export const ContextProvider = ({ children }) => {
       setInfoDb({ ...infoDb, isLoading: true });
       try {
         const {
-          data: { products, testimonials, partners },
+          data: { products, testimonials, partners, categories },
         } = await axios.get("/infoHome/false");
         if (products && products.length > 0) {
           setInfoDb({
@@ -28,6 +29,7 @@ export const ContextProvider = ({ children }) => {
             historicos: [],
             parceiros: partners,
             produtos: products,
+            categories,
             isLoading: false,
           });
         } else if (infoDb.retryCount < 5) {

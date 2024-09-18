@@ -74,7 +74,15 @@ const infoDb = async (req, res) => {
       cart: true,
     });
 
-    res.json({ products, users: allUsersInfo, testimonials, partners });
+    const categories = await findMany("category");
+
+    res.json({
+      products,
+      users: allUsersInfo,
+      testimonials,
+      partners,
+      categories,
+    });
   } catch (error) {
     await prisma.log.create({
       data: {

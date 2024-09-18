@@ -3,19 +3,11 @@ const {
   createOrUpdate,
   findFirst,
   findUnique,
+  prisma,
 } = require("../../prismaFunctions/prisma");
 
 async function createProduct(req, res) {
-  const {
-    name,
-    description,
-    price,
-    stock,
-    promotionPrice,
-    weight,
-    image,
-    category,
-  } = req.body;
+  const { name, description, price, stock, weight, image, category } = req.body;
 
   try {
     const findProduct = await findFirst("product", {
@@ -26,20 +18,28 @@ async function createProduct(req, res) {
       throw new CustomError("Produto já cadastrado", 400);
     }
 
-    const { id } = await createOrUpdate("product", {
-      name,
-      description,
-      price: Number(price),
-      stock: Number(stock),
-      promotionPrice: Number(price * 0.8),
-      weight: Number(weight),
-      image,
-      categoryId: Number(category),
+    const categoryExists = await findUnique("category", {
+      id: Number(category),
     });
 
-    const product = await findUnique("product", { id: Number(id) });
+    if (!categoryExists) {
+      throw new CustomError("Categoria não encontrada", 400);
+    }
 
-    return res.status(201).json({ product });
+    await prisma.product.create({
+      data: {
+        name,
+        description,
+        price: Number(price),
+        stock: Number(stock),
+        promotionPrice: Number(price * 0.8),
+        weight: Number(weight),
+        image,
+        categoryId: Number(category),
+      },
+    });
+
+    return res.status(201).json({ message: "Product created" });
   } catch (error) {
     console.error(error);
 

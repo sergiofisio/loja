@@ -7,6 +7,7 @@ export default function SelectProduct({
   className,
   setSelectInput,
   selectInput,
+  categories,
 }) {
   return (
     <Select
@@ -23,12 +24,18 @@ export default function SelectProduct({
         },
       }}
       value={selectInput}
-      onChange={(e) => setSelectInput(e.target.textContent)}
+      onChange={(_, newValue) => setSelectInput(newValue)}
     >
       <Option value="Todos">Todos</Option>
-      <Option value="Bland">Bland</Option>
-      <Option value="Caps">Caps</Option>
-      <Option value="QuantION">QuantION</Option>
+      {categories?.length > 0 &&
+        categories.map((category, key) => {
+          console.log({ category, key });
+          return (
+            <Option key={key} value={category.name}>
+              {category.name}
+            </Option>
+          );
+        })}
     </Select>
   );
 }

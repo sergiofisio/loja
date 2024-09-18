@@ -15,6 +15,8 @@ export default function Store({ setShowModal }) {
   const [selectInput, setSelectInput] = useState("Todos");
   const [searchTerm, setSearchTerm] = useState("");
 
+  console.log({ infoDb });
+
   async function handleAddProduct(e, product) {
     e.preventDefault();
     e.stopPropagation();
@@ -70,6 +72,7 @@ export default function Store({ setShowModal }) {
               className="!w-1/5 !bg-transparent !border-none"
               setSelectInput={setSelectInput}
               selectInput={selectInput}
+              categories={infoDb.categories}
             />
             <h2>|</h2>
             <input

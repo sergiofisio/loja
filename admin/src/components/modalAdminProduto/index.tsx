@@ -5,7 +5,7 @@ import uploadProduct from "../../assets/uploadProduct.svg";
 import Button from "../button";
 import axios from "./../../Service/api";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-import { toastSuccess } from "../../context/toast";
+import { toastFail, toastSuccess } from "../../context/toast";
 import { NumberFormatValues, NumericFormat } from "react-number-format";
 
 type InfoProdutoType = {
@@ -73,37 +73,43 @@ export default function ModalAdminProduto({
   }
 
   async function handleOnSubmit(e: any) {
-    e.preventDefault();
-    e.stopPropagation();
-    await axios[type === "newProduct" ? "post" : "patch"](
-      `/${
-        type === "newProduct" ? "createProduct" : `uploadProduct/${produto.id}`
-      }`,
-      { ...infoProduto, price: Number(infoProduto.price) * 100 },
-      {
-        headers: {
-          Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
-        },
-      }
-    );
+    try {
+      e.preventDefault();
+      e.stopPropagation();
+      await axios[type === "newProduct" ? "post" : "patch"](
+        `/${
+          type === "newProduct"
+            ? "createProduct"
+            : `uploadProduct/${produto.id}`
+        }`,
+        { ...infoProduto, price: Number(infoProduto.price) * 100 },
+        {
+          headers: {
+            Authorization: `Bearer ${await AsyncStorage.getItem("token")}`,
+          },
+        }
+      );
 
-    toastSuccess(
-      `Produto ${type === "newProduct" ? "criado" : "editado"} com sucesso`,
-      3000,
-      "top-left"
-    );
-    setTimeout(() => {
-      setProduto({
-        name: "",
-        description: "",
-        weight: "",
-        price: "",
-        category: "",
-        image: "",
-        stock: "",
-      });
-      setShowModal("");
-    }, 3000);
+      toastSuccess(
+        `Produto ${type === "newProduct" ? "criado" : "editado"} com sucesso`,
+        3000,
+        "top-left"
+      );
+      setTimeout(() => {
+        setProduto({
+          name: "",
+          description: "",
+          weight: "",
+          price: "",
+          category: "",
+          image: "",
+          stock: "",
+        });
+        setShowModal("");
+      }, 3000);
+    } catch (error: any) {
+      toastFail("Produto ja existe", 3000);
+    }
   }
 
   useEffect(() => {

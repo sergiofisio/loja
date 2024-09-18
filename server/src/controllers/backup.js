@@ -69,6 +69,36 @@ async function backup(_, res) {
         prisma.partner.findMany(),
       ]);
 
+    users.forEach((user) => {
+      delete user.id_user;
+      delete user.createdAt;
+      delete user.updatedAt;
+    });
+
+    products.forEach((product) => {
+      delete product.id;
+      delete product.createdAt;
+      delete product.updatedAt;
+    });
+
+    categories.forEach((category) => {
+      delete category.id;
+      delete category.createdAt;
+      delete category.updatedAt;
+    });
+
+    testimonials.forEach((testimonial) => {
+      delete testimonial.id;
+      delete testimonial.createdAt;
+      delete testimonial.updatedAt;
+    });
+
+    partners.forEach((partner) => {
+      delete partner.id;
+      delete partner.createdAt;
+      delete partner.updatedAt;
+    });
+
     const allUsersInfo = await Promise.all(
       users.map((user) => fetchUserInfo(user, basicAuthorization))
     );

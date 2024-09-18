@@ -226,8 +226,6 @@ export default function Admin() {
                   <tbody className="flex flex-col gap-1 text-black font-main text-base font-semibold overflow-y-auto max-h-[90%] scrollbar-thin scrollbar-thumb-green">
                     {infoDb.usuarios.length ? (
                       infoDb.usuarios.map(({ user, orders }: any, key: any) => {
-                        console.log({ user });
-
                         return (
                           <tr
                             className="relative flex items-center justify-evenly w-full border-b-2 border-solid border-greenScale-200 py-2 hover cursor-pointer"

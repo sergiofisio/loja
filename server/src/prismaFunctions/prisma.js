@@ -23,6 +23,8 @@ async function findMany(table, includes) {
 }
 
 async function createOrUpdate(table, data, id) {
+  console.log({ table, data });
+
   if (id) {
     return await prisma[table].update({
       where: { id: Number(id) },
