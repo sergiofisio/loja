@@ -75,8 +75,10 @@ export default function ModalAdminProduto({
   async function handleOnSubmit(e: any) {
     e.preventDefault();
     e.stopPropagation();
-    await axios[type === "create" ? "post" : "patch"](
-      `/${type === "create" ? "createProduct" : `uploadProduct/${produto.id}`}`,
+    await axios[type === "newProduct" ? "post" : "patch"](
+      `/${
+        type === "newProduct" ? "createProduct" : `uploadProduct/${produto.id}`
+      }`,
       { ...infoProduto, price: Number(infoProduto.price) * 100 },
       {
         headers: {
@@ -86,7 +88,7 @@ export default function ModalAdminProduto({
     );
 
     toastSuccess(
-      `Produto ${type === "create" ? "criado" : "editado"} com sucesso`,
+      `Produto ${type === "newProduct" ? "criado" : "editado"} com sucesso`,
       3000,
       "top-left"
     );
