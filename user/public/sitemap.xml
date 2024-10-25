@@ -1,21 +1,21 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+<urlset xmlns="https://www.sitemaps.org/schemas/sitemap/0.9">
     <url>
-        <loc>http://www.lojagreenlife.com.br/</loc>
+        <loc>https://www.lojagreenlife.com.br/</loc>
     </url>
     <url>
-        <loc>http://www.lojagreenlife.com.br/login</loc>
+        <loc>https://www.lojagreenlife.com.br/login</loc>
     </url>
     <url>
-        <loc>http://www.lojagreenlife.com.br/register</loc>
+        <loc>https://www.lojagreenlife.com.br/register</loc>
     </url>
     <url>
-        <loc>http://www.lojagreenlife.com.br/home</loc>
+        <loc>https://www.lojagreenlife.com.br/home</loc>
     </url>
     <url>
-        <loc>http://www.lojagreenlife.com.br/store</loc>
+        <loc>https://www.lojagreenlife.com.br/store</loc>
     </url>
     <url>
-        <loc>http://www.lojagreenlife.com.br/</loc>
+        <loc>https://www.lojagreenlife.com.br/</loc>
     </url>
 </urlset>
