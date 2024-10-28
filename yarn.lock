@@ -2,7 +2,7 @@
 # yarn lockfile v1
 
 
-react-via-cep@^2.0.8:
-  version "2.0.8"
-  resolved "https://registry.yarnpkg.com/react-via-cep/-/react-via-cep-2.0.8.tgz#efd00a7fd3f4124cc66f8649d23db1c5f1d04c29"
-  integrity sha512-AsRhVI9xMball4ZO9si9Tab/X18O3Qsf4SkeTR3+mD8RmF3NavoPplb9ekRS+i7vj3MqitffC7gSTH5iEISHhg==
+react-ga@^3.3.1:
+  version "3.3.1"
+  resolved "https://registry.yarnpkg.com/react-ga/-/react-ga-3.3.1.tgz#d8e1f4e05ec55ed6ff944dcb14b99011dfaf9504"
+  integrity sha512-4Vc0W5EvXAXUN/wWyxvsAKDLLgtJ3oLmhYYssx+YzphJpejtOst6cbIHCIyF50Fdxuf5DDKqRYny24yJ2y7GFQ==

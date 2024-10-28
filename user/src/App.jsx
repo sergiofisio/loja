@@ -1,13 +1,6 @@
 import { AnimatePresence } from "framer-motion";
 import { useContext, useEffect, useState } from "react";
-import {
-  Navigate,
-  Outlet,
-  Route,
-  Routes,
-  useLocation,
-  useNavigate,
-} from "react-router-dom";
+import { Navigate, Outlet, Route, Routes, useLocation } from "react-router-dom";
 import "./App.css";
 import Footer from "./components/footer";
 import Header from "./components/header";
@@ -23,7 +16,7 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import { AppContext } from "./context/context";
 import { toast } from "react-toastify";
 import Whatsapp from "./components/whatsapp";
-import { trackPageView } from "./utils/analytics"; 
+import { trackPageView } from "./utils/analytics";
 
 TopBarProgress.config({
   barColors: {
@@ -35,7 +28,6 @@ TopBarProgress.config({
 
 export default function App() {
   const location = useLocation();
-  const navigate = useNavigate();
   const [showModal, setShowModal] = useState(false);
   const [singIn, setSingIn] = useState(false);
   const [login, setLogin] = useState(false);
@@ -64,9 +56,10 @@ export default function App() {
     handleLoading();
   }, [infoDb.isLoading]);
 
+  // Rastrear visualizações de página
   useEffect(() => {
-    trackPageView(location.pathname + location.search);
-  }, [location]);
+    trackPageView(location.pathname + location.search); // Rastreia a rota atual
+  }, [location]); // Rastreia sempre que a localização mudar
 
   function LogedUser({ redirecionarPara }) {
     const isAutheticated = localStorage.getItem("token");
