@@ -16,7 +16,6 @@ import TopBarProgress from "react-topbar-progress-indicator";
 import { AppContext } from "./context/context";
 import { toast } from "react-toastify";
 import Whatsapp from "./components/whatsapp";
-import { trackPageView } from "./utils/analytics";
 
 TopBarProgress.config({
   barColors: {
@@ -55,11 +54,6 @@ export default function App() {
 
     handleLoading();
   }, [infoDb.isLoading]);
-
-  // Rastrear visualizações de página
-  useEffect(() => {
-    trackPageView(location.pathname + location.search, document.title);
-  }, [location]);
 
   function LogedUser({ redirecionarPara }) {
     const isAuthenticated = localStorage.getItem("token");
