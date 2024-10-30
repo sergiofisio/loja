@@ -29,10 +29,10 @@ TopBarProgress.config({
 export default function App() {
   const location = useLocation();
   const [showModal, setShowModal] = useState(false);
-  const [singIn, setSingIn] = useState(false);
+  const [signIn, setSignIn] = useState(false);
   const [login, setLogin] = useState(false);
   const [productsCart, setProductsCart] = useState([]);
-  const [adress, setAdress] = useState("");
+  const [address, setAddress] = useState("");
   const [card, setCard] = useState("");
   const [id, setId] = useState("");
   const [showModalContato, setShowModalContato] = useState(false);
@@ -58,31 +58,34 @@ export default function App() {
 
   // Rastrear visualizações de página
   useEffect(() => {
-    trackPageView(location.pathname + location.search); // Rastreia a rota atual
-  }, [location]); // Rastreia sempre que a localização mudar
+    trackPageView(location.pathname + location.search, document.title);
+  }, [location]);
 
   function LogedUser({ redirecionarPara }) {
-    const isAutheticated = localStorage.getItem("token");
+    const isAuthenticated = localStorage.getItem("token");
 
-    return isAutheticated ? <Navigate to={redirecionarPara} /> : <Outlet />;
+    return isAuthenticated ? <Navigate to={redirecionarPara} /> : <Outlet />;
   }
 
   function ProtectRoutes({ redirecionarPara }) {
-    let isAutheticated = localStorage.getItem("token");
+    const isAuthenticated = localStorage.getItem("token");
 
-    return isAutheticated ? <Outlet /> : <Navigate to={redirecionarPara} />;
+    return isAuthenticated ? <Outlet /> : <Navigate to={redirecionarPara} />;
   }
 
   useEffect(() => {
-    location.pathname === "/"
-      ? (setSingIn(false), setLogin(false))
-      : location.pathname === "/login"
-        ? (setSingIn(false), setLogin(true))
-        : location.pathname === "/register"
-          ? (setSingIn(true), setLogin(false))
-          : location.pathname === "/home"
-            ? setLogin(true)
-            : "";
+    if (location.pathname === "/") {
+      setSignIn(false);
+      setLogin(false);
+    } else if (location.pathname === "/login") {
+      setSignIn(false);
+      setLogin(true);
+    } else if (location.pathname === "/register") {
+      setSignIn(true);
+      setLogin(false);
+    } else if (location.pathname === "/home") {
+      setLogin(true);
+    }
   }, [location.pathname]);
 
   return (
@@ -109,8 +112,8 @@ export default function App() {
                 <Home
                   setLogin={setLogin}
                   login={login}
-                  setSingIn={setSingIn}
-                  singIn={singIn}
+                  setSignIn={setSignIn}
+                  signIn={signIn}
                 />
               }
             />
@@ -120,8 +123,8 @@ export default function App() {
                 <Home
                   setLogin={setLogin}
                   login={login}
-                  setSingIn={setSingIn}
-                  singIn={singIn}
+                  setSignIn={setSignIn}
+                  signIn={signIn}
                 />
               }
             />
@@ -131,8 +134,8 @@ export default function App() {
                 <Home
                   setLogin={setLogin}
                   login={login}
-                  setSingIn={setSingIn}
-                  singIn={singIn}
+                  setSignIn={setSignIn}
+                  signIn={signIn}
                 />
               }
             />
@@ -146,7 +149,7 @@ export default function App() {
                 <Cart
                   id={id}
                   setId={setId}
-                  adress={adress}
+                  address={address}
                   card={card}
                   setProductsCart={setProductsCart}
                   productsCart={productsCart}
@@ -166,15 +169,13 @@ export default function App() {
       {showModalContato && (
         <ModalContato setShowModalContato={setShowModalContato} />
       )}
-      {showModal ? (
+      {showModal && (
         <ModalHeader
           setShowModal={setShowModal}
           showModal={showModal}
           login={login}
           setLogin={setLogin}
         />
-      ) : (
-        ""
       )}
     </div>
   );
