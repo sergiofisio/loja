@@ -13,32 +13,6 @@ const products = [
     stock: 3,
   },
   {
-    name: "QuantCaps Moro",
-    description:
-      "QuantCaps Moro contém o extrato de Laranja Moro e é um suplemento alimentar rico em nutrientes e substâncias bioativas que contribuem para o emagrecimento saudável.\nO extrato de Laranja Moro é rico em Antocianinas, especialmente as do tipo C3G que modificam o metabolismo das gorduras e estimulando hormônios da lipólise (queima de gordura).\n\n*Benefícios:*\n\n1 – Auxilia na redução de 25% a 50% da gordura abdominal\n2 – Menor acúmulo de gordura nos tecidos e estimula a queima da gordura\n3 – Potente ação antioxidante\n4 – Reduz Triglicérides e o Colesterol Total\n5 – Reduz a resistência a insulina\n6 – Contém Psyllium, que melhora o funcionamento do intestino e traz saciedade\n7 – Reduz os níveis de glicose no sangue\n8 – Contém Colágeno, garantindo firmeza e elasticidade para a pele\n9 – Contém o aminoácido L-fenilalanina, que auxilia em distúrbios neurológicos, depressão e déficit de memória\n10 – Diminui o apetite\n",
-    price: 8999,
-    promotionPrice: 7199,
-    weight: 50,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569532/jt9ae8n7dgdqo4dkrxp2.png",
-    stock: 3,
-  },
-  {
-    name: "QuantCaps Psyllium e Resveratrol",
-    description:
-      "Composto por Psyllium e Resveratrol + Vitamina C, Colina, Inulina e Cromo, promove o famoso “efeito Detox” ajudando a eliminar as toxinas e impurezas do organismo.\n\nO Psyllium é fonte riquíssima de fibra, ajudando a regular o intestino e melhorar o metabolismo. Tem grande capacidade de absorver água, ajudando a manter o intestino hidratado facilitando os movimentos peristálticos e com efeito laxante.\n\nO Resveratrol atua como um antioxidante natural, protegendo o organismo contra os danos causados pelos radicais livres \nAlém disso, tem efeitos na proteção cardiovascular, redução do colesterol ruim (LDL), melhora do desempenho atlético e, protege o organismo contra o surgimento de câncer e doenças degenerativas.\n\nA vitamina C auxilia na absorção do ferro dos alimentos, auxilia no metabolismo das gorduras e no funcionamento do sistema imune.\n\nA Colina contribui para o metabolismo da homocisteína e também no metabolismo lipídico.\n\nO Zinco auxilia no metabolismo da Vitamina A, no metabolismo de proteínas e gorduras, no processo de divisão celular, na manutenção celular e no sistema imune.\n\nO Cromo auxilia no metabolismo de gorduras, proteínas e carboidratos.\n",
-    price: 6990,
-    promotionPrice: 5592,
-    weight: 60,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569636/cp8c7lc50yoq4dreydb1.png",
-    stock: 3,
-  },
-  {
     name: "QuantCaps PinusPinaster",
     description:
       "O extrato de Pinus Pinaster, uma árvore também conhecida como Pinheiro-Bravo ou Pinheiro-Marítimo tem propriedades antioxidantes naturais e de extrema eficácia no auxílio ao tratamento de doenças circulatórias.\nAuxilia no tratamento e prevenção de veias varicosas, distúrbios do fluxo microcirculatório cerebral e cardíaco e reduz a fragilidade vascular.\nÉ rica em Omega 3, auxilia na manutenção da saúde da pele e na proteção contra os raios ultravioleta.\n\nBenefícios:\n- Antioxidante 50 vezes mais potente que a vitamina E e 20 vezes mais potente que a Vitamina C\n- Auxilia no tratamento de veias varicosas, distúrbios circulatórios, fragilidade vascular\n- Cardioprotetor, imunomodulador, anti-inflamatório e casos de artrite, proteção ocular\n- Anti-aging e tratamento do Melasma\n- Rica em Omega 3\n",
@@ -50,32 +24,6 @@ const products = [
     image:
       "https://res.cloudinary.com/doricnmhy/image/upload/v1725569616/wmgboqvmnfce2b7h4jua.png",
     stock: 1,
-  },
-  {
-    name: "QUANTION 01",
-    description:
-      "QUANTION 01 + Zinco + Vitamina A é um suplemento alimentar líquido que auxilia na prevenção de desordens intestinais, diabetes e proteção do sistema gastrointestinal.\n\nO produto apresenta em sua formulação o zinco na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nEm conjunto com a vitamina A, o zinco apresenta uma absorção ainda maior no organismo, sendo essencial para a chegada deste mineral em metaloenzimas de interesse que irão desencadear suas funções na proteção do sistema gastrointestinal, na regulação de índices de açúcares no sangue e no auxílio ao sistema digestivo. A vitamina A também desempenha um papel importante na manutenção das células do sistema imunológico que revestem a mucosa do intestino.\n",
-    price: 6990,
-    promotionPrice: 5592,
-    weight: 60,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569797/bnwjydkgomciwk2i75dg.jpg",
-    stock: 2,
-  },
-  {
-    name: "QUANTION 02",
-    description:
-      "QUANTION 02 + Magnésio + Vitamina C é um suplemento alimentar líquido que auxilia na saúde do sistema respiratório e na redução dos sintomas da asma.\n\nO produto apresenta em sua formulação o magnésio na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nO magnésio diminui os riscos de doenças crônicas de obstrução pulmonar, como a asma aguda.\n\nDesempenha também um papel importante na atividade neuromuscular, funções cardiovasculares e metabólicas. Estudos mostram uma associação entre magnésio, força muscular e desempenho no exercício.\n\nA vitamina C auxilia no funcionamento do sistema imune e na melhora de quadros de ataque de asma crônica e hipersensibilidade brônquica.",
-    price: 6990,
-    promotionPrice: 5592,
-    weight: 60,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569683/rzz35vxwaezea6pd2bhc.jpg",
-    stock: 3,
   },
   {
     name: "QUANTION 03",
@@ -114,19 +62,6 @@ const products = [
     categoryId: 1,
     image:
       "https://res.cloudinary.com/doricnmhy/image/upload/v1725569736/xun3hcb3sn0tutnavuli.jpg",
-    stock: 3,
-  },
-  {
-    name: "QUANTION 06",
-    description:
-      "QUANTION 06 Zinco + Magnésio + Vit. B6 é um suplemento alimentar líquido que auxilia na regulação do sistema hormonal da mulher, contribuindo para sua saúde e para a redução dos sintomas da TPM.\n\nO produto apresenta em sua formulação o zinco e o magnésio na forma ionizada, o que faz estes minerais terem uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\n\nA tensão pré-menstrual (TPM) é causada por uma alteração hormonal que interfere no sistema nervoso central, afetando a produção de endorfina e serotonina.  Por isso, é comum a ocorrência de alterações de humor como ansiedade, irritabilidade, nervosismo, depressão, insônia e hiperatividade.\n\nO magnésio e a piridoxina são fundamentais para a formação de serotonina, eficaz na redução de crises de abstinência e na prevenção dos sintomas associados à tensão pré-menstrual. \n\nAs mudanças hormonais que ocorrem na fase da TPM também podem contribuir para o aparecimento de acne, e o zinco é o que mais se destaca para a redução da acne. O zinco também é necessário para a regulação da liberação e da atividade de diversos hormônios corporais, incluindo os hormônios sexuais. ",
-    price: 6990,
-    promotionPrice: 5592,
-    weight: 60,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569749/zqufnrj3yejl8fxubowb.jpg",
     stock: 3,
   },
   {
@@ -169,19 +104,6 @@ const products = [
     stock: 3,
   },
   {
-    name: "QUANTION 10",
-    description:
-      "QUANTION 10 Selênio + Vit. B3 + Arginina é um suplemento alimentar líquido que auxilia na manutenção da saúde do homem, especialmente em casos de infertilidade e disfunção erétil.\n\nO produto apresenta em sua formulação o selênio na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nO selênio é um mineral com importante ação antioxidante, com atuação em todas as células, inclusive nos espermatozoides. Considerando, que, a concentração de selênio no sistema reprodutor masculino influencia a saúde dos espermatozoides e a redução do estresse oxidativo, a deficiência desse mineral pode levar a alterações na fertilidade.  \n\nGrande parte dos casos de disfunção erétil em homens entre 40 e 70 anos está relacionada a altos níveis de colesterol e doenças cardiovasculares, como disfunção endotelial e aterosclerose.\n\nAlém disso, a niacina induz a liberação de prostaglandina D2, substância necessária para que ocorra a vasodilatação no corpo cavernoso do pênis, melhorando a função erétil.",
-    price: 6990,
-    promotionPrice: 5592,
-    weight: 60,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569860/owlqak68an33cvlibotw.jpg",
-    stock: 3,
-  },
-  {
     name: "QUANTION 11",
     description:
       "QUANTION 11 Magnésio + Vit. D3 é um é um suplemento alimentar líquido que auxilia na manutenção da saúde renal.\n\nO produto apresenta em sua formulação o magnésio na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nA deficiência de magnésio pode estar relacionada à formação de cristais na urina e consequentemente de cálculos renais (litíase).  \n\nA suplementação com magnésio auxilia na melhora do quadro, por ser um mineral alcalino e que regula o pH sanguíneo.\n\nEm conjunto com o magnésio, a vitamina D3 também auxilia na prevenção de cálculos renais, uma vez que o cálcio é dependente dessa vitamina para sua absorção. Corretos níveis de vitamina D3 sanguíneos garantem o transporte do cálcio ingerido para os ossos, impedindo que ele se deposite nas artérias e nos rins.",
@@ -193,19 +115,6 @@ const products = [
     image:
       "https://res.cloudinary.com/doricnmhy/image/upload/v1725569979/mujtdjngqb919j20bpb2.jpg",
     stock: 1,
-  },
-  {
-    name: "QUANTION 12",
-    description:
-      "QUANTION 12 Vit. B6 + Vit. D3 + Magnésio é um suplemento alimentar líquido que auxilia na redução de dores musculares crônicas, especialmente em casos de fibromialgia.\n\nO produto apresenta em sua formulação o magnésio na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nO Magnésio melhora a atividade elétrica cardíaca, a contratilidade muscular e o funcionamento das células nervosas. \n\nDiminui a tensão muscular intensa e dor generalizada no corpo e aumenta o relaxamento dos músculos.\n\nA vitamina D3 e a vitamina B6, agem no aumento do intervalo e na diminuição das dores crônicas, especialmente a fibromialgia.\n",
-    price: 6990,
-    promotionPrice: 5592,
-    weight: 60,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569883/gauz9kueqiiovcdacviw.jpg",
-    stock: 3,
   },
   {
     name: "QUANTION 13 ",
@@ -234,19 +143,6 @@ const products = [
     stock: 3,
   },
   {
-    name: "QUANTION 15",
-    description:
-      "QUANTION 15 Ferro + Vit. B9 + Vit. B12 é um suplemento alimentar líquido que auxilia na redução dos sintomas em casos de anemia.\n\nO produto apresenta em sua formulação o ferro na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nEstados de deficiência de ferro caracterizam a anemia por carência de ferro, ou anemia ferropriva. Nesse caso, é comum o aparecimento de sintomas como cansaço generalizado tonturas, dor de cabeça, falta de concentração, irritabilidade e confusão mental. A ocorrência de fadiga muscular frequente também é bem comum, devido à má formação e mal funcionamento da mioglobina. \n\nEntretanto, apesar da deficiência de ferro ser apontada como a principal causa da anemia, grande parte das anemias nutricionais resultam não só da carência de ferro, mas também de ácido fólico (vitamina B9) e vitamina B12. A deficiência dessas duas vitaminas causa outro tipo de anemia, chamada anemia megaloblástica, onde a medula óssea produz glóbulos vermelhos grandes e anormais, incapazes de transportar corretamente o oxigênio pelo sangue, e acarretando nos mesmos sintomas da anemia ferropriva.",
-    price: 6990,
-    promotionPrice: 5592,
-    weight: 60,
-    promotion: false,
-    categoryId: 1,
-    image:
-      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569927/lh3agjqtaim2yxfpfmg6.png",
-    stock: 3,
-  },
-  {
     name: "GREEN DTX",
     description:
       "O Green DTX é um suplemento alimentar em pó, com delicioso sabor limão, a base de ervas e frutas. É rico em fibras alimentares, além de ser Zero Glúten e Zero Açúcar.\n\n É um poderoso desintoxicante que contém Chorella capaz de limpar profundamente seu corpo, retirando até mesmo os metais pesados e resíduos químicos contaminantes.\n\nEntre os seus muitos benefícios, o Green DTX ajuda a emagrecer, melhora a Imunidade, fortalece seus ossos e melhora sua pele.\n\nAumenta a sua energia, espanta a fome e ajuda a combater o colesterol, a obesidade e o diabetes.\n\nTem ação para manutenção do PH do sangue em níveis ideais, promove profunda limpeza no sistema gastrointestinal e devido a sua ação antioxidante é considerado preventivo contra células cancerosas.",
@@ -257,6 +153,175 @@ const products = [
     categoryId: 1,
     image:
       "https://res.cloudinary.com/doricnmhy/image/upload/v1725569941/shswtgu8qz613d0xyqfr.png",
+    stock: 0,
+  },
+  {
+    name: "QUANTION 12",
+    description:
+      "QUANTION 12 Vit. B6 + Vit. D3 + Magnésio é um suplemento alimentar líquido que auxilia na redução de dores musculares crônicas, especialmente em casos de fibromialgia.\n\nO produto apresenta em sua formulação o magnésio na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nO Magnésio melhora a atividade elétrica cardíaca, a contratilidade muscular e o funcionamento das células nervosas. \n\nDiminui a tensão muscular intensa e dor generalizada no corpo e aumenta o relaxamento dos músculos.\n\nA vitamina D3 e a vitamina B6, agem no aumento do intervalo e na diminuição das dores crônicas, especialmente a fibromialgia.\n",
+    price: 6990,
+    promotionPrice: 5592,
+    weight: 60,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569883/gauz9kueqiiovcdacviw.jpg",
+    stock: 1,
+  },
+  {
+    name: "QuantCaps Moro",
+    description:
+      "QuantCaps Moro contém o extrato de Laranja Moro e é um suplemento alimentar rico em nutrientes e substâncias bioativas que contribuem para o emagrecimento saudável.\nO extrato de Laranja Moro é rico em Antocianinas, especialmente as do tipo C3G que modificam o metabolismo das gorduras e estimulando hormônios da lipólise (queima de gordura).\n\n*Benefícios:*\n\n1 – Auxilia na redução de 25% a 50% da gordura abdominal\n2 – Menor acúmulo de gordura nos tecidos e estimula a queima da gordura\n3 – Potente ação antioxidante\n4 – Reduz Triglicérides e o Colesterol Total\n5 – Reduz a resistência a insulina\n6 – Contém Psyllium, que melhora o funcionamento do intestino e traz saciedade\n7 – Reduz os níveis de glicose no sangue\n8 – Contém Colágeno, garantindo firmeza e elasticidade para a pele\n9 – Contém o aminoácido L-fenilalanina, que auxilia em distúrbios neurológicos, depressão e déficit de memória\n10 – Diminui o apetite\n",
+    price: 8999,
+    promotionPrice: 7199,
+    weight: 50,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569532/jt9ae8n7dgdqo4dkrxp2.png",
+    stock: 1,
+  },
+  {
+    name: "Incenso Natural de Breuzinho",
+    description:
+      "Incenso Natural de Breuzinho\nDo tronco de uma árvore comum na Amazônia escorre uma seiva branca e brilhante de aroma extremamente agradável. Esta resina natural é colhida há centenas de anos por povos nativos e é usada em rituais de cura e cerimônias sagradas. A árvore de onde se extrai a resina é popularmente conhecida como “breus” e daí, então, vem a palavra Breuzinho. \n\nPara que serve?\nDurante muitos séculos, os indígenas utilizaram a resina de Breuzinho para diversas finalidades, tanto para promover curas físicas como emocionais e até espirituais. Muito tempo depois do uso popular, a ciência pesquisou os efeitos desta resina e descobriu que ela tem propriedades terapêuticas fantásticas.\n\nO que diz a ciência?\nA resina de Breuzinho (utilizado no incenso) é largamente estudada na Aromaterapia. Sabe-se que contém propriedades anti-inflamatórias e também analgésicas. Por isso, os indígenas usavam em ferimentos e outros tipos de inflamações.\n\nPropriedades terapêuticas do incenso\nA fumaça do incenso de Breuzinho ajuda a reduzir as dores de cabeça e até inflamações corporais, como artrites e reumatismo, pois facilitam o relaxamento muscular.\n\nDesacelerando as emoções\nEssa resina também auxilia a desinflamar as emoções, funcionando como um equilibrador emocional.  É que as propriedades medicinais do Breuzinho também atuam no sistema nervoso, fazendo com que se crie uma analgesia nos nervos do corpo, o que vai interferir nas emoções.\n\nCentramento\nOs pensamentos agitados vão dando lugar para a concentração, trazendo o ser humano para um momento de mais consciência e presença. Se a pessoa estiver muito negativa, os pensamentos obsessivos começam a dar lugar a outros tipos de sensações, como relaxamento e calma.\n\nPodemos dizer que o Breuzinho é um alívio que vem da floresta e que ajuda a tornar nossos dias mais calmos.\n\nFicha técnica\n\nEmbalagem: 1 Caixa de incensos artesanais com 9 varetas grandes; \n\nComposição: Resina natural de breu branco, carvão vegetal, álcool de cereal e resina de olíbano;\n\nPeso Líquido: 40g;\n\nDuração da queima: 50 minutos aprox. cada vareta;\n\nPrecauções: O incenso deve ser mantido longe do alcance de crianças e animais, nunca deixar o incenso aceso desacompanhado e manter o incenso em local seco, arejado e abridago da luz;\n\n* Incenso artesanal, pequenas variações podem ocorrer no peso e tamanho do incenso;",
+    price: 2990,
+    promotionPrice: 2392,
+    weight: 50,
+    promotion: false,
+    categoryId: 4,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1726662959/f3knhkdppa7x8dikoerz.png",
+    stock: 9,
+  },
+  {
+    name: "Incenso Natural Cipó dos Sonhos",
+    description:
+      "INCENSO ARTESANAL CIPÓ DOS SONHOS\n\nO composto que chamamos de Cipó dos Sonhos é uma combinação de vegetais terapêuticos típicos da Amazônia Brasileira, o Jagube (Basteriopis caapi) e Chacrona (Psycotria virídis).\n\nNo incenso, utilizamos as plantas já processadas. O Jagube e da Chacrona chegam até a Fênix depois de utilizadas em chás, onde o bagaço é retirado e fazemos o incenso.\n\nPesquisadores descobriram que a combinação dessas ervas tem propriedades ansiolíticas poderosas e facilitam a interiorização.\n\nEstudos científicos comprovam\nEstudos feitos por universidades brasileiras, como a Universidade de São Paulo (USP), Universidade de Campinas (UNICAMP), Universidade Federal de Brasília (UnB) e Universidade Federal de Minas Gerais (UFMG) comprovam as propriedades medicinais da junção dessas ervas. Elas são bastante pesquisadas porque também são utilizadas para se fazer o chá de Ayhuasca.\n\nPropriedades medicinais\nEntre as descobertas feitas pelos pesquisadores está o efeito ansiolítico. Segundo cientistas, a combinação dessas ervas pode ajudar a atenuar quadros de ansiedade e até de depressão. Além disso, elas contêm propriedades analgésicas.\n\nPropriedades terapêuticas do incenso\nNa fumaça deste incenso são liberadas as propriedades das ervas, já citadas acima. Conforme o incenso vai sendo queimado, as pessoas ficam mais calmas e vão entrando num relaxamento profundo.\n\nConexão com a essência\nElas também conseguem se desfocar da agitação do mundo exterior, o que facilita a interiorização e os estados meditativos.  Cientistas e os holísticos acreditam que essa é a virada de chave para a conexão com a essência. Se permitir se interiorizar para conhecer melhor seus sonhos e desejos. Conhecer a sua essência, para então, resgatá-la.\n\nPor que o nome Cipó dos Sonhos?\nPorque os povos da floresta Amazônica, nas suas caminhadas para a coleta de raízes, de folhas, plantas, cascas, cipós e para a caça, tiravam a água do Jagube e tomavam para saciar a sua sede. E essa água provocava certa sonolência neles. Então, os indígenas o denominavam de cipó dos sonhos.\n\nO nome deste incenso é uma homenagem ao conhecimento que os povos da floresta nos trazem.\n\nFicha técnica\n\nEmbalagem: 1 Caixa de incensos artesanais com 9 varetas grandes; \n\nComposição: Bagaço de Jagube e Chacrona, resina de breu branco, carvão vegetal, álcool de cereal e resina de olíbano;\n\nPeso Líquido: 40g;\n\nDuração da queima: 50 minutos aprox. cada vareta;\n\nPrecauções: O incenso deve ser mantido longe do alcance de crianças e animais, nunca deixar o incenso aceso desacompanhado e manter o incenso em local seco, arejado e abridago da luz;\n\n* Incenso artesanal, pequenas variações podem ocorrer no peso e tamanho do incenso;",
+    price: 2990,
+    promotionPrice: 2392,
+    weight: 50,
+    promotion: false,
+    categoryId: 4,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1726664338/y6xljw9mzdyaiigv0gsx.png",
+    stock: 10,
+  },
+  {
+    name: "Incenso Natural de Olíbano Puro",
+    description:
+      "Incenso Natural de Olíbano Puro da Fênix\nO incenso de Olíbano (Boswellia Carterii) está associada à elevação espiritual, há milhares de anos. Muitos acreditam que a resina tenha sido uma das primeiras de nossa civilização atual usada como ferramenta para conexão com o sagrado.\n\nDesde a época da Rota do Incenso, no Oriente Médio, até como um dos presentes dados ao menino Jesus, em seu nascimento, o Olíbano é citado em diversas escrituras sagradas como uma resina que valia mais do que ouro.\n\nDos milhares de anos atrás até os dias atuais, o Olíbano nunca caiu em desuso.\n\nSabe por quê?\n\nO que é Olíbano\nÉ uma goma que é produzida numa árvore muito comum no Nordeste da África e no Oriente Médio. Diziam os povos da Antiguidade que a defumação com Olíbano ajudava a afastar os maus espíritos, sendo empregada principalmente antes dos rituais sagrados para preparar os ambientes para a oração.\n\nFicou famosa também por conta da passagem do evangelho em que o apóstolo Mateus cita o Olíbano como um dos presentes entregues para o menino Jesus, pelos 3 reis magos. \n\nMas, sua conexão com a religiosidade e o sagrado foi muito além. E, mesmo depois de séculos, está associada aos rituais de defumação da Igreja Católica e ritos religiosos africanos e asiáticos.\n\nÉ o incenso ideal para quem deseja fazer sua conexão espiritual.\n\nOs Benefícios do Olíbano\nAjudar a promover a conexão com o sagrado talvez seja a mais conhecida das propriedades do Olíbano. Mas, esta resina tem muito mais a oferecer. \n\nNos países margeados pelo deserto do Saara, a goma foi utilizada, por séculos, como um anti-inflamatório natural, sendo eficaz na cicatrização de ferimentos. \n\nAtualmente, a Aromaterapia descobriu que suas propriedades químicas ajudam a amenizar os males modernos, como a ansiedade.\n\nSerenando a mente\nA resina de Olíbano atua diretamente no sistema nervoso do corpo humano, criando uma sensação de relaxamento. É excelente para tratar a tensão nervosa e até exaustão, funcionando como um revigorante.\n\nConforme a pessoa vai relaxando, ela também passa a se sentir mais revitalizada.\n\nMeditação\nAssim como ajuda a criar a conexão com algo maior, o Olíbano também é indicado para quem deseja criar uma conexão consigo mesma. \n\nIsto ocorre porque o Olíbano, como já dito, ajuda a serenar a mente, facilitando a entrar em estados meditativos.\n\nDizem que é uma das melhores resinas para quem busca a expansão da consciência.\n\nAliviar o estresse\nRico em monoterpenos, o Olíbano também facilita a diminuir as tensões corporais, devido às suas propriedades terapêuticas. Sabe aqueles dias de pensamentos excessivos e preocupações? Nesses dias, não apenas a mente, mas o corpo humano fica “lutando” contra as situações.\n\nAo acender um Incenso Fênix de Olíbano, no entanto, a pessoa começa a voltar para o seu equilíbrio novamente, facilitando na manutenção do seu bem-estar físico e emocional, diminuindo o estresse.\n\nComo é o Incenso Natural de Olíbano?\nUm dado curioso: o incenso de Olíbano é conhecido como frankincense, que pode ser traduzido como “incenso franco”, “incenso verdadeiro”. Dizem que quando os acendemos ficamos tão dentro da nossa própria essência que acabamos sendo o mais verdadeiro possível com nós mesmos. \n\nO incenso natural de Olíbano da Fênix vem em uma caixa de incensos artesanais, contendo 9 varetas médias.\n\nÉ composto por Resina de Olíbano, Resina de Breu Branco, Álcool de Cereal e Carvão Vegetal. Peso 30g e a duração de queima é de cerca de 30 minutos cada vareta.\n\nExperimente o nosso incenso natural de Olíbano e conheça todos os benefícios que esse aroma pode te proporcionar.\n\nDETALHES DO PRODUTO\n\nEmbalagem: 1 caixa de incensos artesanais, contendo 9 varetas médias.\n\nComposição: Resina de Olíbano, Resina de Breu Branco, Álcool de Cereal e Carvão Vegetal.\n\nPeso Líquido: 30 gramas.\n\nDuração de queima: cerca de 30 minutos cada vareta.\n\nPrecauções: O incenso deve ser mantido longe do alcance de crianças e animais. Nunca deixe o incenso aceso quando não houver ninguém em casa. Manter a caixa em local seco, arejado e ao abrigo da luz.\n\n*Produto artesanal, pequenas variações podem ocorrer no peso e tamanho do incenso",
+    price: 2990,
+    promotionPrice: 2392,
+    weight: 50,
+    promotion: false,
+    categoryId: 4,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1726664459/xo5omdkzr6c2cmbcyoeg.png",
+    stock: 8,
+  },
+  {
+    name: "Incenso Natural Sálvia Branca",
+    description:
+      "INCENSO NATURAL DE SÁLVIA BRANCA\nAo se sentar ao redor de uma fogueira, indígenas norte-americanos descobriram que uma magia acontecia quando jogavam folhas de Sálvia no fogo. Eles pareciam ficar mais sábios e inteligentes. E foi, então, que começaram a perceber os poderes dessa erva.\n\nDizem que era comum os nativos falarem que conseguiram ouvir a voz dos anciões das florestas, após queimar a Sálvia. No entanto, historiadores concluíram que os indígenas estariam ouvindo a voz do seu próprio discernimento.\n\nAfinal, esse é o poder da Sálvia, trazer a sabedoria e o entendimento para lidar com as situações.\n\nMas, como isso acontece?\nLimpador de densidades astrais\nPrimeiro, quando um incenso de Sálvia é acesso, as propriedades da erva contidas na vareta ajudam a liberar as densidades astrais que estão numa pessoa ou ambiente, funcionando como um purificador.\n\nClareza de pensamentos\nUma vez que as densidades são liberadas, os elementos da Sálvia que ficam espalhados no ar começam a atuar sobre o ser humano, ajudando a pessoa a deixar de lado os pensamentos negativos ou sentimentos extremados.\n\nA volta do equilíbrio\nE, então, a pessoa passa a se sentir melhor, mais calma, voltando a seu equilíbrio físico e mental. A Sálvia Apiana ajuda a passar de um estado de agitação para o de discernimento.\n\nSabedoria\nE com os pés no chão, então, a pessoa consegue ter mais raciocínio para lidar com os desafios da vida, usando sua sabedoria para isso.  Um conhecimento que os índios norte-americanos já dominavam, séculos atrás.\n\nA Sálvia traz uma sensação prazerosa de calma, equilíbrio, relaxamento e compreensão. Um estímulo à sabedoria interior.\n\nFicha técnica\n\nEmbalagem: 1 Caixa de incensos artesanais com 9 varetas grandes; \n\nComposição: Sálvia Branca, resina de breu branco, carvão vegetal, álcool de cereal e resina de olíbano;\n\nPeso Líquido: 40g;\n\nDuração da queima: 50 minutos aprox. cada vareta;\n\nPrecauções: O incenso deve ser mantido longe do alcance de crianças e animais, nunca deixar o incenso aceso desacompanhado e manter o incenso em local seco, arejado e abridago da luz;\n\n* Incenso artesanal, pequenas variações podem ocorrer no peso e tamanho do incenso;",
+    price: 2990,
+    promotionPrice: 2392,
+    weight: 50,
+    promotion: false,
+    categoryId: 4,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1726664556/s4kvutilhtfvdypybtq4.png",
+    stock: 7,
+  },
+  {
+    name: "Incenso Natural Palo Santo",
+    description:
+      "Incenso Natural de Palo Santo\nA magia do Palo Santo está na força que essa árvore ancestral exerce sobre os humanos, há muitos séculos. \n\nPalo Santo, ou pau santo, como os espanhóis colonizadores o chamavam, é uma madeira extraída da casca de uma árvore. Um processo lento que acontece apenas após a morte da árvore. \n\nOs espanhóis chamavam de santa, mas os incas a denominavam como mágica. Ela era muito utilizada em processos de limpeza de ambiente ou antes de cerimônias de cura de doentes. Também era usada para purificar o corpo e o espírito das impurezas dos nossos próprios pensamentos.\n\nAtualmente, é uma aliada da vida corrida, pois auxilia a trazer a purificação necessária para retirar a negatividade de um ambiente ou de uma pessoa.\n\nVeja, abaixo, outras utilidades do Palo Santo. \n\nProteção energética: além de limpar os ambientes e o campo energético de uma pessoa, cria uma esfera protetora impedindo que novas negatividades se aproximem. \nAuxilia na meditação: como remove as densidades, ajuda as pessoas a elevarem seus pensamentos, fazendo com que entrem mais facilmente em estados meditativos. \nCriar resiliência: o aroma que o Palo Santo entra no sistema límbico humano e desperta nas pessoas o instinto de resiliência, ajudando a se fortalecer diante das adversidades da vida.\nRelaxante físico e mental: o Palo Santo, quando queimado, ajuda a tirar aquela sensação de urgência e ansiedade, trazendo uma sensação de relaxamento para o corpo e para a mente de uma pessoa.\nÉ importante lembrar que o Palo Santo utilizado neste produto só é adquirido depois que a árvore já passou por todos seus processos, naturalmente. A Fênix respeita o ciclo de vida e morte do Palo Santo para, somente depois, usá-lo em seus produtos.\n\nFicha técnica\n\nEmbalagem: 1 Caixa de incensos artesanais com 9 varetas grandes; \n\nComposição: Palo santo, resina de breu branco, carvão vegetal, álcool de cereal e resina de olíbano;\n\nPeso Líquido: 40g;\n\nDuração da queima: 50 minutos aprox. cada vareta;\n\nPrecauções: O incenso deve ser mantido longe do alcance de crianças e animais, nunca deixar o incenso aceso desacompanhado e manter o incenso em local seco, arejado e abridago da luz;\n\n* Incenso artesanal, pequenas variações podem ocorrer no peso e tamanho do incenso;",
+    price: 2990,
+    promotionPrice: 2392,
+    weight: 50,
+    promotion: false,
+    categoryId: 4,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1726664713/dbegkny9offcuibyxsey.png",
+    stock: 8,
+  },
+  {
+    name: "QUANTION 02",
+    description:
+      "QUANTION 02 + Magnésio + Vitamina C é um suplemento alimentar líquido que auxilia na saúde do sistema respiratório e na redução dos sintomas da asma.\n\nO produto apresenta em sua formulação o magnésio na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nO magnésio diminui os riscos de doenças crônicas de obstrução pulmonar, como a asma aguda.\n\nDesempenha também um papel importante na atividade neuromuscular, funções cardiovasculares e metabólicas. Estudos mostram uma associação entre magnésio, força muscular e desempenho no exercício.\n\nA vitamina C auxilia no funcionamento do sistema imune e na melhora de quadros de ataque de asma crônica e hipersensibilidade brônquica.",
+    price: 6990,
+    promotionPrice: 5592,
+    weight: 60,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569683/rzz35vxwaezea6pd2bhc.jpg",
+    stock: 1,
+  },
+  {
+    name: "QUANTION 06",
+    description:
+      "QUANTION 06 Zinco + Magnésio + Vit. B6 é um suplemento alimentar líquido que auxilia na regulação do sistema hormonal da mulher, contribuindo para sua saúde e para a redução dos sintomas da TPM.\n\nO produto apresenta em sua formulação o zinco e o magnésio na forma ionizada, o que faz estes minerais terem uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\n\nA tensão pré-menstrual (TPM) é causada por uma alteração hormonal que interfere no sistema nervoso central, afetando a produção de endorfina e serotonina.  Por isso, é comum a ocorrência de alterações de humor como ansiedade, irritabilidade, nervosismo, depressão, insônia e hiperatividade.\n\nO magnésio e a piridoxina são fundamentais para a formação de serotonina, eficaz na redução de crises de abstinência e na prevenção dos sintomas associados à tensão pré-menstrual. \n\nAs mudanças hormonais que ocorrem na fase da TPM também podem contribuir para o aparecimento de acne, e o zinco é o que mais se destaca para a redução da acne. O zinco também é necessário para a regulação da liberação e da atividade de diversos hormônios corporais, incluindo os hormônios sexuais. ",
+    price: 6990,
+    promotionPrice: 5592,
+    weight: 60,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569749/zqufnrj3yejl8fxubowb.jpg",
+    stock: 2,
+  },
+  {
+    name: "QUANTION 10",
+    description:
+      "QUANTION 10 Selênio + Vit. B3 + Arginina é um suplemento alimentar líquido que auxilia na manutenção da saúde do homem, especialmente em casos de infertilidade e disfunção erétil.\n\nO produto apresenta em sua formulação o selênio na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nO selênio é um mineral com importante ação antioxidante, com atuação em todas as células, inclusive nos espermatozoides. Considerando, que, a concentração de selênio no sistema reprodutor masculino influencia a saúde dos espermatozoides e a redução do estresse oxidativo, a deficiência desse mineral pode levar a alterações na fertilidade.  \n\nGrande parte dos casos de disfunção erétil em homens entre 40 e 70 anos está relacionada a altos níveis de colesterol e doenças cardiovasculares, como disfunção endotelial e aterosclerose.\n\nAlém disso, a niacina induz a liberação de prostaglandina D2, substância necessária para que ocorra a vasodilatação no corpo cavernoso do pênis, melhorando a função erétil.",
+    price: 6990,
+    promotionPrice: 5592,
+    weight: 60,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569860/owlqak68an33cvlibotw.jpg",
+    stock: 1,
+  },
+  {
+    name: "QUANTION 15",
+    description:
+      "QUANTION 15 Ferro + Vit. B9 + Vit. B12 é um suplemento alimentar líquido que auxilia na redução dos sintomas em casos de anemia.\n\nO produto apresenta em sua formulação o ferro na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nEstados de deficiência de ferro caracterizam a anemia por carência de ferro, ou anemia ferropriva. Nesse caso, é comum o aparecimento de sintomas como cansaço generalizado tonturas, dor de cabeça, falta de concentração, irritabilidade e confusão mental. A ocorrência de fadiga muscular frequente também é bem comum, devido à má formação e mal funcionamento da mioglobina. \n\nEntretanto, apesar da deficiência de ferro ser apontada como a principal causa da anemia, grande parte das anemias nutricionais resultam não só da carência de ferro, mas também de ácido fólico (vitamina B9) e vitamina B12. A deficiência dessas duas vitaminas causa outro tipo de anemia, chamada anemia megaloblástica, onde a medula óssea produz glóbulos vermelhos grandes e anormais, incapazes de transportar corretamente o oxigênio pelo sangue, e acarretando nos mesmos sintomas da anemia ferropriva.",
+    price: 6990,
+    promotionPrice: 5592,
+    weight: 60,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569927/lh3agjqtaim2yxfpfmg6.png",
+    stock: 0,
+  },
+  {
+    name: "QuantCaps Psyllium e Resveratrol",
+    description:
+      "Composto por Psyllium e Resveratrol + Vitamina C, Colina, Inulina e Cromo, promove o famoso “efeito Detox” ajudando a eliminar as toxinas e impurezas do organismo.\n\nO Psyllium é fonte riquíssima de fibra, ajudando a regular o intestino e melhorar o metabolismo. Tem grande capacidade de absorver água, ajudando a manter o intestino hidratado facilitando os movimentos peristálticos e com efeito laxante.\n\nO Resveratrol atua como um antioxidante natural, protegendo o organismo contra os danos causados pelos radicais livres \nAlém disso, tem efeitos na proteção cardiovascular, redução do colesterol ruim (LDL), melhora do desempenho atlético e, protege o organismo contra o surgimento de câncer e doenças degenerativas.\n\nA vitamina C auxilia na absorção do ferro dos alimentos, auxilia no metabolismo das gorduras e no funcionamento do sistema imune.\n\nA Colina contribui para o metabolismo da homocisteína e também no metabolismo lipídico.\n\nO Zinco auxilia no metabolismo da Vitamina A, no metabolismo de proteínas e gorduras, no processo de divisão celular, na manutenção celular e no sistema imune.\n\nO Cromo auxilia no metabolismo de gorduras, proteínas e carboidratos.\n",
+    price: 6990,
+    promotionPrice: 5592,
+    weight: 60,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569636/cp8c7lc50yoq4dreydb1.png",
+    stock: 0,
+  },
+  {
+    name: "QUANTION 01",
+    description:
+      "QUANTION 01 + Zinco + Vitamina A é um suplemento alimentar líquido que auxilia na prevenção de desordens intestinais, diabetes e proteção do sistema gastrointestinal.\n\nO produto apresenta em sua formulação o zinco na forma ionizada, o que faz este mineral ter uma maior biodisponibilidade, melhor absorção e melhor resposta biológica.\n\nEm conjunto com a vitamina A, o zinco apresenta uma absorção ainda maior no organismo, sendo essencial para a chegada deste mineral em metaloenzimas de interesse que irão desencadear suas funções na proteção do sistema gastrointestinal, na regulação de índices de açúcares no sangue e no auxílio ao sistema digestivo. A vitamina A também desempenha um papel importante na manutenção das células do sistema imunológico que revestem a mucosa do intestino.\n",
+    price: 6990,
+    promotionPrice: 5592,
+    weight: 60,
+    promotion: false,
+    categoryId: 1,
+    image:
+      "https://res.cloudinary.com/doricnmhy/image/upload/v1725569797/bnwjydkgomciwk2i75dg.jpg",
     stock: 0,
   },
 ];
