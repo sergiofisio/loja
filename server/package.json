@@ -1,6 +1,6 @@
 {
   "name": "server-eccomerce",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "![](https://i.imgur.com/xG74tOh.png)",
   "main": "src/index.js",
   "engines": {
@@ -17,7 +17,8 @@
     "generate": "npx prisma generate",
     "pull": "npx prisma db pull",
     "push": "npx prisma db push",
-    "seed": "node ./prisma/seed.js"
+    "seed": "node ./prisma/seed.js",
+    "release": "standard-version"
   },
   "dependencies": {
     "@prisma/client": "^5.10.2",
@@ -45,7 +46,8 @@
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",
-    "prisma": "^5.8.0"
+    "prisma": "^5.8.0",
+    "standard-version": "^9.5.0"
   },
   "license": "MIT"
 }
