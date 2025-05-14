@@ -47,7 +47,7 @@ export const ContextProvider = ({ children }) => {
             "text-red",
             3000
           );
-          setIsLoading(false);
+          setInfoDb({ ...infoDb, isLoading: false });
         }
       }
     };
