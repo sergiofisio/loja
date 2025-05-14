@@ -37,6 +37,8 @@ export const ContextProvider = ({ children }) => {
           setInfoDb({ ...infoDb, retryCount: retryCount + 1 });
         }
       } catch (error) {
+        console.log({ error });
+
         if (error.code === "ECONNABORTED" && infoDb.retryCount < 5) {
           setTimeout(getProducts, 3000);
           setRetryCount(infoDb.retryCount + 1);
