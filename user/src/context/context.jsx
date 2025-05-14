@@ -22,6 +22,9 @@ export const ContextProvider = ({ children }) => {
         const {
           data: { products, testimonials, partners, categories },
         } = await axios.get("/infoHome/false");
+
+        console.log({ products, testimonials, partners, categories });
+
         if (products && products.length > 0) {
           setInfoDb({
             ...infoDb,
