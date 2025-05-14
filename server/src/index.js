@@ -1,5 +1,5 @@
 require("dotenv").config();
-import fs from "fs";
+const fs = require("fs");
 const express = require("express");
 const cors = require("cors");
 const allRoutes = require("./routes");
