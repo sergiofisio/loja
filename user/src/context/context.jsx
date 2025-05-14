@@ -21,7 +21,7 @@ export const ContextProvider = ({ children }) => {
       try {
         const {
           data: { products, testimonials, partners, categories },
-        } = await axios.get("/infoHome/false");
+        } = await axios.get("/infoDb/false");
 
         console.log({ products, testimonials, partners, categories });
 
