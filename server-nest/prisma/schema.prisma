@@ -72,7 +72,7 @@ model testimonial {
   name String
   text String
   date DateTime @default(now())
-    createdAt         DateTime     @default(now())
+  createdAt         DateTime     @default(now())
   updatedAt         DateTime     @updatedAt
 }
 

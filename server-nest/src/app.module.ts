@@ -9,6 +9,8 @@ import { FreteModule } from './frete/frete.module';
 import { AsaasModule } from './asaas/asaas.module';
 import { DatabaseModule } from './database/database.module';
 import { ConfigModule } from '@nestjs/config';
+import { UsersModule } from './users/users.module';
+import { LoggerMiddleware } from './common/logger/logger.middleware';
 
 @Module({
   imports: [
@@ -20,12 +22,13 @@ import { ConfigModule } from '@nestjs/config';
     FreteModule,
     AsaasModule,
     DatabaseModule,
+    UsersModule,
   ],
   controllers: [AppController],
   providers: [AppService],
 })
 export class AppModule {
   configure(consumer: MiddlewareConsumer) {
-    consumer.apply().forRoutes('*');
+    consumer.apply(LoggerMiddleware).forRoutes('*');
   }
 }
