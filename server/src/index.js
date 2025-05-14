@@ -22,6 +22,19 @@ app.use(function (_, res, next) {
 
 app.use(allRoutes);
 
-app.listen(process.env.PORT || 3000, () => {
-  console.log(`Servidor rodando na porta ${process.env.PORT || 3000}`);
+const httpsOptions = {
+  key: fs.readFileSync(
+    "/etc/letsencrypt/live/devsergiofisico.com.br/privkey.pem"
+  ),
+  cert: fs.readFileSync(
+    "/etc/letsencrypt/live/devsergiofisico.com.br/fullchain.pem"
+  ),
+};
+
+http.createServer(app).listen(3000, () => {
+  console.log("🚀 Servidor HTTP rodando na porta 3000");
+});
+
+https.createServer(httpsOptions, app).listen(4000, () => {
+  console.log("🔐 Servidor HTTPS rodando na porta 4000");
 });
