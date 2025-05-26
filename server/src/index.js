@@ -9,21 +9,6 @@ const os = require("os");
 
 const app = express();
 
-function getLocalIP() {
-  const interfaces = os.networkInterfaces();
-  for (const name of Object.keys(interfaces)) {
-    for (const iface of interfaces[name]) {
-      if (iface.family === "IPv4" && !iface.internal) {
-        return iface.address;
-      }
-    }
-  }
-  return "localhost";
-}
-
-const localIP = getLocalIP();
-const hostname = process.env.DOMAIN || localIP;
-
 app.use(express.json());
 app.use(cors());
 app.use(function (_, res, next) {
@@ -41,39 +26,19 @@ app.use(function (_, res, next) {
 
 app.use(allRoutes);
 
-const PORT_HTTP = process.env.PORT || 3000;
-const PORT_HTTPS = 4000;
+const httpsOptions = {
+  key: fs.readFileSync(
+    "/etc/letsencrypt/live/devsergiofisico.com.br/privkey.pem"
+  ),
+  cert: fs.readFileSync(
+    "/etc/letsencrypt/live/devsergiofisico.com.br/fullchain.pem"
+  ),
+};
 
-const isProduction = process.env.NODE_ENV === "production";
-const keyPath = "/etc/letsencrypt/live/devsergiofisico.com.br/privkey.pem";
-const certPath = "/etc/letsencrypt/live/devsergiofisico.com.br/fullchain.pem";
+http.createServer(app).listen(3000, () => {
+  console.log("🚀 Servidor HTTP rodando na porta 3000");
+});
 
-if (isProduction && fs.existsSync(keyPath) && fs.existsSync(certPath)) {
-  const httpsOptions = {
-    key: fs.readFileSync(keyPath),
-    cert: fs.readFileSync(certPath),
-  };
-
-  https.createServer(httpsOptions, app).listen(PORT_HTTPS, () => {
-    console.log(
-      `🔐 Servidor HTTPS rodando em: https://${hostname}:${PORT_HTTPS}`
-    );
-  });
-
-  http
-    .createServer((req, res) => {
-      res.writeHead(301, {
-        Location: `https://${req.headers.host}${req.url}`,
-      });
-      res.end();
-    })
-    .listen(80, () => {
-      console.log(
-        `🌐 Redirecionamento HTTP → HTTPS ativo em: http://${hostname}:80`
-      );
-    });
-} else {
-  http.createServer(app).listen(PORT_HTTP, () => {
-    console.log(`🚀 Servidor HTTP rodando em: http://${hostname}:${PORT_HTTP}`);
-  });
-}
+https.createServer(httpsOptions, app).listen(4000, () => {
+  console.log("🔐 Servidor HTTPS rodando na porta 4000");
+});
