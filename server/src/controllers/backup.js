@@ -6,12 +6,10 @@ const axios = require("axios");
 const prisma = new PrismaClient();
 
 const transporter = nodemailer.createTransport({
-  host: process.env.ZOHO_HOST,
-  secure: true,
-  port: 465,
+  service: "gmail",
   auth: {
-    user: process.env.ZOHO_USER,
-    pass: process.env.ZOHO_PASSWORD,
+    user: process.env.GMAIL_USER,
+    pass: process.env.GMAIL_APP_PASSWORD,
   },
 });
 
@@ -114,10 +112,8 @@ async function backup(_, res) {
     const backupPath = `../server/backup/backup.json`;
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
-    console.log("Backup completed.");
-
     const mailOptions = {
-      from: process.env.ZOHO_USER,
+      from: `"Greenlife Backup" <${process.env.GMAIL_USER}>`,
       to: "sergiobastosfisio@yahoo.com.br",
       subject: `Database Backup - GREENLIFE DATA: ${date}`,
       text: "Please find attached the latest database backup.",
@@ -126,13 +122,16 @@ async function backup(_, res) {
 
     transporter.sendMail(mailOptions, (error, info) => {
       if (error) {
-        console.error("Error sending backup email:", error.message);
+        console.error("❌ Erro ao enviar o e-mail de backup:", error.message);
       } else {
-        console.log("Email sent: " + info.response);
+        console.log("✅ E-mail de backup enviado com sucesso!");
+        console.log("📤 Resposta do servidor de e-mail:", info.response);
+        console.log("📧 ID da mensagem:", info.messageId);
       }
     });
+    console.log("Backup completed.");
   } catch (error) {
-    console.error("Backup failed:", JSON.stringify(error));
+    console.error("Backup failed:", error.response.data);
     await prisma.log.create({
       data: {
         message: JSON.stringify(error),
