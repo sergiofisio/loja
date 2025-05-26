@@ -2,6 +2,7 @@ const { PrismaClient } = require("@prisma/client");
 const fs = require("fs");
 const nodemailer = require("nodemailer");
 const axios = require("axios");
+const path = require("path");
 
 const prisma = new PrismaClient();
 
@@ -109,7 +110,7 @@ async function backup(_, res) {
       partners,
     };
 
-    const backupPath = `../server/backup/backup.json`;
+    const backupPath = path.join(__dirname, "../../backup/backup.json");
     fs.writeFileSync(backupPath, JSON.stringify(backupData));
 
     const mailOptions = {
