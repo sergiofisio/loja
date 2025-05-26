@@ -128,6 +128,9 @@ async function backup(_, res) {
         console.log("✅ E-mail de backup enviado com sucesso!");
         console.log("📤 Resposta do servidor de e-mail:", info.response);
         console.log("📧 ID da mensagem:", info.messageId);
+
+        fs.writeFileSync(backupPath, "");
+        console.log("🗑️ Arquivo de backup esvaziado com sucesso.");
       }
     });
     console.log("Backup completed.");
